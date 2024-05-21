@@ -5,8 +5,9 @@ public class MainFrame implements Runnable {
     public MainFrame() {
         JFrame frame = new JFrame("a boring game");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setSize(960, 580);
+        frame.setSize(1280, 720);
         frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
         panel = new GraphicsPanel();
         frame.add(panel);
         frame.setVisible(true);

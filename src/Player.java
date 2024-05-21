@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Player {
-    private final double MOVE_AMT = 0.2;
+    private final double MOVE_AMT = 0.4;
     private BufferedImage right;
     private BufferedImage left;
     private boolean facingRight;
@@ -14,8 +14,7 @@ public class Player {
     private double score;
     private int flooryValue;
 
-    public Player(String leftImg, String rightImg, int x, int y, boolean facingRight) {
-        this.facingRight = facingRight;
+    public Player(String leftImg, String rightImg, int x, int y) {
         xCoord = x; // starting position is (50, 435), right on top of ground
         yCoord = y;
         score = 0;
@@ -52,13 +51,13 @@ public class Player {
     }
 
     public void moveRight() {
-        if (xCoord + MOVE_AMT <= 920) {
+        if (xCoord + MOVE_AMT <= 1280/2 + 300) {
             xCoord += MOVE_AMT;
         }
     }
 
     public void moveLeft() {
-        if (xCoord - MOVE_AMT >= 0) {
+        if (xCoord - MOVE_AMT >= 1280/2 - 300) {
             xCoord -= MOVE_AMT;
         }
     }

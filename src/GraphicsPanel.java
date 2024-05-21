@@ -5,106 +5,67 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class GraphicsPanel extends JPanel implements KeyListener, MouseListener {
     private BufferedImage background;
-    private Player mario;
-    private Player luigi;
+    private Player player;
     private Enemy enemy;
     private boolean[] pressedKeys;
-    private int enemyXValue;
-    private String winner;
-    private boolean pause;
+    private double backgroundPosition;
 
     public GraphicsPanel() {
         try {
-            background = ImageIO.read(new File("src/background.png"));
+            background = ImageIO.read(new File("src/assets/background.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        mario = new Player("src/marioleft.png", "src/marioright.png", background.getMinX() + 50, 435, true);
-        luigi = new Player("src/luigileft.png", "src/luigiright.png", background.getWidth() - 100, 435, false);
-        enemyXValue = background.getWidth()/2 - 25;
-        enemy = new Enemy("src/enemy.png", enemyXValue, 475);
+        player = new Player("src/assets/player.png", "src/assets/player.png", 1280/2 - 50, 435);
+//
+//        enemy = new Enemy("src/enemy.png", enemyXValue, 475);
         pressedKeys = new boolean[128];
         addKeyListener(this);
         addMouseListener(this);
         setFocusable(true);
         requestFocusInWindow();
-        pause = true;
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(background, 0, 0, null);
+        g.drawImage(background, (int) backgroundPosition, 0, null);
         g.setFont(new Font("Courier New", Font.BOLD, 24));
-        if (mario.getScore() >= 10) {
-            winner = "Mario";
+
+
+//        g.drawImage(enemy.getEnemyImage(), enemy.getxCoord(), enemy.getyCoord(), null);
+        g.drawImage(player.getPlayerImage(), player.getxCoord(), player.getyCoord(), null);
+
+        g.drawString("player Score: " + player.getScore(), 20, 40);
+
+
+        if (pressedKeys[65] && backgroundPosition < background.getWidth() - 1280) { // 37
+            player.faceLeft();
+            player.moveLeft();
+            if (player.getxCoord() < 500) {
+                backgroundPosition += 0.4;
+            }
         }
-        if (luigi.getScore() >= 10) {
-            winner = "Luigi";
+        if (pressedKeys[68] && backgroundPosition >= 0) { // 39
+            player.faceRight();
+            player.moveRight();
+            if (player.getxCoord() > 880) {
+                backgroundPosition -= 0.4;
+            }
         }
-        if (winner == null && !pause) {
-            g.drawImage(enemy.getEnemyImage(), enemy.getxCoord(), enemy.getyCoord(), null);
-            g.drawImage(mario.getPlayerImage(), mario.getxCoord(), mario.getyCoord(), null);
-            g.drawImage(luigi.getPlayerImage(), luigi.getxCoord(), luigi.getyCoord(), null);
-
-            if (mario.playerRect().intersects(enemy.enemyRect())) { // check for collision
-                mario.updateScore(-0.01);
-            }
-            if (luigi.playerRect().intersects(enemy.enemyRect())) { // check for collision
-                luigi.updateScore(-0.01);
-            }
-
-            g.drawString("Mario Score: " + mario.getScore(), 20, 40);
-            g.drawString("Luigi Score: " + luigi.getScore(), 20, 80);
-
-            if (pressedKeys[65]) {
-                mario.faceLeft();
-                mario.moveLeft();
-            }
-            if (pressedKeys[68]) {
-                mario.faceRight();
-                mario.moveRight();
-            }
-            if (pressedKeys[87]) {
-                mario.moveUp();
-            }
-            if (pressedKeys[83]) {
-                mario.moveDown();
-            }
-
-            if (pressedKeys[37]) {
-                luigi.moveLeft();
-                luigi.faceLeft();
-            }
-            if (pressedKeys[39]) {
-                luigi.moveRight();
-                luigi.faceRight();
-            }
-            if (pressedKeys[38]) {
-                luigi.moveUp();
-            }
-            if (pressedKeys[40]) {
-                luigi.moveDown();
-            }
-
-            enemy.move();
-        } else if (pause) {
-            g.drawImage(enemy.getEnemyImage(), enemy.getxCoord(), enemy.getyCoord(), null);
-            g.drawImage(mario.getPlayerImage(), mario.getxCoord(), mario.getyCoord(), null);
-            g.drawImage(luigi.getPlayerImage(), luigi.getxCoord(), luigi.getyCoord(), null);
-
-
-            g.drawString("Move the mouse inside the window", 250, 220);
-            g.drawString("to continue playing.", 350, 250);
-        } else {
-            g.drawString(winner + " has won the game!", 300, 250);
+        if (pressedKeys[87]) { // 38
+            player.moveUp();
+        }
+        if (pressedKeys[83]) { // 40
+            player.moveDown();
         }
 
     }
+
+
 
     // ----- KeyListener interface methods -----
     public void keyTyped(KeyEvent e) { } // unimplemented
@@ -133,16 +94,16 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
 
         }
         if (e.getButton() == MouseEvent.BUTTON3) { // right mouse click
-            mario.setScore(0);
-            luigi.setScore(0);
+//            player.setScore(0);
+//            luigi.setScore(0);
         }
     }
 
     public void mouseEntered(MouseEvent e) {
-        pause = false;
+
     }
 
     public void mouseExited(MouseEvent e) {
-        pause = true;
+
     }
 }
