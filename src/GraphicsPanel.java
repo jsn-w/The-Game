@@ -19,10 +19,11 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        player = new Player("src/assets/player.png", "src/assets/player.png", 1280/2 - 50, 435);
+        player = new Player("src/assets/player.png", "src/assets/player.png", 640, 435);
 //
 //        enemy = new Enemy("src/enemy.png", enemyXValue, 475);
         pressedKeys = new boolean[128];
+        backgroundPosition = -1920;
         addKeyListener(this);
         addMouseListener(this);
         setFocusable(true);
@@ -42,19 +43,18 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
         g.drawString("player Score: " + player.getScore(), 20, 40);
 
 
-        if (pressedKeys[65] && backgroundPosition < background.getWidth() - 1280) { // 37
+        if (pressedKeys[65]) { // 37
             player.faceLeft();
-            player.moveLeft();
-            if (player.getxCoord() < 500) {
+            if (player.moveLeft()) {
                 backgroundPosition += 0.4;
             }
         }
-        if (pressedKeys[68] && backgroundPosition >= 0) { // 39
+        if (pressedKeys[68]) { // 39
             player.faceRight();
-            player.moveRight();
-            if (player.getxCoord() > 880) {
+            if (player.moveRight()) {
                 backgroundPosition -= 0.4;
             }
+
         }
         if (pressedKeys[87]) { // 38
             player.moveUp();

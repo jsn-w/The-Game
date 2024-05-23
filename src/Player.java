@@ -15,7 +15,7 @@ public class Player {
     private int flooryValue;
 
     public Player(String leftImg, String rightImg, int x, int y) {
-        xCoord = x; // starting position is (50, 435), right on top of ground
+        xCoord = x;
         yCoord = y;
         score = 0;
         flooryValue = 435;
@@ -50,16 +50,20 @@ public class Player {
         facingRight = false;
     }
 
-    public void moveRight() {
-        if (xCoord + MOVE_AMT <= 1280/2 + 300) {
+    public boolean moveRight() {
+        if (xCoord + MOVE_AMT <= 1180) {
             xCoord += MOVE_AMT;
+            return true;
         }
+        return false;
     }
 
-    public void moveLeft() {
-        if (xCoord - MOVE_AMT >= 1280/2 - 300) {
+    public boolean moveLeft() {
+        if (xCoord - MOVE_AMT >= 0) {
             xCoord -= MOVE_AMT;
+            return true;
         }
+        return false;
     }
 
     public void moveUp() {
