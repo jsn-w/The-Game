@@ -13,15 +13,19 @@ public class Player {
     private double yCoord;
     private double score;
     private int flooryValue;
+    private int hp;
+    private BufferedImage heart;
 
     public Player(String leftImg, String rightImg, int x, int y) {
         xCoord = x;
         yCoord = y;
         score = 0;
+        hp = 5;
         flooryValue = 435;
         try {
             left = ImageIO.read(new File(leftImg));
             right = ImageIO.read(new File(rightImg));
+            heart = ImageIO.read(new File("src/assets/heart.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -40,6 +44,12 @@ public class Player {
             score = 0;
         }
         return (int) (score * 10) / 10.;
+    }
+    public int getHp(){
+        return hp;
+    }
+    public BufferedImage getHeart(){
+        return heart;
     }
 
     public void faceRight() {
