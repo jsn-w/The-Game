@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Player {
-    private final double MOVE_AMT = 0.4;
+    private final double MOVE_AMT = 2;
     private BufferedImage right;
     private BufferedImage left;
     private boolean facingRight;
@@ -60,20 +60,31 @@ public class Player {
         facingRight = false;
     }
 
-    public boolean moveRight() {
-        if (xCoord + MOVE_AMT <= 1180) {
-            xCoord += MOVE_AMT;
-            return true;
-        }
-        return false;
+    public void moveRight() {
+//        int backgroundPosition = (int) GraphicsPanel.backgroundPosition;
+//        int rightBoundary = 1280 * -3 + MainFrame.screenWidth;
+//        System.out.println(backgroundPosition + " ||boundary " + rightBoundary);
+//        if (withinMiddle() || backgroundPosition <= rightBoundary && xCoord + MOVE_AMT <= rightBoundary) {
+//            xCoord += MOVE_AMT;
+//        } else {
+//            GraphicsPanel.backgroundPosition -= 2;
+//        }
+        xCoord += 2;
     }
 
-    public boolean moveLeft() {
-        if (xCoord - MOVE_AMT >= 0) {
-            xCoord -= MOVE_AMT;
-            return true;
-        }
-        return false;
+    public void moveLeft() {
+//        int backgroundPosition = (int) GraphicsPanel.backgroundPosition;
+//        if (withinMiddle() || backgroundPosition == 0 && xCoord - MOVE_AMT >= 0) {
+//            xCoord -= MOVE_AMT;
+//        } else {
+//            GraphicsPanel.backgroundPosition += 2;
+//        }
+        xCoord -= 2;
+    }
+
+    private boolean withinMiddle() {
+        int third = MainFrame.screenWidth / 3;
+        return (int) xCoord >= third && (int) xCoord <= third * 2;
     }
 
     public void moveUp() {
