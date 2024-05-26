@@ -15,6 +15,7 @@ public class Player {
     private int flooryValue;
     private int hp;
     private BufferedImage heart;
+    private BufferedImage[] images;
 
     public Player(String leftImg, String rightImg, int x, int y) {
         xCoord = x;

@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class Enemy {
     private final double MOVE_AMT = 0.4;
-    private BufferedImage img;
+    private BufferedImage img[][];
     private double xCoord;
     private double yCoord;
     private boolean isLeft;
@@ -14,11 +14,7 @@ public class Enemy {
     public Enemy(String img, int x, int y) {
         xCoord = x; // starting position is (50, 435), right on top of ground
         yCoord = y;
-        try {
-            this.img = ImageIO.read(new File(img));
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+
     }
 
     public int getxCoord() {
@@ -46,14 +42,27 @@ public class Enemy {
         }
     }
 
-    public BufferedImage getEnemyImage() {
-        return img;
+    public void loadAnimations() {
+        BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.ENEMY_SPRITES);
+        this.img = new BufferedImage[5][23];
+        for (int i = 0; i < this.img.length; i++){
+            for (int j = 0; j < this.img[i].length; j++){
+                this.img[i][j] = img.getSubimage(j * 64, i * 40, 64, 40);
+            }
+        }
     }
+
+    public void deathAnimation(){
+        for (BufferedImage f : img[4]){
+
+        }
+    }
+
 
     // we use a "bounding Rectangle" for detecting collision
     public Rectangle enemyRect() {
-        int imageHeight = getEnemyImage().getHeight();
-        int imageWidth = getEnemyImage().getWidth();
+        int imageHeight = 40;
+        int imageWidth = 64;
         Rectangle rect = new Rectangle((int) xCoord, (int) yCoord, imageWidth, imageHeight);
         return rect;
     }
