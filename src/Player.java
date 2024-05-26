@@ -6,15 +6,12 @@ import java.io.IOException;
 
 public class Player {
     private final double MOVE_AMT = 6;
-    private BufferedImage right;
-    private BufferedImage left;
-    private boolean facingRight;
-    private double xCoord;
-    private double yCoord;
-    private double score;
-    private int flooryValue;
-    private int hp;
-    private BufferedImage heart;
+    private BufferedImage left, right;
+    private boolean facingRight, jumping;
+    private double xCoord, yCoord, score, jumpVelocity;
+    private int flooryValue, hp, i;
+    private BufferedImage heart, playerAnimations;
+    private BufferedImage[] animations;
 
     public Player(String leftImg, String rightImg, int x, int y) {
         xCoord = x;
@@ -22,12 +19,33 @@ public class Player {
         score = 0;
         hp = 5;
         flooryValue = 435;
+        loadImages(leftImg, rightImg);
+    }
+
+    private void loadImages(String left, String right) {
         try {
-            left = ImageIO.read(new File(leftImg));
-            right = ImageIO.read(new File(rightImg));
+            this.left = ImageIO.read(new File(left));
+            this.right = ImageIO.read(new File(right));
+            playerAnimations = ImageIO.read(new File("src/assets/playerAnimations.png"));
             heart = ImageIO.read(new File("src/assets/heart.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        }
+        loadAnimations();
+    }
+
+    private void loadAnimations() {
+        animations = new BufferedImage[15];
+        for (int i = 0; i < animations.length; i++) {
+            animations[i] = playerAnimations.getSubimage(i * 100, 0, 100, 100);
+        }
+    }
+
+    public void render(Graphics g) {
+        g.drawImage(animations[i/50], getxCoord(), getyCoord(), null);
+        i++;
+        if (i == animations.length * 50) {
+            i = 0;
         }
     }
 
@@ -95,9 +113,15 @@ public class Player {
     }
 
     public void moveUp() {
-        if (yCoord - MOVE_AMT >= 0) {
-            yCoord -= MOVE_AMT;
+        jumping = true;
+        jumpVelocity = 4;
+        if (jumping) {
+            yCoord -= jumpVelocity;
+            jumpVelocity -= 0.5;
         }
+//        if (yCoord - MOVE_AMT >= 0) {
+//            yCoord -= MOVE_AMT;
+//        }
     }
 
     public void moveDown() {
