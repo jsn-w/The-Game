@@ -3,18 +3,23 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.Buffer;
 
 public class Enemy {
     private final double MOVE_AMT = 0.4;
-    private BufferedImage img[][];
+    private BufferedImage enemyAnimations[][];
+    private BufferedImage spritesheet;
     private double xCoord;
     private double yCoord;
     private boolean isLeft;
+    private int i;
 
     public Enemy(String img, int x, int y) {
         xCoord = x; // starting position is (50, 435), right on top of ground
         yCoord = y;
 
+        i = 0;
+        loadImages();
     }
 
     public int getxCoord() {
@@ -42,19 +47,29 @@ public class Enemy {
         }
     }
 
-    public void loadAnimations() {
-        BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.ENEMY_SPRITES);
-        this.img = new BufferedImage[5][23];
-        for (int i = 0; i < this.img.length; i++){
-            for (int j = 0; j < this.img[i].length; j++){
-                this.img[i][j] = img.getSubimage(j * 64, i * 40, 64, 40);
+    private void loadImages() {
+        try {
+            spritesheet = ImageIO.read(new File("src/assets/NightBorne.png"));
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        loadAnimations();
+    }
+
+    private void loadAnimations() {
+        enemyAnimations = new BufferedImage[4][23];
+        for (int i = 0; i < 4; i++){
+            for (int j = 0; j < 23; j++){
+                enemyAnimations[i][j] = spritesheet.getSubimage(spritesheet.getWidth() / 23, 100 * i, 100, 100);
             }
         }
     }
 
-    public void deathAnimation(){
-        for (BufferedImage f : img[4]){
-
+    public void deathAnimation(Graphics g){
+        g.drawImage(enemyAnimations[3][i / 50], getxCoord(), getyCoord(), null);
+        i++;
+        if (i == 23 * 50) {
+            i = 0;
         }
     }
 

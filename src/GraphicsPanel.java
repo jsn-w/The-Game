@@ -9,6 +9,7 @@ import java.io.IOException;
 public class GraphicsPanel extends JPanel implements KeyListener, MouseListener {
     private BufferedImage background;
     private Player player;
+    private Enemy e;
     private boolean[] pressedKeys;
     public static double backgroundPosition;
 
@@ -29,16 +30,19 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
             System.out.println(e.getMessage());
         }
         player = new Player("src/assets/player.png", "src/assets/player.png", 640, 435);
+        e = new Enemy("src/assets/NightBorne.png", 750, 435);
     }
 
     @Override
     public void paintComponent(Graphics g) {
+
         super.paintComponent(g);
         g.drawImage(background, (int) backgroundPosition, 0, null);
         g.setFont(new Font("Courier New", Font.BOLD, 24));
         g.drawString("player health: ",MainFrame.screenWidth/2 - 50,64);
 
         player.render(g);
+        e.deathAnimation(g);
 
         for(int i = 0; i < player.getHp(); i ++){
             g.drawImage(player.getHeart(),40,64+10*i,null);
