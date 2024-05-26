@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Player {
-    private final double MOVE_AMT = 2;
+    private final double MOVE_AMT = 6;
     private BufferedImage right;
     private BufferedImage left;
     private boolean facingRight;
@@ -61,30 +61,37 @@ public class Player {
     }
 
     public void moveRight() {
-//        int backgroundPosition = (int) GraphicsPanel.backgroundPosition;
-//        int rightBoundary = 1280 * -3 + MainFrame.screenWidth;
-//        System.out.println(backgroundPosition + " ||boundary " + rightBoundary);
-//        if (withinMiddle() || backgroundPosition <= rightBoundary && xCoord + MOVE_AMT <= rightBoundary) {
-//            xCoord += MOVE_AMT;
-//        } else {
-//            GraphicsPanel.backgroundPosition -= 2;
-//        }
-        xCoord += 2;
+        int backgroundPosition = (int) GraphicsPanel.backgroundPosition;
+        int margin = MainFrame.screenWidth *3/4 - right.getWidth()/2;
+        System.out.println("[RIGHT] - xCoord:" + xCoord + " || margin:" + margin + " || background position:" + backgroundPosition);
+        if (xCoord <= margin || backgroundPosition == -1280*2 ) {
+            xCoord += MOVE_AMT;
+            if (xCoord > MainFrame.screenWidth - right.getWidth()) {
+                xCoord = MainFrame.screenWidth - right.getWidth();
+            }
+        } else {
+            GraphicsPanel.backgroundPosition -= MOVE_AMT;
+            if (GraphicsPanel.backgroundPosition < -1280 * 2) {
+                GraphicsPanel.backgroundPosition = -1280 * 2;
+            }
+        }
     }
 
     public void moveLeft() {
-//        int backgroundPosition = (int) GraphicsPanel.backgroundPosition;
-//        if (withinMiddle() || backgroundPosition == 0 && xCoord - MOVE_AMT >= 0) {
-//            xCoord -= MOVE_AMT;
-//        } else {
-//            GraphicsPanel.backgroundPosition += 2;
-//        }
-        xCoord -= 2;
-    }
-
-    private boolean withinMiddle() {
-        int third = MainFrame.screenWidth / 3;
-        return (int) xCoord >= third && (int) xCoord <= third * 2;
+        int backgroundPosition = (int) GraphicsPanel.backgroundPosition;
+        int margin = MainFrame.screenWidth / 4 - right.getWidth()/2;
+        System.out.println("[LEFT] - xCoord:" + xCoord + " || margin:" + margin + " || background position:" + backgroundPosition);
+        if (xCoord >= margin || backgroundPosition == 0) {
+            xCoord -= MOVE_AMT;
+            if (xCoord < 0) {
+                xCoord = 0;
+            }
+        } else {
+            GraphicsPanel.backgroundPosition += MOVE_AMT;
+            if (GraphicsPanel.backgroundPosition > 0) {
+                GraphicsPanel.backgroundPosition = 0;
+            }
+        }
     }
 
     public void moveUp() {
