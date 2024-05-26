@@ -38,7 +38,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
         g.setFont(new Font("Courier New", Font.BOLD, 24));
         g.drawString("player health: ",MainFrame.screenWidth/2 - 50,64);
 
-        g.drawImage(player.getPlayerImage(), player.getxCoord(), player.getyCoord(), null);
+        player.render(g);
+
         for(int i = 0; i < player.getHp(); i ++){
             g.drawImage(player.getHeart(),40,64+10*i,null);
         }
