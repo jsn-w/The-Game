@@ -42,7 +42,7 @@ public class Player {
     }
 
     public void render(Graphics g) {
-        g.drawImage(animations[i/50], getxCoord(), getyCoord(), null);
+        g.drawImage(animations[i / 50], getxCoord(), getyCoord(), null);
         i++;
         if (i == animations.length * 50) {
             i = 0;

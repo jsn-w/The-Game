@@ -2,6 +2,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 import java.io.IOException;
 import java.nio.Buffer;
 
@@ -57,19 +58,20 @@ public class Enemy {
     }
 
     private void loadAnimations() {
-        enemyAnimations = new BufferedImage[4][23];
-        for (int i = 0; i < 4; i++){
+        enemyAnimations = new BufferedImage[5][23];
+        for (int i = 0; i < 5; i++){
             for (int j = 0; j < 23; j++){
-                enemyAnimations[i][j] = spritesheet.getSubimage(spritesheet.getWidth() / 23, 100 * i, 100, 100);
+                enemyAnimations[i][j] = spritesheet.getSubimage(spritesheet.getWidth() / 23 * j, spritesheet.getHeight() / 5 * i, 160, 160);
             }
         }
     }
 
-    public void deathAnimation(Graphics g){
-        g.drawImage(enemyAnimations[3][i / 50], getxCoord(), getyCoord(), null);
+    public void deathAnimation(Graphics g, ArrayList<Enemy> e){
+        g.drawImage(enemyAnimations[4][i / 50], getxCoord(), getyCoord(), null);
         i++;
         if (i == 23 * 50) {
             i = 0;
+            e.remove(this);
         }
     }
 

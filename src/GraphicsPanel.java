@@ -3,6 +3,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.io.File;
 import java.io.IOException;
 
@@ -10,12 +12,15 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
     private BufferedImage background;
     private Player player;
     private Enemy e;
+    private ArrayList<Enemy> enemies;
     private boolean[] pressedKeys;
     public static double backgroundPosition;
+    private boolean test = true;
 
     public GraphicsPanel() {
         loadAssets();
         pressedKeys = new boolean[128];
+        enemies = new ArrayList<>();
         backgroundPosition = (double) -MainFrame.screenWidth /2;
         addKeyListener(this);
         addMouseListener(this);
@@ -35,14 +40,19 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
 
     @Override
     public void paintComponent(Graphics g) {
-
+        if (test) {
+            enemies.add(e);
+            test = false;
+        }
         super.paintComponent(g);
         g.drawImage(background, (int) backgroundPosition, 0, null);
         g.setFont(new Font("Courier New", Font.BOLD, 24));
         g.drawString("player health: ",MainFrame.screenWidth/2 - 50,64);
 
         player.render(g);
-        e.deathAnimation(g);
+        for (int i = 0; i < enemies.size(); i++) {
+            enemies.get(i).deathAnimation(g, enemies);
+        }
 
         for(int i = 0; i < player.getHp(); i ++){
             g.drawImage(player.getHeart(),40,64+10*i,null);
