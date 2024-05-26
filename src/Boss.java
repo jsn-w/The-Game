@@ -4,6 +4,7 @@ public class Boss extends Enemy {
     private boolean phaseTwoBeat;
     private boolean phaseThreeBeat;
     private boolean win;
+
     public Boss(){
         super("src/assets/background.png",400,200);
         phase = 1;
