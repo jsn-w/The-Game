@@ -9,7 +9,7 @@ public class Player {
     private BufferedImage left, right;
     private boolean facingRight, jumping;
     private double xCoord, yCoord, score, jumpVelocity;
-    private int flooryValue, hp, i;
+    private int floorYValue, hp, i;
     private BufferedImage heart, playerAnimations;
     private BufferedImage[] animations;
 
@@ -18,7 +18,7 @@ public class Player {
         yCoord = y;
         score = 0;
         hp = 5;
-        flooryValue = 435;
+        floorYValue = 600;
         loadImages(leftImg, rightImg);
     }
 
@@ -47,6 +47,7 @@ public class Player {
         if (i == animations.length * 50) {
             i = 0;
         }
+        g.drawLine(0, floorYValue, 1280, floorYValue);
     }
 
     public int getxCoord() {
@@ -84,7 +85,7 @@ public class Player {
         System.out.println("[RIGHT] - xCoord:" + xCoord + " || margin:" + margin + " || background position:" + backgroundPosition);
         if (xCoord <= margin || backgroundPosition == -1280*2 ) {
             xCoord += MOVE_AMT;
-            if (xCoord > MainFrame.screenWidth - right.getWidth()) {
+            if (xCoord + right.getWidth() > MainFrame.screenWidth) {
                 xCoord = MainFrame.screenWidth - right.getWidth();
             }
         } else {
@@ -115,18 +116,22 @@ public class Player {
     public void moveUp() {
         jumping = true;
         jumpVelocity = 4;
+        System.out.println("CUrrently jumping");
         if (jumping) {
             yCoord -= jumpVelocity;
             jumpVelocity -= 0.5;
         }
+        System.out.println("Ground:" + floorYValue + " || Player:" + (yCoord - right.getHeight()));
 //        if (yCoord - MOVE_AMT >= 0) {
 //            yCoord -= MOVE_AMT;
 //        }
     }
 
     public void moveDown() {
-        if (yCoord + MOVE_AMT <= flooryValue) {
-            yCoord += MOVE_AMT;
+        yCoord += MOVE_AMT;
+        int playerBottomY = floorYValue - right.getHeight();
+        if (yCoord > playerBottomY) {
+            yCoord = playerBottomY;
         }
     }
 
