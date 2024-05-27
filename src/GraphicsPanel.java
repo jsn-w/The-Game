@@ -50,8 +50,9 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
         g.drawString("player health: ",MainFrame.screenWidth/2 - 50,64);
 
         player.render(g);
+
         for (int i = 0; i < enemies.size(); i++) {
-            enemies.get(i).deathAnimation(g, enemies);
+            enemies.get(i).dash(g);
         }
 
         for(int i = 0; i < player.getHp(); i ++){

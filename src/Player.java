@@ -81,13 +81,13 @@ public class Player {
 
     public void moveRight() {
         int backgroundPosition = (int) GraphicsPanel.backgroundPosition;
-        int margin = MainFrame.screenWidth *3/4 - right.getWidth()/2;
+        int margin = MainFrame.screenWidth * 3/4 - right.getWidth() / 2;
         System.out.println("[RIGHT] - xCoord:" + xCoord + " || margin:" + margin + " || background position:" + backgroundPosition);
-        if (xCoord <= margin || backgroundPosition == -1280*2 ) {
+        if (xCoord <= margin || backgroundPosition == -1280 * 2 && (xCoord + right.getWidth() < MainFrame.screenWidth)) {
             xCoord += MOVE_AMT;
-            if (xCoord + right.getWidth() > MainFrame.screenWidth) {
-                xCoord = MainFrame.screenWidth - right.getWidth();
-            }
+//            if (xCoord + right.getWidth() > MainFrame.screenWidth) {
+//                xCoord = MainFrame.screenWidth - right.getWidth();
+//            }
         } else {
             GraphicsPanel.backgroundPosition -= MOVE_AMT;
             if (GraphicsPanel.backgroundPosition < -1280 * 2) {

@@ -13,6 +13,7 @@ public class Enemy {
     private double xCoord;
     private double yCoord;
     private boolean isLeft;
+    private boolean dashReady;
     private int i;
 
     public Enemy(String img, int x, int y) {
@@ -20,6 +21,7 @@ public class Enemy {
         yCoord = y;
 
         i = 0;
+        dashReady = false;
         loadImages();
     }
 
@@ -63,6 +65,23 @@ public class Enemy {
             for (int j = 0; j < 23; j++){
                 enemyAnimations[i][j] = spritesheet.getSubimage(spritesheet.getWidth() / 23 * j, spritesheet.getHeight() / 5 * i, 160, 160);
             }
+        }
+    }
+
+    public void dash(Graphics g){
+        System.out.println(dashReady);
+        if (!dashReady){
+            g.drawImage(enemyAnimations[0][i / 100], getxCoord(), getyCoord(), null);
+        } else {
+            g.drawImage(enemyAnimations[1][i / 100], getxCoord(), getyCoord(), null);
+            xCoord += 2;
+        }
+        i++;
+
+        if (i == 8 * 100 && !dashReady){
+            dashReady = true;
+        } else if (dashReady && i > 599){
+            i = 0;
         }
     }
 
