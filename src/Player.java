@@ -94,6 +94,7 @@ public class Player {
                 GraphicsPanel.backgroundPosition = -1280 * 2;
             }
         }
+        System.out.println(GraphicsPanel.backgroundPosition - MOVE_AMT + " || xval = " + xCoord);
     }
 
     public void moveLeft() {

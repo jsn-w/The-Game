@@ -67,9 +67,9 @@ public class Enemy {
     }
 
     public void deathAnimation(Graphics g, ArrayList<Enemy> e){
-        g.drawImage(enemyAnimations[4][i / 50], getxCoord(), getyCoord(), null);
+        g.drawImage(enemyAnimations[4][i / 20], getxCoord(), getyCoord(), null);
         i++;
-        if (i == 23 * 50) {
+        if (i == 23 * 20) {
             i = 0;
             e.remove(this);
         }
