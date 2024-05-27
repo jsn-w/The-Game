@@ -68,13 +68,17 @@ public class Enemy {
         }
     }
 
-    public void dash(Graphics g){
-        System.out.println(dashReady);
+    public void dash(Graphics g, Player p){
         if (!dashReady){
             g.drawImage(enemyAnimations[0][i / 100], getxCoord() + (int) GraphicsPanel.backgroundPosition, (int) yCoord, null);
         } else {
-            g.drawImage(enemyAnimations[1][i / 100], getxCoord() + (int) GraphicsPanel.backgroundPosition, (int) yCoord, null);
-            xCoord += 2;
+            System.out.println(getxCoord());
+            if (getxCoord() + (int) GraphicsPanel.backgroundPosition + 120 < p.getxCoord()) {
+                g.drawImage(enemyAnimations[1][i / 100], getxCoord() + (int) GraphicsPanel.backgroundPosition, (int) yCoord, null);
+                xCoord += 2;
+            } else {
+                g.drawImage(enemyAnimations[2][i / 50], getxCoord() + (int)GraphicsPanel.backgroundPosition, (int) yCoord, null);
+            }
         }
         i++;
 

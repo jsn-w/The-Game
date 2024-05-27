@@ -52,7 +52,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
         player.render(g);
 
         for (int i = 0; i < enemies.size(); i++) {
-            enemies.get(i).dash(g);
+            enemies.get(i).dash(g, player);
         }
 
         for(int i = 0; i < player.getHp(); i ++){
