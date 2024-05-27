@@ -71,9 +71,9 @@ public class Enemy {
     public void dash(Graphics g){
         System.out.println(dashReady);
         if (!dashReady){
-            g.drawImage(enemyAnimations[0][i / 100], getxCoord(), getyCoord(), null);
+            g.drawImage(enemyAnimations[0][i / 100], getxCoord() + (int) GraphicsPanel.backgroundPosition, (int) yCoord, null);
         } else {
-            g.drawImage(enemyAnimations[1][i / 100], getxCoord(), getyCoord(), null);
+            g.drawImage(enemyAnimations[1][i / 100], getxCoord() + (int) GraphicsPanel.backgroundPosition, (int) yCoord, null);
             xCoord += 2;
         }
         i++;

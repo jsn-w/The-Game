@@ -117,7 +117,7 @@ public class Player {
     public void moveUp() {
         jumping = true;
         jumpVelocity = 4;
-        System.out.println("CUrrently jumping");
+        System.out.println("Currently jumping");
         if (jumping) {
             yCoord -= jumpVelocity;
             jumpVelocity -= 0.5;
