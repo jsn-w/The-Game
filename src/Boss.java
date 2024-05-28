@@ -1,36 +1,58 @@
-public class Boss extends Enemy {
-    private int phase;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
+public class Boss{
+    private BufferedImage image;
+    private int x;
+    private int y;
     private boolean phaseOneBeat;
     private boolean phaseTwoBeat;
-    private boolean phaseThreeBeat;
     private boolean win;
+    private int hp;
+    private boolean hitAvailability;
+    private ArrayList<Enemy> enemies;
 
     public Boss(){
-        super("src/assets/background.png",400,200);
-        phase = 1;
+        hp = 1000;
         phaseOneBeat = false;
         phaseTwoBeat = false;
-        phaseThreeBeat = false;
         win = false;
+        hitAvailability = true;
+    }
+    public int getX(){
+        return x;
+    }
+    public int getY(){
+        return y;
+    }
+    public boolean isPhaseOneBeat(){
+        return phaseOneBeat;
+    }
+    public boolean isPhaseTwoBeat() {
+        return phaseTwoBeat;
+    }
+    public boolean canHit(){
+        return hitAvailability;
     }
     public void phaseOne(){
         if (!phaseOneBeat) {
-            phaseOneBeat = true;
-            phase = 2;
-        }else{
-            phaseTwo();
+            if (hp <= 0) {
+                phaseOneBeat = true;
+                hp = 5000;
+            }
         }
     }
-    public void phaseTwo(){
+    public void phaseTwo(ArrayList<Enemy> e){
         if (!phaseTwoBeat) {
-            phaseTwoBeat = true;
-            phase = 3;
-        }else{
-            phaseThree();
+            hitAvailability = false;
+            if (e.isEmpty()){
+                phaseTwoBeat = true;
+                hitAvailability = true;
+            }
         }
     }
     public void phaseThree(){
-        if (!phaseThreeBeat){
+        if (hp <= 0) {
             win = true;
         }
     }
