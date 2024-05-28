@@ -14,6 +14,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
     private Enemy e;
     private ArrayList<Enemy> enemies;
     private boolean[] pressedKeys;
+    private Boss b;
     public static double backgroundPosition;
     private boolean test = true;
 
@@ -35,7 +36,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
             System.out.println(e.getMessage());
         }
         player = new Player("src/assets/player.png", "src/assets/player.png", 640, 435);
-        e = new Enemy("src/assets/NightBorne.png", 750, 135);
+        e = new Enemy("src/assets/NightBorne.png", 750, 435);
+        b = new Boss();
     }
 
     @Override
@@ -59,7 +61,13 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
             g.drawImage(player.getHeart(),40,64+10*i,null);
         }
         checkKeyboardInput();
-
+        if (!b.isPhaseOneBeat()){
+            b.phaseOne();
+        }else if (!b.isPhaseTwoBeat()){
+            b.phaseTwo(enemies);
+        }else{
+            b.phaseThree();
+        }
     }
 
     private void checkKeyboardInput() {
