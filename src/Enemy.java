@@ -13,7 +13,7 @@ public class Enemy {
     private double xCoord;
     private double yCoord;
     private boolean isLeft;
-    private boolean dashReady;
+    private boolean idle = true, dash, slash;
     private int i;
 
     public Enemy(String img, int x, int y) {
@@ -21,7 +21,6 @@ public class Enemy {
         yCoord = y;
 
         i = 0;
-        dashReady = false;
         loadImages();
     }
 
@@ -63,13 +62,18 @@ public class Enemy {
         enemyAnimations = new BufferedImage[5][23];
         for (int i = 0; i < 5; i++){
             for (int j = 0; j < 23; j++){
-                enemyAnimations[i][j] = spritesheet.getSubimage(spritesheet.getWidth() / 23 * j, spritesheet.getHeight() / 5 * i, 160, 160);
+                enemyAnimations[i][j] = spritesheet.getSubimage(spritesheet.getWidth() / 23 * j, spritesheet.getHeight() / 5 * i, 160*3, 160*3);
             }
         }
     }
 
     public void dash(Graphics g, Player p){
-        if (!dashReady){
+        int frame = 100;
+        int idleFrames = 9;
+//        if (idle) {
+//            g.drawImage(enemyAnimations[0][i / 100], getxCoord() + (int) GraphicsPanel.backgroundPosition, (int) yCoord, null);
+//        }
+        if (!dash){
             g.drawImage(enemyAnimations[0][i / 100], getxCoord() + (int) GraphicsPanel.backgroundPosition, (int) yCoord, null);
         } else {
             System.out.println(getxCoord());
@@ -82,10 +86,11 @@ public class Enemy {
         }
         i++;
 
-        if (i == 8 * 100 && !dashReady){
-            dashReady = true;
-        } else if (dashReady && i > 599){
+        if (i == 9 * 100 && !dash){
+            dash = true;
+        } else if (dash && i > 599){
             i = 0;
+//            dashReady = false;
         }
     }
 
