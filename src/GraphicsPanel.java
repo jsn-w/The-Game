@@ -35,7 +35,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
             System.out.println(e.getMessage());
         }
         player = new Player("src/assets/player.png", "src/assets/player.png", 640, 435);
-        e = new Enemy("src/assets/NightBorne.png", 750, 435);
+        e = new Enemy("src/assets/NightBorne.png", 750, 135);
     }
 
     @Override

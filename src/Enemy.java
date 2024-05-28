@@ -54,7 +54,7 @@ public class Enemy {
         try {
             spritesheet = ImageIO.read(new File("src/assets/NightBorne.png"));
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
         loadAnimations();
     }
