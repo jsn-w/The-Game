@@ -44,6 +44,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
     public void paintComponent(Graphics g) {
         if (test) {
             enemies.add(e);
+            enemies.add(new Bee(200, 200));
             test = false;
         }
         super.paintComponent(g);
