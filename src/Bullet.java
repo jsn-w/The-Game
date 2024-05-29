@@ -16,8 +16,6 @@ public class Bullet {
         this.moveAmt = moveAmt;
         this.angle = angle;
         loadImages();
-
-        loadImages();
     }
 
     public int getxCoord(){
