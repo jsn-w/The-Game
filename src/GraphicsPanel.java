@@ -14,6 +14,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
     private Enemy e;
     private ArrayList<Enemy> enemies;
     private ArrayList<Bullet> bullets;
+    private ArrayList<Platform> platforms;
     private boolean[] pressedKeys;
     private Boss b;
     public static double backgroundPosition;
@@ -39,7 +40,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
             System.out.println(e.getMessage());
         }
         player = new Player("src/assets/player.png", "src/assets/player.png", 640, 435);
-        e = new Bee(100, 100);
+        e = new Enemy("src/assets/NightBorne.png",100, 100);
         b = new Boss();
     }
 
@@ -56,15 +57,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
         g.drawImage(b.getImage(),b.getX(),b.getY(),null);
         player.render(g);
 
-
-        if (f == 1000){
-            for (int i = 0; i < enemies.size(); i++) {
-                bullets.add(enemies.get(i).shoot(player, g));
-            }
-            f = 0;
-        }
-        f++;
-        e.move(player, g);
+        e.dash(g, player);
         for (int b = 0; b < bullets.size(); b++){
             bullets.get(b).move(g);
         }
