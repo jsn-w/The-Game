@@ -1,4 +1,6 @@
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 
 public class Boss{
@@ -18,6 +20,15 @@ public class Boss{
         phaseTwoBeat = false;
         win = false;
         hitAvailability = true;
+        try {
+            image = ImageIO.read(new File("src/assets/boss.png"));
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public BufferedImage getImage() {
+        return image;
     }
     public int getX(){
         return x;
