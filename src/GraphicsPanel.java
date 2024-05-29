@@ -13,15 +13,18 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
     private Player player;
     private Enemy e;
     private ArrayList<Enemy> enemies;
+    private ArrayList<Bullet> bullets;
     private boolean[] pressedKeys;
     private Boss b;
     public static double backgroundPosition;
     private boolean test = true;
+    int f = 1000; // test variable (remove later)
 
     public GraphicsPanel() {
         loadAssets();
         pressedKeys = new boolean[128];
         enemies = new ArrayList<>();
+        bullets = new ArrayList<>();
         backgroundPosition = (double) -MainFrame.screenWidth /2;
         addKeyListener(this);
         addMouseListener(this);
@@ -36,7 +39,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
             System.out.println(e.getMessage());
         }
         player = new Player("src/assets/player.png", "src/assets/player.png", 640, 435);
-        e = new Enemy("src/assets/NightBorne.png", 750, 435);
+        e = new Bee(100, 100);
         b = new Boss();
     }
 
@@ -44,7 +47,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
     public void paintComponent(Graphics g) {
         if (test) {
             enemies.add(e);
-            enemies.add(new Bee(200, 200));
             test = false;
         }
         super.paintComponent(g);
@@ -54,8 +56,17 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
 
         player.render(g);
 
-        for (int i = 0; i < enemies.size(); i++) {
-            enemies.get(i).dash(g, player);
+
+        if (f == 1000){
+            for (int i = 0; i < enemies.size(); i++) {
+                bullets.add(enemies.get(i).shoot(player, g));
+            }
+            f = 0;
+        }
+        f++;
+        e.move(player, g);
+        for (int b = 0; b < bullets.size(); b++){
+            bullets.get(b).move(g);
         }
 
         for(int i = 0; i < player.getHp(); i ++){

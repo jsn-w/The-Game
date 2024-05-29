@@ -32,7 +32,7 @@ public class Enemy {
         return (int) yCoord;
     }
 
-    public void move() {
+    public void move(Player p, Graphics g) {
         if (xCoord > 800 && xCoord < 810) {
             isLeft = true;
         }
@@ -101,6 +101,9 @@ public class Enemy {
             i = 0;
             e.remove(this);
         }
+    }
+    public Bullet shoot(Player p, Graphics g){
+        return null;
     }
 
 

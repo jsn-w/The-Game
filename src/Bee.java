@@ -1,22 +1,18 @@
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 public class Bee extends Enemy{
-    private final double MOVE_AMT = 0.3;
-    private BufferedImage enemyAnimations[][];
+    private final double MOVE_AMT = 0.6;
     private BufferedImage spritesheet;
 
     private double xCoord;
     private double yCoord;
     private boolean isLeft;
-    private boolean dashReady;
-    private int i;
 
     public Bee(int x, int y) {
         super("src/assets/bee.png", 200, 200);
-        i = 0;
-        dashReady = false;
         loadImages();
     }
 
@@ -51,34 +47,34 @@ public class Bee extends Enemy{
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
-        loadAnimations();
     }
 
-    private void loadAnimations() {
-        enemyAnimations = new BufferedImage[5][23];
-        for (int i = 0; i < 5; i++){
-            for (int j = 0; j < 23; j++){
-                enemyAnimations[i][j] = spritesheet.getSubimage(spritesheet.getWidth() / 23 * j, spritesheet.getHeight() / 5 * i, 160, 160);
-            }
-        }
-    }
-
-    public void move(Player p){
-        if (getxCoord() < p.getxCoord()){
+    public void move(Player p, Graphics g){
+        if (getxCoord() + 305 < p.getxCoord()){
             xCoord += MOVE_AMT;
         } else {
             xCoord -= MOVE_AMT;
         }
 
-        if (getyCoord() < p.getyCoord()){
+        if (getyCoord() + 251.5 < p.getyCoord()){
             yCoord += MOVE_AMT;
         } else {
             yCoord -= MOVE_AMT;
         }
+        g.drawImage(spritesheet, getxCoord() + 200, getyCoord() + 150, null);
     }
 
-    public void shoot(Player p){
-        double angle = Math.atan((double) p.getyCoord() / p.getxCoord());
-        Bullet b = new Bullet(getxCoord(), getyCoord(), angle, 0.2);
+    // something is wrong with the math lol
+    @Override
+    public Bullet shoot(Player p, Graphics g){
+        int y = p.getyCoord() - getyCoord();
+        int x = p.getxCoord() - getxCoord();
+        double angle = Math.atan((double) y / x);
+        System.out.println(angle);
+        if ((angle > 0 && p.getxCoord() < getxCoord() && p.getyCoord() < getyCoord()) || (angle < 0 && p.getxCoord() < getxCoord() && p.getyCoord() > getyCoord())){
+            angle += Math.PI;
+        }
+        System.out.println(angle);
+        return new Bullet(getxCoord() + 305, getyCoord() + 252, angle, 1);
     }
 }

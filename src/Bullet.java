@@ -15,10 +15,18 @@ public class Bullet {
         yCoord = y;
         this.moveAmt = moveAmt;
         this.angle = angle;
+        loadImages();
 
         loadImages();
     }
 
+    public int getxCoord(){
+        return (int) xCoord;
+    }
+
+    public int getyCoord(){
+        return (int) yCoord;
+    }
 
     private void loadImages() {
         try {
@@ -28,8 +36,9 @@ public class Bullet {
         }
     }
 
-    public void move(){
+    public void move(Graphics g){
         xCoord += moveAmt * Math.cos(angle);
         yCoord += moveAmt * Math.sin(angle);
+        g.drawImage(img, getxCoord(), getyCoord(), null);
     }
 }
