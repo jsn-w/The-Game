@@ -1,4 +1,5 @@
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -13,9 +14,11 @@ public class Boss{
     private int hp;
     private boolean hitAvailability;
     private ArrayList<Enemy> enemies;
+    private int maxHp;
 
     public Boss(){
         hp = 1000;
+        maxHp = 1000;
         phaseOneBeat = false;
         phaseTwoBeat = false;
         win = false;
@@ -45,11 +48,19 @@ public class Boss{
     public boolean canHit(){
         return hitAvailability;
     }
+    public void drawHealthBar(Graphics g){
+        g.setColor(Color.RED);
+        g.fillRect(320,100,640 * (hp/maxHp), 50);
+        g.setColor(Color.WHITE);
+        g.fillRect(320+640 * (hp/maxHp),100,640 * ((maxHp-hp)/maxHp),50);
+
+    }
     public void phaseOne(){
         if (!phaseOneBeat) {
             if (hp <= 0) {
                 phaseOneBeat = true;
                 hp = 5000;
+                maxHp = 5000;
             }
         }
     }
