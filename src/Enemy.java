@@ -71,23 +71,30 @@ public class Enemy {
     public void render(Graphics g, Player p) {
         int framesPerUpdate = 30;
 
-        if (getxCoord() + (int) GraphicsPanel.backgroundPosition + 120 < p.getxCoord()) {
+        int enemyScreenPosition = (int) GraphicsPanel.backgroundPosition + getxCoord();
+        int playerMiddle = p.getxCoord() + p.getPlayerImage().getWidth()/2;
+        if (enemyScreenPosition + 480/2 < playerMiddle - 500) {
             xCoord += 2;
             idle = false;
             dash = true;
             slash = false;
-        } else if (getxCoord() + (int) GraphicsPanel.backgroundPosition + 120 < p.getxCoord()) {
+        } else if (enemyScreenPosition - 480/2 > playerMiddle + 500) {
             xCoord -= 2;
             idle = false;
             dash = true;
             slash = false;
+        } else {
+            dash = false;
+            idle = true;
         }
+
+
 
         if (idle) {
             idle(g, framesPerUpdate);
         } else if (dash) {
             dash(g, framesPerUpdate);
-        } else if (!slash) {
+        } else if (slash) {
             slash(g, framesPerUpdate);
         }
 
@@ -120,7 +127,7 @@ public class Enemy {
 
 
 
-    public void deathAnimation(Graphics g, ArrayList<Enemy> e){
+    public void death(Graphics g, ArrayList<Enemy> e){
         g.drawImage(enemyAnimations[4][i / 20], getxCoord(), getyCoord(), null);
         i++;
         if (i == 23 * 20) {
