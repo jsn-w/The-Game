@@ -82,25 +82,22 @@ public class Player {
     public void moveRight() {
         int backgroundPosition = (int) GraphicsPanel.backgroundPosition;
         int margin = MainFrame.screenWidth * 3/4 - right.getWidth() / 2;
-//        System.out.println("[RIGHT] - xCoord:" + xCoord + " || margin:" + margin + " || background position:" + backgroundPosition);
         if (xCoord <= margin || backgroundPosition == -1280 * 2 && (xCoord + right.getWidth() < MainFrame.screenWidth)) {
             xCoord += MOVE_AMT;
-//            if (xCoord + right.getWidth() > MainFrame.screenWidth) {
-//                xCoord = MainFrame.screenWidth - right.getWidth();
-//            }
+            if (xCoord + right.getWidth() > MainFrame.screenWidth) {
+                xCoord = MainFrame.screenWidth - right.getWidth();
+            }
         } else {
             GraphicsPanel.backgroundPosition -= MOVE_AMT;
             if (GraphicsPanel.backgroundPosition < -1280 * 2) {
                 GraphicsPanel.backgroundPosition = -1280 * 2;
             }
         }
-//        System.out.println(GraphicsPanel.backgroundPosition - MOVE_AMT + " || xval = " + xCoord);
     }
 
     public void moveLeft() {
         int backgroundPosition = (int) GraphicsPanel.backgroundPosition;
         int margin = MainFrame.screenWidth / 4 - right.getWidth()/2;
-//        System.out.println("[LEFT] - xCoord:" + xCoord + " || margin:" + margin + " || background position:" + backgroundPosition);
         if (xCoord >= margin || backgroundPosition == 0) {
             xCoord -= MOVE_AMT;
             if (xCoord < 0) {
@@ -117,7 +114,6 @@ public class Player {
     public void moveUp() {
         jumping = true;
         jumpVelocity = 4;
-//        System.out.println("Currently jumping");
         if (jumping) {
             yCoord -= jumpVelocity;
             jumpVelocity -= 0.5;

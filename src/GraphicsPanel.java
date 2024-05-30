@@ -46,20 +46,20 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
 
     @Override
     public void paintComponent(Graphics g) {
-        if (test) {
-            enemies.add(e);
-            test = false;
-        }
         super.paintComponent(g);
+
         g.drawImage(background, (int) backgroundPosition, 0, null);
         g.setFont(new Font("Courier New", Font.BOLD, 24));
         g.drawString("player health: ",MainFrame.screenWidth/2 - 50,64);
         g.drawImage(b.getImage(),b.getX(),b.getY(),null);
-        player.render(g);
 
-        e.dash(g, player);
-        for (int b = 0; b < bullets.size(); b++){
-            bullets.get(b).move(g);
+        player.render(g);
+        e.render(g, player);
+
+//        e.dash(g, player);
+
+        for (Bullet bullet : bullets) {
+            bullet.move(g);
         }
 
         for(int i = 0; i < player.getHp(); i ++){
@@ -99,7 +99,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
     public void keyTyped(KeyEvent e) { } // unimplemented
 
     public void keyPressed(KeyEvent e) {
-        // see this for all keycodes: https://stackoverflow.com/questions/15313469/java-keyboard-keycodes-list
         // A = 65, D = 68, S = 83, W = 87, left = 37, up = 38, right = 39, down = 40, space = 32, enter = 10
         int key = e.getKeyCode();
         pressedKeys[key] = true;

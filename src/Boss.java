@@ -20,11 +20,11 @@ public class Boss{
         phaseTwoBeat = false;
         win = false;
         hitAvailability = true;
-        try {
-            image = ImageIO.read(new File("src/assets/boss.png"));
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+//        try {
+//            image = ImageIO.read(new File("src/assets/boss.png"));
+//        }catch (Exception e){
+//            System.out.println(e.getMessage());
+//        }
     }
 
     public BufferedImage getImage() {

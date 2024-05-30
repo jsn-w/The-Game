@@ -13,15 +13,16 @@ public class Enemy {
     private double xCoord;
     private double yCoord;
     private boolean isLeft;
-    private boolean idle = true, dash, slash;
+    private boolean idle, dash, slash;
     private int i;
 
     public Enemy(String img, int x, int y) {
-        xCoord = x; // starting position is (50, 435), right on top of ground
+        xCoord = x; // starting pos: (50, 435)
         yCoord = y;
 
         i = 0;
         loadImages();
+        idle = true;
     }
 
     public int getxCoord() {
@@ -67,32 +68,57 @@ public class Enemy {
         }
     }
 
-    public void dash(Graphics g, Player p){
-        int frame = 100;
-        int idleFrames = 9;
-//        if (idle) {
-//            g.drawImage(enemyAnimations[0][i / 100], getxCoord() + (int) GraphicsPanel.backgroundPosition, (int) yCoord, null);
-//        }
-        if (!dash){
-            g.drawImage(enemyAnimations[0][i / 100], getxCoord() + (int) GraphicsPanel.backgroundPosition, (int) yCoord, null);
-        } else {
-            System.out.println(getxCoord());
-            if (getxCoord() + (int) GraphicsPanel.backgroundPosition + 120 < p.getxCoord()) {
-                g.drawImage(enemyAnimations[1][i / 100], getxCoord() + (int) GraphicsPanel.backgroundPosition, (int) yCoord, null);
-                xCoord += 2;
-            } else {
-                g.drawImage(enemyAnimations[2][i / 50], getxCoord() + (int)GraphicsPanel.backgroundPosition, (int) yCoord, null);
-            }
-        }
-        i++;
+    public void render(Graphics g, Player p) {
+        int framesPerUpdate = 30;
 
-        if (i == 9 * 100 && !dash){
+        if (getxCoord() + (int) GraphicsPanel.backgroundPosition + 120 < p.getxCoord()) {
+            xCoord += 2;
+            idle = false;
             dash = true;
-        } else if (dash && i > 599){
+            slash = false;
+        } else if (getxCoord() + (int) GraphicsPanel.backgroundPosition + 120 < p.getxCoord()) {
+            xCoord -= 2;
+            idle = false;
+            dash = true;
+            slash = false;
+        }
+
+        if (idle) {
+            idle(g, framesPerUpdate);
+        } else if (dash) {
+            dash(g, framesPerUpdate);
+        } else if (!slash) {
+            slash(g, framesPerUpdate);
+        }
+
+    }
+
+    private void idle(Graphics g, int frames) {
+        g.drawImage(enemyAnimations[0][i/frames], (int) xCoord, (int) yCoord, null);
+        i++;
+        if (i == 9 * frames) {
             i = 0;
-//            dashReady = false;
         }
     }
+
+    private void dash(Graphics g, int frames) {
+        g.drawImage(enemyAnimations[1][i/frames], (int) xCoord, (int) yCoord, null);
+        i++;
+        if (i == 6 * frames) {
+            i = 0;
+        }
+    }
+
+    private void slash(Graphics g, int frames) {
+        frames -= 10;
+        g.drawImage(enemyAnimations[2][i/frames], (int) xCoord, (int) yCoord, null);
+        i++;
+        if (i == 12 * frames) {
+            i = 0;
+        }
+    }
+
+
 
     public void deathAnimation(Graphics g, ArrayList<Enemy> e){
         g.drawImage(enemyAnimations[4][i / 20], getxCoord(), getyCoord(), null);
