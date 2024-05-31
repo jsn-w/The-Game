@@ -71,37 +71,39 @@ public class Enemy {
     public void render(Graphics g, Player p) {
         int framesPerUpdate = 30;
 
-        int enemyScreenPosition = (int) GraphicsPanel.backgroundPosition + getxCoord();
-        int playerMiddle = p.getxCoord() + p.getPlayerImage().getWidth()/2;
-        if (enemyScreenPosition + 480/2 < playerMiddle - 500) {
-            xCoord += 2;
-            idle = false;
-            dash = true;
-            slash = false;
-        } else if (enemyScreenPosition - 480/2 > playerMiddle + 500) {
-            xCoord -= 2;
-            idle = false;
-            dash = true;
-            slash = false;
-        } else {
-            dash = false;
-            idle = true;
-        }
-
-
-
-        if (idle) {
+        int margin = 20;
+        if (!idle) {
             idle(g, framesPerUpdate);
-        } else if (dash) {
+        } else if ((getxCoord() + 480) + margin < p.getxCoord()) {
             dash(g, framesPerUpdate);
+            xCoord += 1;
+        } else if ((getxCoord() - 100) - margin > p.getxCoord()) {
+            dash(g, framesPerUpdate);
+            xCoord -= 1;
         } else if (slash) {
             slash(g, framesPerUpdate);
         }
+        drawLines(g, margin);
 
     }
 
+    private void drawLines(Graphics g, int margin) {
+        int middle = 240;
+        g.setColor(Color.red);
+        g.drawLine(this.getxCoord() + middle, 0, this.getxCoord() + middle, 1280);
+
+        g.setColor(Color.green);
+        g.drawLine(this.getxCoord() + 100, 0, this.getxCoord() + 100, 1280);
+        g.drawLine(this.getxCoord() + 480 - 100, 0, this.getxCoord() + 480 - 100, 1280);
+
+        g.setColor(Color.cyan);
+        g.drawLine(getxCoord() + 480 + margin, 0, getxCoord() + 480 + margin, 1280);
+        g.drawLine(getxCoord() - margin, 0, getxCoord() - margin, 1280);
+    }
+
     private void idle(Graphics g, int frames) {
-        g.drawImage(enemyAnimations[0][i/frames], (int) xCoord, (int) yCoord, null);
+        frames -= 10;
+        g.drawImage(enemyAnimations[0][i/frames], (int) xCoord, (int) yCoord, 480, 480, null);
         i++;
         if (i == 9 * frames) {
             i = 0;
@@ -124,8 +126,10 @@ public class Enemy {
             i = 0;
         }
     }
-    
-    public void death(Graphics g, ArrayList<Enemy> e){
+
+
+
+    public void deathAnimation(Graphics g, ArrayList<Enemy> e){
         g.drawImage(enemyAnimations[4][i / 20], getxCoord(), getyCoord(), null);
         i++;
         if (i == 23 * 20) {

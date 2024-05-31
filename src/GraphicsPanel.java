@@ -18,7 +18,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
     private boolean[] pressedKeys;
     private Boss b;
     public static double backgroundPosition;
-    private boolean test = true;
     int f = 1000; // test variable (remove later)
 
     public GraphicsPanel() {
@@ -48,6 +47,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+//        g.drawImage(background, (int) backgroundPosition, 0, null);
         g.drawImage(background, (int) backgroundPosition, 0, null);
         g.setFont(new Font("Courier New", Font.BOLD, 24));
         g.drawString("player health: ",MainFrame.screenWidth/2 - 50,64);

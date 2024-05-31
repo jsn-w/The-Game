@@ -10,7 +10,7 @@ public class Player {
     private boolean facingRight, jumping;
     private double xCoord, yCoord, score, jumpVelocity;
     private int floorYValue, hp, i;
-    private BufferedImage heart, playerAnimations;
+    private BufferedImage playerAnimations;
     private BufferedImage[] animations;
 
     public Player(String leftImg, String rightImg, int x, int y) {
@@ -27,7 +27,6 @@ public class Player {
             this.left = ImageIO.read(new File(left));
             this.right = ImageIO.read(new File(right));
             playerAnimations = ImageIO.read(new File("src/assets/playerAnimations.png"));
-            heart = ImageIO.read(new File("src/assets/heart.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -48,6 +47,8 @@ public class Player {
             i = 0;
         }
         g.drawLine(0, floorYValue, 1280, floorYValue);
+        g.drawLine(MainFrame.screenWidth / 4 - right.getWidth()/2, 0, MainFrame.screenWidth / 4 - right.getWidth()/2, 1280);
+        g.drawLine(MainFrame.screenWidth * 3/4 + right.getWidth() / 2, 0, MainFrame.screenWidth * 3/4 + right.getWidth() / 2, 1280);
     }
 
     public int getxCoord() {
@@ -66,9 +67,6 @@ public class Player {
     }
     public int getHp(){
         return hp;
-    }
-    public BufferedImage getHeart(){
-        return heart;
     }
 
     public void faceRight() {
