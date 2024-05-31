@@ -124,9 +124,7 @@ public class Enemy {
             i = 0;
         }
     }
-
-
-
+    
     public void death(Graphics g, ArrayList<Enemy> e){
         g.drawImage(enemyAnimations[4][i / 20], getxCoord(), getyCoord(), null);
         i++;
