@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public class Boss{
     private BufferedImage image;
-    private int x;
-    private int y;
+    private double x;
+    private double y;
     private boolean phaseOneBeat;
     private boolean phaseTwoBeat;
     private boolean win;
@@ -15,6 +15,9 @@ public class Boss{
     private boolean hitAvailability;
     private ArrayList<Enemy> enemies;
     private int maxHp;
+    private BufferedImage[][] bossAnimations;
+    private BufferedImage spritesheet;
+    private int i;
 
     public Boss(){
         hp = 1000;
@@ -23,20 +26,42 @@ public class Boss{
         phaseTwoBeat = false;
         win = false;
         hitAvailability = true;
-//        try {
-//            image = ImageIO.read(new File("src/assets/boss.png"));
-//        }catch (Exception e){
-//            System.out.println(e.getMessage());
-//        }
+        loadImages();
+        i = 0;
     }
+    private void loadImages() {
+        try {
+            spritesheet = ImageIO.read(new File("src/assets/cthulu.png"));
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        loadAnimations();
+    }
+
+    private void loadAnimations() {
+        bossAnimations = new BufferedImage[7][15];
+        for (int i = 0; i < 7; i++){
+            for (int j = 0; j < 15; j++){
+                 bossAnimations[i][j] = spritesheet.getSubimage(spritesheet.getWidth() / 15 * j, spritesheet.getHeight() / 7 * i, spritesheet.getWidth() / 15, spritesheet.getHeight() / 7);
+            }
+        }
+    }
+    private void idle(Graphics g, int frames) {
+        g.drawImage(bossAnimations[0][i/frames], (int) x, (int) y, null);
+        i++;
+        if (i == 9 * frames) {
+            i = 0;
+        }
+    }
+
 
     public BufferedImage getImage() {
         return image;
     }
-    public int getX(){
+    public double getX(){
         return x;
     }
-    public int getY(){
+    public double getY(){
         return y;
     }
     public boolean isPhaseOneBeat(){
@@ -53,7 +78,8 @@ public class Boss{
         g.fillRect(320,100,640 * (hp/maxHp), 50);
         g.setColor(Color.WHITE);
         g.fillRect(320+640 * (hp/maxHp),100,640 * ((maxHp-hp)/maxHp),50);
-
+        g.setFont(new Font("Courier New", Font.BOLD, 24));
+        g.drawString("boss health: " + hp + "/" + maxHp,320,125);
     }
     public void phaseOne(){
         if (!phaseOneBeat) {
