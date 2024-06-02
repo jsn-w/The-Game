@@ -10,12 +10,12 @@ public class Bullet {
     private double xCoord;
     private double yCoord;
 
-    public Bullet(int x, int y, double angle, double moveAmt){
+    public Bullet(String img, int x, int y, double angle, double moveAmt){
         xCoord = x;
         yCoord = y;
         this.moveAmt = moveAmt;
         this.angle = angle;
-        loadImages();
+        loadImages(img);
     }
 
     public int getxCoord(){
@@ -26,9 +26,9 @@ public class Bullet {
         return (int) yCoord;
     }
 
-    private void loadImages() {
+    private void loadImages(String image) {
         try {
-            img = ImageIO.read(new File("src/assets/bullet.png"));
+            img = ImageIO.read(new File(image));
         }catch (Exception e){
             System.out.println(e.getMessage());
         }

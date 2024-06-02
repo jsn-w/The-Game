@@ -3,34 +3,33 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.IOException;
 
 public class GraphicsPanel extends JPanel implements KeyListener, MouseListener {
+
+    public static double backgroundPosition;
+
     private BufferedImage background;
     private Player player;
-    private Enemy e;
-    private ArrayList<Enemy> enemies;
+    private NightBorne e;
+
+    private ArrayList<NightBorne> enemies;
     private ArrayList<Bullet> bullets;
-    private ArrayList<Platform> platforms;
+
     private boolean[] pressedKeys;
-    private Boss b;
-    public static double backgroundPosition;
-    private boolean test = true;
-    int f = 1000; // test variable (remove later)
 
     public GraphicsPanel() {
-        loadAssets();
         pressedKeys = new boolean[128];
         enemies = new ArrayList<>();
         bullets = new ArrayList<>();
-        backgroundPosition = (double) -MainFrame.screenWidth /2;
+        backgroundPosition = (double) -MainFrame.screenWidth / 2;
         addKeyListener(this);
         addMouseListener(this);
         setFocusable(true);
         requestFocusInWindow();
+        loadAssets();
     }
 
     private void loadAssets() {
@@ -39,67 +38,33 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        player = new Player("src/assets/player.png", "src/assets/player.png", 640, 435);
-        e = new Enemy("src/assets/NightBorne.png",100, 100);
-        b = new Boss();
+        player = new Player("src/assets/playerAnimations.png", 640, 135);
+        e = new NightBorne("src/assets/NightBorne.png",100, 220);
     }
 
     @Override
     public void paintComponent(Graphics g) {
-        if (test) {
-            enemies.add(e);
-            test = false;
-        }
         super.paintComponent(g);
-        g.drawImage(background, (int) backgroundPosition, 0, null);
-        g.setFont(new Font("Courier New", Font.BOLD, 24));
-        g.drawString("player health: ",MainFrame.screenWidth/2 - 50,64);
-        g.drawImage(b.getImage(),b.getX(),b.getY(),null);
-        player.render(g);
-
-        e.dash(g, player);
-        for (int b = 0; b < bullets.size(); b++){
-            bullets.get(b).move(g);
-        }
-
-        for(int i = 0; i < player.getHp(); i ++){
-            g.drawImage(player.getHeart(),40,64+10*i,null);
-        }
+        boolean mainMenu = false;
         checkKeyboardInput();
-        if (!b.isPhaseOneBeat()){
-            b.phaseOne();
-        }else if (!b.isPhaseTwoBeat()){
-            b.phaseTwo(enemies);
-        }else{
-            b.phaseThree();
+
+        if (mainMenu) {
+
+        } else {
+            g.drawImage(background, (int) backgroundPosition, 0, null);
+            player.render(g, this);
+            e.render(g, player);
+            for (Bullet bullet : bullets) {
+                bullet.move(g);
+            }
         }
     }
 
-    private void checkKeyboardInput() {
-        if (pressedKeys[65]) { // 37
-            player.faceLeft();
-            player.moveLeft();
-        }
-        if (pressedKeys[68]) { // 39
-            player.faceRight();
-            player.moveRight();
+    private void checkKeyboardInput() { }
 
-        }
-        if (pressedKeys[87]) { // 38
-            player.moveUp();
-        }
-        if (pressedKeys[83]) { // 40
-            player.moveDown();
-        }
-    }
-
-
-
-    // ----- KeyListener interface methods -----
-    public void keyTyped(KeyEvent e) { } // unimplemented
+    public void keyTyped(KeyEvent e) { }
 
     public void keyPressed(KeyEvent e) {
-        // see this for all keycodes: https://stackoverflow.com/questions/15313469/java-keyboard-keycodes-list
         // A = 65, D = 68, S = 83, W = 87, left = 37, up = 38, right = 39, down = 40, space = 32, enter = 10
         int key = e.getKeyCode();
         pressedKeys[key] = true;
@@ -110,28 +75,28 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
         pressedKeys[key] = false;
     }
 
-    // ----- MouseListener interface methods -----
     public void mouseClicked(MouseEvent e) { }
 
-    public void mousePressed(MouseEvent e) { } // unimplemented
+    public void mousePressed(MouseEvent e) { }
 
     public void mouseReleased(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {  // left mouse click
             Point mouseClickLocation = e.getPoint();
 
-
         }
         if (e.getButton() == MouseEvent.BUTTON3) { // right mouse click
-//            player.setScore(0);
-//            luigi.setScore(0);
         }
     }
 
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(MouseEvent e) {}
 
+    public void mouseExited(MouseEvent e) {}
+
+    public boolean[] getPressedKeys() {
+        return pressedKeys;
     }
 
-    public void mouseExited(MouseEvent e) {
-
+    public ArrayList<NightBorne> getEnemies() {
+        return enemies;
     }
 }
