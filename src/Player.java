@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Player {
+
     private static final double MOVE_AMT = 3;
     private static final double SPRINT_AMT = 6;
     private static final int IMAGE_WIDTH = 100;
@@ -15,9 +16,10 @@ public class Player {
     private static final int MAX_STAMINA = 100;
     private static final double STAMINA_REGEN_RATE = 0.07;
     private static final double STAMINA_DEPLETION_RATE = 0.4;
-    private static final int MAX_HP = 100; // Assuming max HP is 5
+    private static final int MAX_HP = 100;
 
-    private boolean isLeft, jumping, falling, sprinting;
+
+    private boolean isLeft, jumping, falling, sprinting, doubleJumpAvailable, jumpKeyPressed;
     private double xCoord, yCoord, score, jumpVelocity;
     private int hp;
     private int i;
@@ -31,6 +33,8 @@ public class Player {
         score = 0;
         hp = MAX_HP;
         stamina = MAX_STAMINA;
+        doubleJumpAvailable = false;
+        jumpKeyPressed = false;
         loadImages(imagePath);
     }
 
@@ -64,19 +68,24 @@ public class Player {
 
         boolean[] pressedKeys = panel.getPressedKeys();
 
-        if (pressedKeys[65] || pressedKeys[37]) { // A or Left Arrow
+        if (pressedKeys[65] || pressedKeys[37]) {
             moveLeft();
         }
-        if (pressedKeys[68] || pressedKeys[39]) { // D or Right Arrow
+        if (pressedKeys[68] || pressedKeys[39]) {
             moveRight();
         }
-        if (pressedKeys[87] || pressedKeys[38]) { // W or Up Arrow
-            jump();
+        if (pressedKeys[87] || pressedKeys[38]) {
+            if (!jumpKeyPressed) {
+                jumpKeyPressed = true;
+                jump();
+            }
+        } else {
+            jumpKeyPressed = false;
         }
-        if (pressedKeys[83] || pressedKeys[40]) { // S or Down Arrow
+        if (pressedKeys[83] || pressedKeys[40]) {
             moveDown();
         }
-        if (pressedKeys[16] && stamina > 0) { // Shift key and stamina > 0
+        if (pressedKeys[16] && stamina > 0) {
             sprinting = true;
         } else {
             sprinting = false;
@@ -205,7 +214,13 @@ public class Player {
     public void jump() {
         if (!jumping && !falling) {
             jumping = true;
-            jumpVelocity = 12;
+            jumpVelocity = 9.7;
+            doubleJumpAvailable = true;
+        } else if (doubleJumpAvailable && stamina >= STAMINA_DEPLETION_RATE * 50) {
+            jumping = true;
+            jumpVelocity = 9.7;
+            stamina -= STAMINA_DEPLETION_RATE * 50;
+            doubleJumpAvailable = false;
         }
     }
 
@@ -223,6 +238,7 @@ public class Player {
             if (yCoord >= FLOOR_Y - IMAGE_HEIGHT) {
                 yCoord = FLOOR_Y - IMAGE_HEIGHT;
                 falling = false;
+                doubleJumpAvailable = false;
             }
         }
     }
