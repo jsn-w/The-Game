@@ -46,21 +46,27 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         boolean mainMenu = false;
-        checkKeyboardInput();
 
         if (mainMenu) {
-
+            mainMenu(g);
         } else {
-            g.drawImage(background, (int) backgroundPosition, 0, null);
-            player.render(g, this);
-            e.render(g, player);
-            for (Bullet bullet : bullets) {
-                bullet.move(g);
-            }
+            phase1(g);
         }
     }
 
-    private void checkKeyboardInput() { }
+    private void mainMenu(Graphics g) {
+
+    }
+
+    private void phase1(Graphics g) {
+        g.drawImage(background, (int) backgroundPosition, 0, null);
+        player.render(g, this);
+        e.render(g, player);
+        for (Bullet bullet : bullets) {
+            bullet.move(g);
+        }
+    }
+
 
     public void keyTyped(KeyEvent e) { }
 

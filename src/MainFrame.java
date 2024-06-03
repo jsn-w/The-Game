@@ -8,7 +8,7 @@ public class MainFrame implements Runnable {
     private final int UPS_SET = 120;
 
     public MainFrame() {
-        JFrame frame = new JFrame("a boring game");
+        JFrame frame = new JFrame("The Game");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(screenWidth, screenHeight);
         frame.setLocationRelativeTo(null);
