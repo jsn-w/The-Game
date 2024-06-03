@@ -12,4 +12,17 @@ public class Utility {
         g2d.dispose();
         return flippedImage;
     }
+
+    public static BufferedImage[][] flipEvery(BufferedImage[][] array) {
+        int rows = array.length;
+        int cols = array[0].length;
+
+        BufferedImage[][] returnList = new BufferedImage[rows][cols];
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                returnList[r][c] = flipImageHorizontally(array[r][c]);
+            }
+        }
+        return returnList;
+    }
 }
