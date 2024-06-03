@@ -8,10 +8,11 @@ public class NightBorne {
     private static final int IMAGE_HEIGHT = 480;
     private static final double MOVE_AMT = 1.4;
     private static final int FRAMES_PER_UPDATE = 25;
-    private static final int CHARGE_FRAMES = 40;
-    private static final int SLASH_FRAMES = 30;
+    private static final int CHARGE_FRAMES = 30;
+    private static final int SLASH_FRAMES = 20;
 
-    private BufferedImage[][] enemyAnimations;
+    private BufferedImage[][] enemyAnimationsLeft, enemyAnimationsRight;
+
     private BufferedImage spritesheet;
     private double xCoord;
     private final double yCoord;
@@ -36,12 +37,13 @@ public class NightBorne {
     }
 
     private void loadAnimations() {
-        enemyAnimations = new BufferedImage[5][23];
+        enemyAnimationsRight = new BufferedImage[5][23];
         for (int i = 0; i < 5; i++){
             for (int j = 0; j < 23; j++){
-                enemyAnimations[i][j] = spritesheet.getSubimage(IMAGE_WIDTH * j, IMAGE_HEIGHT * i, IMAGE_WIDTH, IMAGE_HEIGHT);
+                enemyAnimationsRight[i][j] = spritesheet.getSubimage(IMAGE_WIDTH * j, IMAGE_HEIGHT * i, IMAGE_WIDTH, IMAGE_HEIGHT);
             }
         }
+        enemyAnimationsLeft = Utility.flipEvery(enemyAnimationsRight);
     }
 
     public void render(Graphics g, Player p) {
@@ -51,11 +53,11 @@ public class NightBorne {
 
         if ((getXCoord() + 480) + margin < p.getxCoord()) {
             isLeft = false;
-            dash(g, FRAMES_PER_UPDATE);
+            dash(g);
             xCoord += MOVE_AMT;
         } else if ((getXCoord() - 100) - margin > p.getxCoord()) {
             isLeft = true;
-            dash(g, FRAMES_PER_UPDATE);
+            dash(g);
             xCoord -= MOVE_AMT;
         } else if ((getXCoord() - 100) - margin <= p.getxCoord() && (getXCoord() + 480) + margin >= p.getxCoord()) {
             slash(g);
@@ -81,14 +83,14 @@ public class NightBorne {
     }
 
 
-    private void dash(Graphics g, int frames) {
-        if (i >= 6 * frames) {
+    private void dash(Graphics g) {
+        if (i >= 6 * NightBorne.FRAMES_PER_UPDATE) {
             i = 0;
         }
         if (!isLeft) {
-            g.drawImage(enemyAnimations[1][i/frames], getXCoord(), getYCoord(), null);
+            g.drawImage(enemyAnimationsRight[1][i/ NightBorne.FRAMES_PER_UPDATE], getXCoord(), getYCoord(), null);
         } else {
-            g.drawImage(Utility.flipImageHorizontally(enemyAnimations[1][i/frames]), getXCoord(), getYCoord(), null);
+            g.drawImage(enemyAnimationsLeft[1][i/ NightBorne.FRAMES_PER_UPDATE], getXCoord(), getYCoord(), null);
         }
         i++;
 
@@ -102,15 +104,15 @@ public class NightBorne {
 
         if (i < 9 * CHARGE_FRAMES) {
             if (!isLeft) {
-                g.drawImage(enemyAnimations[0][i/CHARGE_FRAMES], getXCoord(), (int) yCoord, 480, 480, null);
+                g.drawImage(enemyAnimationsRight[0][i/CHARGE_FRAMES], getXCoord(), (int) yCoord, 480, 480, null);
             } else {
-                g.drawImage(Utility.flipImageHorizontally(enemyAnimations[0][i/CHARGE_FRAMES]), getXCoord(), (int) yCoord, 480, 480, null);
+                g.drawImage(enemyAnimationsLeft[0][i/CHARGE_FRAMES], getXCoord(), (int) yCoord, 480, 480, null);
             }
         } else {
             if (!isLeft) {
-                g.drawImage(enemyAnimations[2][(i - 9 * CHARGE_FRAMES)/SLASH_FRAMES], getXCoord(), (int) yCoord, null);
+                g.drawImage(enemyAnimationsRight[2][(i - 9 * CHARGE_FRAMES)/SLASH_FRAMES], getXCoord(), (int) yCoord, null);
             } else {
-                g.drawImage(Utility.flipImageHorizontally(enemyAnimations[2][(i - 9 * CHARGE_FRAMES)/SLASH_FRAMES]), getXCoord(), (int) yCoord, null);
+                g.drawImage(enemyAnimationsLeft[2][(i - 9 * CHARGE_FRAMES)/SLASH_FRAMES], getXCoord(), (int) yCoord, null);
             }
         }
 
@@ -118,7 +120,7 @@ public class NightBorne {
     }
 
     public void deathAnimation(Graphics g){
-        g.drawImage(enemyAnimations[4][i / 20], getXCoord(), getYCoord(), null);
+        g.drawImage(enemyAnimationsLeft[4][i / 20], getXCoord(), getYCoord(), null);
         i++;
         if (i == 23 * 20) {
             i = 0;

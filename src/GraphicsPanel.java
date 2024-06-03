@@ -14,7 +14,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
     private BufferedImage background;
     private Player player;
     private NightBorne e;
-    private Boss b;
 
     private ArrayList<NightBorne> enemies;
     private ArrayList<Bullet> bullets;
@@ -41,29 +40,33 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener 
         }
         player = new Player("src/assets/playerAnimations.png", 640, 135);
         e = new NightBorne("src/assets/NightBorne.png",100, 220);
-        b = new Boss();
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         boolean mainMenu = false;
-        checkKeyboardInput();
 
         if (mainMenu) {
-
+            mainMenu(g);
         } else {
-            g.drawImage(background, (int) backgroundPosition, 0, null);
-            player.render(g, this);
-            e.render(g, player);
-            for (Bullet bullet : bullets) {
-                bullet.move(g);
-            }
-            b.render(g,player);
+            phase1(g);
         }
     }
 
-    private void checkKeyboardInput() { }
+    private void mainMenu(Graphics g) {
+
+    }
+
+    private void phase1(Graphics g) {
+        g.drawImage(background, (int) backgroundPosition, 0, null);
+        player.render(g, this);
+        e.render(g, player);
+        for (Bullet bullet : bullets) {
+            bullet.move(g);
+        }
+    }
+
 
     public void keyTyped(KeyEvent e) { }
 

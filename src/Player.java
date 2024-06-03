@@ -6,16 +6,16 @@ import java.io.IOException;
 
 public class Player {
 
-    private static final double MOVE_AMT = 3;
-    private static final double SPRINT_AMT = 6;
+    private static final double MOVE_AMT = 2;
+    private static final double SPRINT_AMT = 4;
     private static final int IMAGE_WIDTH = 100;
     private static final int IMAGE_HEIGHT = 100;
     private static final int FRAMES_PER_UPDATE = 30;
     private static final int FLOOR_Y = 600;
-    private static final double GRAVITY = 0.2;
+    private static final double GRAVITY = 0.05;
     private static final int MAX_STAMINA = 100;
     private static final double STAMINA_REGEN_RATE = 0.07;
-    private static final double STAMINA_DEPLETION_RATE = 0.4;
+    private static final double STAMINA_DEPLETION_RATE = 0.2;
     private static final int MAX_HP = 100;
 
 
@@ -214,12 +214,12 @@ public class Player {
     public void jump() {
         if (!jumping && !falling) {
             jumping = true;
-            jumpVelocity = 9.7;
+            jumpVelocity = 4;
             doubleJumpAvailable = true;
-        } else if (doubleJumpAvailable && stamina >= STAMINA_DEPLETION_RATE * 50) {
+        } else if (doubleJumpAvailable && stamina >= STAMINA_DEPLETION_RATE * 200) {
             jumping = true;
-            jumpVelocity = 9.7;
-            stamina -= STAMINA_DEPLETION_RATE * 50;
+            jumpVelocity = 4;
+            stamina -= STAMINA_DEPLETION_RATE * 200;
             doubleJumpAvailable = false;
         }
     }
