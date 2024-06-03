@@ -6,4 +6,6 @@ public class Spirit {
     private double yCoord;
 
 
+
+
 }
