@@ -5,9 +5,6 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class Boss{
-    private BufferedImage image;
-    private double x;
-    private double y;
     private boolean phaseOneBeat;
     private boolean phaseTwoBeat;
     private boolean win;
@@ -18,6 +15,14 @@ public class Boss{
     private BufferedImage[][] bossAnimations;
     private BufferedImage spritesheet;
     private int i;
+    private boolean isLeft;
+    private static final int IMAGE_WIDTH = 480;
+    private static final int IMAGE_HEIGHT = 480;
+    private static final double MOVE_AMT = 1.4;
+    private static final int FRAMES_PER_UPDATE = 25;
+    private double xCoord;
+    private double yCoord;
+    private boolean fly;
 
     public Boss(){
         hp = 1000;
@@ -26,8 +31,12 @@ public class Boss{
         phaseTwoBeat = false;
         win = false;
         hitAvailability = true;
-        loadImages();
         i = 0;
+        isLeft = true;
+        xCoord = 100;
+        yCoord = 435;
+        fly = false;
+        loadImages();
     }
     private void loadImages() {
         try {
@@ -46,23 +55,68 @@ public class Boss{
             }
         }
     }
-    private void idle(Graphics g, int frames) {
-        g.drawImage(bossAnimations[0][i/frames], (int) x, (int) y, null);
+    public void render(Graphics g, Player p) {
+
+        int margin = -70;
+        isLeft = getXCoord() + IMAGE_WIDTH / 2 > p.getxCoord() + 50;
+
+        if ((getXCoord() + 480) + margin < p.getxCoord()) {
+            isLeft = false;
+            walk(g, FRAMES_PER_UPDATE);
+            xCoord += MOVE_AMT;
+        } else if ((getXCoord() - 100) - margin > p.getxCoord()) {
+            isLeft = true;
+            walk(g, FRAMES_PER_UPDATE);
+            xCoord -= MOVE_AMT;
+        } else if ((getXCoord() - 100) - margin <= p.getxCoord() && (getXCoord() + 480) + margin >= p.getxCoord()) {
+            if (Math.random() < .25) {
+                heavyAttack(g, FRAMES_PER_UPDATE);
+            }else{
+                punch(g,FRAMES_PER_UPDATE);
+            }
+        } else {
+            deathAnimation(g);
+        }
+    }
+    private void deathAnimation(Graphics g){
+        g.drawImage(bossAnimations[7][i / 20], getXCoord(), getYCoord(), null);
         i++;
-        if (i == 9 * frames) {
+        if (i == 11 * 20) {
             i = 0;
         }
     }
-
-
-    public BufferedImage getImage() {
-        return image;
+    private void punch(Graphics g, int frames){
+        if (i >= 7 * frames) {
+            i = 0;
+        }
+        if (!isLeft) {
+            g.drawImage(bossAnimations[3][i/frames], getXCoord(), getYCoord(), null);
+        } else {
+            g.drawImage(Utility.flipImageHorizontally(bossAnimations[3][i/frames]), getXCoord(), getYCoord(), null);
+        }
+        i++;
     }
-    public double getX(){
-        return x;
+    private void heavyAttack(Graphics g, int frames){
+        if (i >= 9 * frames) {
+            i = 0;
+        }
+        if (!isLeft) {
+            g.drawImage(bossAnimations[4][i/frames], getXCoord(), getYCoord(), null);
+        } else {
+            g.drawImage(Utility.flipImageHorizontally(bossAnimations[4][i/frames]), getXCoord(), getYCoord(), null);
+        }
+        i++;
     }
-    public double getY(){
-        return y;
+    private void walk(Graphics g, int frames){
+        if (i >= 6 * frames) {
+            i = 0;
+        }
+        if (!isLeft) {
+            g.drawImage(bossAnimations[1][i/frames], getXCoord(), getYCoord(), null);
+        } else {
+            g.drawImage(Utility.flipImageHorizontally(bossAnimations[1][i/frames]), getXCoord(), getYCoord(), null);
+        }
+        i++;
     }
     public boolean isPhaseOneBeat(){
         return phaseOneBeat;
@@ -108,5 +162,11 @@ public class Boss{
         if (hp <= 0) {
             win = true;
         }
+    }
+    public int getXCoord() {
+        return (int) (xCoord + GraphicsPanel.backgroundPosition);
+    }
+    public int getYCoord() {
+        return (int) (yCoord);
     }
 }
