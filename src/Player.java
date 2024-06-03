@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class Player {
-    private static final double MOVE_AMT = 5;
-    private static final double SPRINT_AMT = 10;
+    private static final double MOVE_AMT = 3;
+    private static final double SPRINT_AMT = 6;
     private static final int IMAGE_WIDTH = 100;
     private static final int IMAGE_HEIGHT = 100;
     private static final int FRAMES_PER_UPDATE = 30;
@@ -15,6 +15,7 @@ public class Player {
     private static final int MAX_STAMINA = 100;
     private static final double STAMINA_REGEN_RATE = 0.07;
     private static final double STAMINA_DEPLETION_RATE = 0.4;
+    private static final int MAX_HP = 100; // Assuming max HP is 5
 
     private boolean isLeft, jumping, falling, sprinting;
     private double xCoord, yCoord, score, jumpVelocity;
@@ -28,7 +29,7 @@ public class Player {
         xCoord = x;
         yCoord = y;
         score = 0;
-        hp = 5;
+        hp = MAX_HP;
         stamina = MAX_STAMINA;
         loadImages(imagePath);
     }
@@ -86,6 +87,7 @@ public class Player {
 
         drawLines(g);
         drawStaminaBar(g);
+        drawHealthBar(g);
     }
 
     private void drawLines(Graphics g) {
@@ -104,11 +106,27 @@ public class Player {
         g.setColor(Color.BLACK);
         g.fillRect(x - 2, y - 2, barWidth + 4, barHeight + 4);
 
+        g.setColor(Color.DARK_GRAY);
+        g.fillRect(x, y, barWidth, barHeight);
+
+        g.setColor(Color.GRAY);
+        g.fillRect(x, y, (int) ((stamina / (double) MAX_STAMINA) * barWidth), barHeight);
+    }
+
+    private void drawHealthBar(Graphics g) {
+        int barWidth = 200;
+        int barHeight = 20;
+        int x = 20;
+        int y = MainFrame.screenHeight - 100;
+
+        g.setColor(Color.BLACK);
+        g.fillRect(x - 2, y - 2, barWidth + 4, barHeight + 4);
+
         g.setColor(Color.RED);
         g.fillRect(x, y, barWidth, barHeight);
 
         g.setColor(Color.GREEN);
-        g.fillRect(x, y, (int) ((stamina / (double) MAX_STAMINA) * barWidth), barHeight);
+        g.fillRect(x, y, (int) ((hp / (double) MAX_HP) * barWidth), barHeight);
     }
 
     public int getxCoord() {
