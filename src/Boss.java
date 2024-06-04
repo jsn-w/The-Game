@@ -16,8 +16,8 @@ public class Boss{
     private BufferedImage spritesheet;
     private int i;
     private boolean isLeft;
-    private static final int IMAGE_WIDTH = 480;
-    private static final int IMAGE_HEIGHT = 480;
+    private static final int IMAGE_WIDTH = 400;
+    private static final int IMAGE_HEIGHT = 108;
     private static final double MOVE_AMT = 1.4;
     private static final int FRAMES_PER_UPDATE = 25;
     private double xCoord;
@@ -33,7 +33,7 @@ public class Boss{
         hitAvailability = true;
         i = 0;
         isLeft = true;
-        xCoord = 100;
+        xCoord = 300;
         yCoord = 435;
         fly = false;
         loadImages();
@@ -51,7 +51,7 @@ public class Boss{
         bossAnimations = new BufferedImage[7][15];
         for (int i = 0; i < 7; i++){
             for (int j = 0; j < 15; j++){
-                 bossAnimations[i][j] = spritesheet.getSubimage(spritesheet.getWidth() / 15 * j, spritesheet.getHeight() / 7 * i, spritesheet.getWidth() / 15, spritesheet.getHeight() / 7);
+                 bossAnimations[i][j] = spritesheet.getSubimage(spritesheet.getWidth() / 15 * j, spritesheet.getHeight() / 7 * i, 400, 108);
             }
         }
     }

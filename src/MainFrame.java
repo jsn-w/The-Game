@@ -7,7 +7,7 @@ public class MainFrame implements Runnable {
     private final int FPS_SET = 120;
     private final int UPS_SET = 120;
 
-    public MainFrame() {
+    public MainFrame(String name) {
         JFrame frame = new JFrame("The Game");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(screenWidth, screenHeight);
