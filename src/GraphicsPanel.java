@@ -31,6 +31,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     private Timer loadingTimer;
     private int loadingAnimationAngle;
+    private Boss b;
 
     public GraphicsPanel() {
         pressedKeys = new boolean[128];
@@ -66,8 +67,9 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             }
         }
 
-        player = new Player("src/assets/playerAnimations.png", 640, 135);
+        player = new Player("src/assets/playerAnimations.png", 720, 500);
         e = new NightBorne("src/assets/NightBorne.png", 100, 220);
+        b = new Boss();
     }
 
     @Override
@@ -114,10 +116,11 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private void renderGame(Graphics g) {
         g.drawImage(background, (int) backgroundPosition, 0, null);
         player.render(g, this);
-        e.render(g, player);
+//        e.render(g, player);
         for (Bullet bullet : bullets) {
             bullet.move(g);
         }
+        b.render(g,player);
     }
 
     @Override
