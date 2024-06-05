@@ -24,6 +24,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     private boolean[] pressedKeys;
 
+    private BufferedImage menuBackground;
     private BufferedImage buttons;
     private BufferedImage[][] buttonAnimations;
     private int[] buttonState;
@@ -46,13 +47,14 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         loadAssets();
 
         loadingAnimationAngle = 0;
-        loadingTimer = new Timer(100, this);
+        loadingTimer = new Timer(1, this);
     }
 
     private void loadAssets() {
         try {
             background = ImageIO.read(new File("src/assets/background.png"));
             buttons = ImageIO.read(new File("src/assets/buttons.png"));
+            menuBackground = ImageIO.read(new File("src/assets/menuBackground.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -86,7 +88,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     }
 
     private void renderMenu(Graphics g) {
-        g.drawImage(background, 0, 0, null);
+        g.drawImage(menuBackground, 0, 0, null);
         int buttonX = (MainFrame.screenWidth - buttonAnimations[0][0].getWidth()) / 2;
         int startY = 200;  // Starting Y coordinate
         int buttonSpacing = 80; // Space between buttons
@@ -210,9 +212,9 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     @Override
     public void actionPerformed(ActionEvent e) {
         if (state == LOADING) {
-            loadingAnimationAngle += 10;
+            loadingAnimationAngle += 1.7;
             repaint();
-            if (loadingAnimationAngle >= 360 * 2) {
+            if (loadingAnimationAngle >= 360) {
                 loadingAnimationAngle = 0;
                 state = GAME;
                 loadingTimer.stop();
