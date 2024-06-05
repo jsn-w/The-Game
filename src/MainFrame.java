@@ -7,7 +7,7 @@ public class MainFrame implements Runnable {
     private final int FPS_SET = 120;
     private final int UPS_SET = 120;
 
-    public MainFrame(String name) {
+    public MainFrame() {
         JFrame frame = new JFrame("The Game");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(screenWidth, screenHeight);
@@ -32,7 +32,7 @@ public class MainFrame implements Runnable {
         double deltaU = 0;
         double deltaF = 0;
 
-        while(true) {
+        while (true) {
             long currentTime = System.nanoTime();
             deltaU += (currentTime - previousTime) / timePerUpdate;
             deltaF += (currentTime - previousTime) / timePerFrame;
