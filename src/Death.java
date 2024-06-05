@@ -59,7 +59,7 @@ public class Death {
             } else if (ability < 8000) {
                 slash(g, p);
             } else if (ability < 9000) {
-                summon(g, GraphicsPanel.spirits);
+//                summon(g, GraphicsPanel.spirits);
             } else {
                 move(g, p);
             }

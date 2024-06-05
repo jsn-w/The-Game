@@ -15,6 +15,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     public static double backgroundPosition;
 
+    private BufferedImage menuBackground;
+    private BufferedImage buttonBackground;
     private BufferedImage background;
     private Player player;
     private NightBorne e;
@@ -27,6 +29,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private BufferedImage buttons;
     private BufferedImage[][] buttonAnimations;
     private int[] buttonState;
+    private int menuStartYPos = 330;
+    private int menuButtonGap = 40;
 
     private Timer loadingTimer;
     private int loadingAnimationAngle;
@@ -52,6 +56,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private void loadAssets() {
         try {
             background = ImageIO.read(new File("src/assets/background.png"));
+            menuBackground = ImageIO.read(new File("src/assets/menuBackground.png"));
+            buttonBackground = ImageIO.read(new File("src/assets/buttonBackground.png"));
             buttons = ImageIO.read(new File("src/assets/buttons.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -60,6 +66,9 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         buttonAnimations = new BufferedImage[3][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
+                if (i == 1) {
+                    continue;
+                }
                 buttonAnimations[i][j] = buttons.getSubimage(140 * j, 56 * i, 140, 56);
             }
         }
@@ -86,13 +95,13 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     }
 
     private void renderMenu(Graphics g) {
-        g.drawImage(background, 0, 0, null);
+        g.drawImage(menuBackground, 0, 0, null);
+        g.drawImage(buttonBackground, (MainFrame.screenWidth - buttonBackground.getWidth())/2, (MainFrame.screenHeight - buttonBackground.getHeight())/2, null);
+
         int buttonX = (MainFrame.screenWidth - buttonAnimations[0][0].getWidth()) / 2;
-        int startY = 200;  // Starting Y coordinate
-        int buttonSpacing = 80; // Space between buttons
 
         for (int i = 0; i < 3; i++) {
-            g.drawImage(buttonAnimations[i][buttonState[i]], buttonX, startY + i * buttonSpacing, null);
+            g.drawImage(buttonAnimations[i][buttonState[i]], buttonX, menuStartYPos + i * menuButtonGap, null);
         }
     }
 
@@ -157,7 +166,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         int imageHeight = buttonAnimations[0][0].getHeight();
         int imageWidth = buttonAnimations[0][0].getWidth();
         int x = (MainFrame.screenWidth - imageWidth) / 2;
-        int y = 200 + index * 80;  // Adjusted Y coordinate with spacing
+        int y = menuStartYPos + index * menuButtonGap;  // Adjusted Y coordinate with spacing
         return new Rectangle(x, y, imageWidth, imageHeight);
     }
 
