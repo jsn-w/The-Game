@@ -28,6 +28,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private BufferedImage buttons;
     private BufferedImage[][] buttonAnimations;
     private int[] buttonState;
+    private int startY = 400;
+    private int buttonSpacing = 65;
 
     private Timer loadingTimer;
     private int loadingAnimationAngle;
@@ -60,9 +62,11 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         }
 
         buttonAnimations = new BufferedImage[3][3];
+        int width = buttons.getWidth()/3;
+        int height = buttons.getHeight()/3;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                buttonAnimations[i][j] = buttons.getSubimage(140 * j, 56 * i, 140, 56);
+                buttonAnimations[i][j] = buttons.getSubimage(width * j, height * i, width, height);
             }
         }
 
@@ -75,23 +79,15 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         super.paintComponent(g);
 
         switch (state) {
-            case MENU:
-                renderMenu(g);
-                break;
-            case LOADING:
-                renderLoading(g);
-                break;
-            case GAME:
-                renderGame(g);
-                break;
+            case MENU -> renderMenu(g);
+            case LOADING -> renderLoading(g);
+            case GAME -> renderGame(g);
         }
     }
 
     private void renderMenu(Graphics g) {
         g.drawImage(menuBackground, 0, 0, null);
         int buttonX = (MainFrame.screenWidth - buttonAnimations[0][0].getWidth()) / 2;
-        int startY = 200;  // Starting Y coordinate
-        int buttonSpacing = 80; // Space between buttons
 
         for (int i = 0; i < 3; i++) {
             g.drawImage(buttonAnimations[i][buttonState[i]], buttonX, startY + i * buttonSpacing, null);
@@ -156,10 +152,10 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     }
 
     private Rectangle getButtonRect(int index) {
-        int imageHeight = buttonAnimations[0][0].getHeight();
-        int imageWidth = buttonAnimations[0][0].getWidth();
+        int imageHeight = buttons.getHeight()/3;
+        int imageWidth = buttons.getWidth()/3;
         int x = (MainFrame.screenWidth - imageWidth) / 2;
-        int y = 200 + index * 80;  // Adjusted Y coordinate with spacing
+        int y = startY + index * buttonSpacing;  // Adjusted Y coordinate with spacing
         return new Rectangle(x, y, imageWidth, imageHeight);
     }
 

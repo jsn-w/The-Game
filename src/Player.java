@@ -12,7 +12,7 @@ public class Player {
     private static final int IMAGE_HEIGHT = 100;
     private static final int FRAMES_PER_UPDATE = 30;
     private static final int FLOOR_Y = 600;
-    private static final double GRAVITY = 0.05;
+    private static final double GRAVITY = 0.04;
     private static final int MAX_STAMINA = 100;
     private static final double STAMINA_REGEN_RATE = 0.07;
     private static final double STAMINA_DEPLETION_RATE = 0.2;
@@ -257,6 +257,13 @@ public class Player {
             if (stamina > MAX_STAMINA) {
                 stamina = MAX_STAMINA;
             }
+        }
+    }
+
+    public void takeDamage(double amount) {
+        hp -= amount;
+        if (hp < 0) {
+            hp = 0;
         }
     }
 

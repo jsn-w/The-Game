@@ -127,15 +127,11 @@ public class NightBorne {
         }
     }
 
-    public Bullet shoot(Player p, Graphics g){
-        return null;
-    }
-
-
     public Rectangle enemyRect() {
         int imageHeight = 40;
         int imageWidth = 64;
-        return new Rectangle(getXCoord(), (int) yCoord, imageWidth, imageHeight);
+
+        return new Rectangle((int) xCoord, (int) yCoord, imageWidth, imageHeight);
     }
 
     public int getXCoord() {
