@@ -10,14 +10,17 @@ public class Death {
 
     private final int SUMMON_FRAMES = 40;
     private final int SLASH_FRAMES = 20;
+    private final int DEATH_FRAMES = 50;
+    private final int MOVE_FRAMES = 30;
 
     private BufferedImage enemyAnimations[][], enemyAnimationsLeft[][];
     private BufferedImage spiritAnimations[][];
     private BufferedImage deathSpritesheet;
     private BufferedImage spiritSpritesheet;
+
+    int health;
     private double xCoord;
     private double yCoord;
-    private int margin;
     private boolean isLeft;
     private int i;
     private int row;
@@ -29,7 +32,7 @@ public class Death {
         i = 0;
         row = 0;
         ability = -1;
-        margin = -50;
+        health = 6666;
 
         loadImages();
     }
@@ -47,6 +50,21 @@ public class Death {
             isLeft = true;
         } else{
             isLeft = false;
+        }
+
+        if (health > 0) {
+            if (ability < 7000) {
+                move(g, p);
+                ability = (int) (Math.random() * 10000);
+            } else if (ability < 8000) {
+                slash(g, p);
+            } else if (ability < 9000) {
+                summon(g, GraphicsPanel.spirits);
+            } else {
+                move(g, p);
+            }
+        } else {
+            deathAnimation(g);
         }
     }
 
@@ -67,8 +85,8 @@ public class Death {
         spiritAnimations = new BufferedImage[3][6]; // row 1: spawn, row 2: death, row 3: idle
 
         for (int i = 0; i < 10; i++){
-            for (int j = 0; j < 10; j++){
-                enemyAnimations[row][j] = deathSpritesheet.getSubimage(deathSpritesheet.getWidth() / 10 * j, deathSpritesheet.getHeight() / 10 * i, deathSpritesheet.getWidth() / 10 * j, deathSpritesheet.getHeight() / 10 * i);
+            for (int j = 0; j < 18; j++){
+                enemyAnimations[row][j] = deathSpritesheet.getSubimage(deathSpritesheet.getWidth() / 10 * j, deathSpritesheet.getHeight() / 10 * i, 100, 100);
             }
             if (i == 3){
                 row = 1;
@@ -78,10 +96,11 @@ public class Death {
                 row = 3;
             }
         }
+        enemyAnimationsLeft = Utility.flipEvery(enemyAnimations);
         row = 0;
         for (int i = 0; i < 5; i++){
             for (int j = 0; j < 4; j++){
-                spiritAnimations[row][j] = spiritSpritesheet.getSubimage(spiritSpritesheet.getWidth() / 4 * j, spiritSpritesheet.getHeight() / 5 * i, spiritSpritesheet.getWidth() / 4 * j, spiritSpritesheet.getHeight() / 5 * i);
+                spiritAnimations[row][j] = spiritSpritesheet.getSubimage(spiritSpritesheet.getWidth() / 4 * j, spiritSpritesheet.getHeight() / 5 * i, 50, 50);
             }
             if (i == 2){
                 row = 1;
@@ -93,18 +112,30 @@ public class Death {
     }
 
     private void move(Graphics g, Player p){
-        if (p.getxCoord() > getxCoord() + margin){
-            xCoord += MOVE_AMT;
-        } else {
-            xCoord -= MOVE_AMT;
+        if (i >= 18 * MOVE_FRAMES){
+            i = 0;
         }
+        if (i % 4 * MOVE_FRAMES == 0){
+            i += 6 * MOVE_FRAMES;
+        }
+        if (isLeft){
+            xCoord -= MOVE_AMT;
+            g.drawImage(enemyAnimationsLeft[2][i / MOVE_FRAMES], getxCoord(), getyCoord(), null);
+        } else {
+            xCoord += MOVE_AMT;
+            g.drawImage(enemyAnimations[2][i / MOVE_FRAMES], getxCoord(), getyCoord(), null);
+        }
+        i++;
     }
     private void slash(Graphics g, Player p){
         i++;
         if (i < 13 * SLASH_FRAMES){
-            g.drawImage(enemyAnimations[1][i / SLASH_FRAMES], getxCoord(), getyCoord(), null);
-            move(g, p);
-            move(g, p);
+            if (isLeft){
+                g.drawImage(enemyAnimationsLeft[1][i / SLASH_FRAMES], getxCoord(), getyCoord(), null);
+            } else {
+                g.drawImage(enemyAnimations[1][i / SLASH_FRAMES], getxCoord(), getyCoord(), null);
+            }
+            xCoord += MOVE_AMT * 2;
         } else {
             ability = -1;
             i = 0;
@@ -113,7 +144,11 @@ public class Death {
     private void summon(Graphics g, ArrayList<Spirit> s){
         i++;
         if (i < SUMMON_FRAMES * 5) {
-            g.drawImage(enemyAnimations[3][i / SUMMON_FRAMES], getxCoord(), getyCoord(), null);
+            if (isLeft){
+                g.drawImage(enemyAnimationsLeft[3][i / SUMMON_FRAMES], getxCoord(), getyCoord(), null);
+            } else {
+                g.drawImage(enemyAnimations[3][i / SUMMON_FRAMES], getxCoord(), getyCoord(), null);
+            }
         } else {
             s.add(new Spirit());
             i = 0;
@@ -121,7 +156,16 @@ public class Death {
         }
     }
 
-
+    private void deathAnimation(Graphics g){
+        i++;
+        if (i < DEATH_FRAMES * 18){
+            if (isLeft){
+                g.drawImage(enemyAnimationsLeft[1][i/ DEATH_FRAMES], getxCoord(), getyCoord(), null);
+            } else {
+                g.drawImage(enemyAnimations[1][i / DEATH_FRAMES], getxCoord(), getyCoord(), null);
+            }
+        }
+    }
 
     public Rectangle enemyRect() {
         int imageHeight = 101;
