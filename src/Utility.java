@@ -4,10 +4,7 @@ import java.awt.image.BufferedImage;
 
 public class Utility {
     public static BufferedImage flipImageHorizontally(BufferedImage image) {
-        if(image == null) {
-            return null;
-        }
-        BufferedImage flippedImage = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
+        BufferedImage flippedImage = new BufferedImage(image.getWidth(), image.getHeight(), 2);
         Graphics2D g2d = flippedImage.createGraphics();
         AffineTransform transform = AffineTransform.getScaleInstance(-1, 1);
         transform.translate(-image.getWidth(), 0);
