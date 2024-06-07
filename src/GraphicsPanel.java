@@ -28,11 +28,11 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     private BufferedImage buttons;
     private BufferedImage[][] buttonAnimations;
-    private int[] buttonState;
-    private int menuStartYPos = 330;
-    private int menuButtonGap = 40;
+    private final int[] buttonState;
+    private final int menuStartYPos = 330;
+    private final int menuButtonGap = 40;
 
-    private Timer loadingTimer;
+    private final Timer loadingTimer;
     private int loadingAnimationAngle;
 
     public GraphicsPanel() {
@@ -50,7 +50,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         loadAssets();
 
         loadingAnimationAngle = 0;
-        loadingTimer = new Timer(100, this);
+        loadingTimer = new Timer(1, this);
     }
 
     private void loadAssets() {
@@ -82,15 +82,9 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         super.paintComponent(g);
 
         switch (state) {
-            case MENU:
-                renderMenu(g);
-                break;
-            case LOADING:
-                renderLoading(g);
-                break;
-            case GAME:
-                renderGame(g);
-                break;
+            case MENU -> renderMenu(g);
+            case LOADING -> renderLoading(g);
+            case GAME -> renderGame(g);
         }
     }
 
@@ -151,13 +145,11 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
                     buttonState[i] = 0;
                 }
             }
-
             if (!insideButton) {
                 for (int i = 0; i < 3; i++) {
                     buttonState[i] = 0;
                 }
             }
-
             repaint();
         }
     }
@@ -219,9 +211,9 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     @Override
     public void actionPerformed(ActionEvent e) {
         if (state == LOADING) {
-            loadingAnimationAngle += 10;
+            loadingAnimationAngle += 2;
             repaint();
-            if (loadingAnimationAngle >= 360 * 2) {
+            if (loadingAnimationAngle >= 360*2) {
                 loadingAnimationAngle = 0;
                 state = GAME;
                 loadingTimer.stop();
