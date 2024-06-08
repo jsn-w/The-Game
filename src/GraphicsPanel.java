@@ -19,9 +19,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private BufferedImage buttonBackground;
     private BufferedImage background;
     private Player player;
-    // private NightBorne e;
-    // private Death e;
-    private Spirit e;
+    private NightBorne e;
 
     private ArrayList<NightBorne> enemies;
     private ArrayList<Bullet> bullets;
@@ -33,6 +31,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private final int[] buttonState;
     private final int menuStartYPos = 330;
     private final int menuButtonGap = 40;
+
+    private BufferedImage inventoryBackground;
 
     private final Timer loadingTimer;
     private int loadingAnimationAngle;
@@ -61,6 +61,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             menuBackground = ImageIO.read(new File("src/assets/menuBackground.png"));
             buttonBackground = ImageIO.read(new File("src/assets/buttonBackground.png"));
             buttons = ImageIO.read(new File("src/assets/buttons.png"));
+            inventoryBackground = ImageIO.read(new File("src/assets/inventoryBackground.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -76,9 +77,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         }
 
         player = new Player("src/assets/playerAnimations.png", 640, 135);
-        // e = new NightBorne("src/assets/NightBorne.png", 100, 220);
-        // e = new Death(100, 220);
-        e = new Spirit(400, 135);
+        e = new NightBorne("src/assets/NightBorne.png", 100, 220);
     }
 
     @Override
@@ -119,15 +118,12 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private void renderGame(Graphics g) {
         g.drawImage(background, (int) backgroundPosition, 0, null);
         player.render(g, this);
-        e.render(g, player, bullets);
-
-        for (int i = 0; i < bullets.size(); i++){
-            bullets.get(i).move(g);
-            if (bullets.get(i).getyCoord() > 550){
-                bullets.remove(i);
-                i--;
-            }
+        e.render(g, player);
+        for (Bullet bullet : bullets) {
+            bullet.move(g);
         }
+        g.drawImage(inventoryBackground, 500, MainFrame.screenHeight - inventoryBackground.getHeight() - 100, null);
+        g.drawImage(inventoryBackground, 600, MainFrame.screenHeight - inventoryBackground.getHeight() - 100, null);
     }
 
     @Override
@@ -222,7 +218,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         if (state == LOADING) {
             loadingAnimationAngle += 2;
             repaint();
-            if (loadingAnimationAngle >= 360*2) {
+            if (loadingAnimationAngle >= 360/2) {
                 loadingAnimationAngle = 0;
                 state = GAME;
                 loadingTimer.stop();

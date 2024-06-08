@@ -21,7 +21,7 @@ public class Player {
 
     private boolean isLeft, jumping, falling, sprinting, doubleJumpAvailable, jumpKeyPressed;
     private double xCoord, yCoord, score, jumpVelocity;
-    private int hp;
+    private double hp;
     private int i;
     private double stamina;
     private BufferedImage[] animations;
@@ -154,7 +154,7 @@ public class Player {
     }
 
     public int getHp() {
-        return hp;
+        return (int) hp;
     }
 
     public double getStamina() {
@@ -273,5 +273,9 @@ public class Player {
 
     public void setScore(double amount) {
         score = amount;
+    }
+
+    public Rectangle playerRect() {
+        return new Rectangle((int) xCoord, (int) yCoord, IMAGE_WIDTH, IMAGE_HEIGHT);
     }
 }

@@ -60,7 +60,7 @@ public class NightBorne {
             dash(g);
             xCoord -= MOVE_AMT;
         } else if ((getXCoord() - 100) - margin <= p.getxCoord() && (getXCoord() + 480) + margin >= p.getxCoord()) {
-            slash(g);
+            slash(g, p);
         } else {
             deathAnimation(g);
         }
@@ -73,13 +73,15 @@ public class NightBorne {
         g.setColor(Color.red);
         g.drawLine(getXCoord() + middle, 0, getXCoord() + middle, 1280);
 
-        g.setColor(Color.green);
-        g.drawLine(getXCoord() + 100, 0, getXCoord() + 100, 1280);
-        g.drawLine(getXCoord() + 480 - 100, 0, getXCoord() + 480 - 100, 1280);
+        g.setColor(Color.magenta);
+        int num1 = getXCoord();
+        int num2 = getXCoord() + 480;
+        g.drawLine(num1, 0, num1, 1280);
+        g.drawLine(num2, 0, num2, 1280);
 
-        g.setColor(Color.cyan);
-        g.drawLine(getXCoord() + 480 + margin, 0, getXCoord() + 480 + margin, 1280);
-        g.drawLine(getXCoord() - margin, 0, getXCoord() - margin, 1280);
+//        g.setColor(Color.cyan);
+//        g.drawLine(getXCoord() + 480 + margin, 0, getXCoord() + 480 + margin, 1280);
+//        g.drawLine(getXCoord() - margin, 0, getXCoord() - margin, 1280);
     }
 
 
@@ -96,8 +98,7 @@ public class NightBorne {
 
     }
 
-    private void slash(Graphics g) {
-
+    private void slash(Graphics g, Player p) {
         if (i >= 9 * CHARGE_FRAMES + 12 * SLASH_FRAMES) {
             i = 9 * CHARGE_FRAMES;
         }
@@ -109,15 +110,28 @@ public class NightBorne {
                 g.drawImage(enemyAnimationsLeft[0][i/CHARGE_FRAMES], getXCoord(), (int) yCoord, 480, 480, null);
             }
         } else {
+            int frames = i - 9 * CHARGE_FRAMES;
+            if (frames > SLASH_FRAMES * 10) {
+                Rectangle slashRect;
+                if (isLeft) {
+                    slashRect = new Rectangle(getXCoord(), getYCoord(), 240, 480); // Adjust these dimensions as needed
+                } else {
+                    slashRect = new Rectangle(getXCoord() + 240, getYCoord(), 240, 480); // Adjust these dimensions as needed
+                }
+                if (slashRect.intersects(p.playerRect())) {
+                    p.takeDamage(1);
+                }
+            }
             if (!isLeft) {
-                g.drawImage(enemyAnimationsRight[2][(i - 9 * CHARGE_FRAMES)/SLASH_FRAMES], getXCoord(), (int) yCoord, null);
+                g.drawImage(enemyAnimationsRight[2][frames/SLASH_FRAMES], getXCoord(), (int) yCoord, null);
             } else {
-                g.drawImage(enemyAnimationsLeft[2][(i - 9 * CHARGE_FRAMES)/SLASH_FRAMES], getXCoord(), (int) yCoord, null);
+                g.drawImage(enemyAnimationsLeft[2][frames/SLASH_FRAMES], getXCoord(), (int) yCoord, null);
             }
         }
 
         i++;
     }
+
 
     public void deathAnimation(Graphics g){
         g.drawImage(enemyAnimationsLeft[4][i / 20], getXCoord(), getYCoord(), null);
@@ -128,10 +142,7 @@ public class NightBorne {
     }
 
     public Rectangle enemyRect() {
-        int imageHeight = 40;
-        int imageWidth = 64;
-
-        return new Rectangle((int) xCoord, (int) yCoord, imageWidth, imageHeight);
+        return new Rectangle((int) xCoord, (int) yCoord, IMAGE_WIDTH, IMAGE_HEIGHT);
     }
 
     public int getXCoord() {
