@@ -51,7 +51,7 @@ public class Spirit {
             spawnAnimation(g);
         }
         if (health > 0) {
-            int rando = (int)(Math.random() * 100);
+            int rando = (int)(Math.random() * 10);
             if (rando == 1){
                 shoot(p,b);
             }

@@ -19,7 +19,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private BufferedImage buttonBackground;
     private BufferedImage background;
     private Player player;
-    private NightBorne e;
+    //private NightBorne e;
+    private Spirit e;
 
     private ArrayList<NightBorne> enemies;
     private ArrayList<Bullet> bullets;
@@ -74,7 +75,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         }
 
         player = new Player("src/assets/playerAnimations.png", 640, 135);
-        e = new NightBorne("src/assets/NightBorne.png", 100, 220);
+        // e = new NightBorne("src/assets/NightBorne.png", 100, 220);
+        e = new Spirit(500, 200);
     }
 
     @Override
@@ -121,10 +123,18 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private void renderGame(Graphics g) {
         g.drawImage(background, (int) backgroundPosition, 0, null);
         player.render(g, this);
-        e.render(g, player);
-        bullets.add(new Bullet(1, 1, 1, 1));
-        for (Bullet bullet : bullets) {
-            bullet.move(g);
+        e.render(g, player, bullets);
+
+        for (int i = 0; i < bullets.size(); i++) {
+            bullets.get(i).move(g);
+            if ((bullets.get(i).getyCoord() > 550 || bullets.get(i).getyCoord() < -50) || bullets.get(i).enemyRect().intersects(player.playerRect())){
+                if (bullets.get(i).enemyRect().intersects(player.playerRect())){
+                    player.takeDamage(1);
+                }
+                bullets.remove(i);
+                i--;
+
+            }
         }
     }
 
