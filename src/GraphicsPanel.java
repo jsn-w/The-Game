@@ -28,13 +28,11 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     private BufferedImage buttons;
     private BufferedImage[][] buttonAnimations;
-    private final int[] buttonState;
-    private final int menuStartYPos = 330;
-    private final int menuButtonGap = 40;
+    private int[] buttonState;
+    private int menuStartYPos = 330;
+    private int menuButtonGap = 40;
 
-    private BufferedImage inventoryBackground;
-
-    private final Timer loadingTimer;
+    private Timer loadingTimer;
     private int loadingAnimationAngle;
 
     public GraphicsPanel() {
@@ -61,7 +59,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             menuBackground = ImageIO.read(new File("src/assets/menuBackground.png"));
             buttonBackground = ImageIO.read(new File("src/assets/buttonBackground.png"));
             buttons = ImageIO.read(new File("src/assets/buttons.png"));
-            inventoryBackground = ImageIO.read(new File("src/assets/inventoryBackground.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -85,9 +82,15 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         super.paintComponent(g);
 
         switch (state) {
-            case MENU -> renderMenu(g);
-            case LOADING -> renderLoading(g);
-            case GAME -> renderGame(g);
+            case MENU:
+                renderMenu(g);
+                break;
+            case LOADING:
+                renderLoading(g);
+                break;
+            case GAME:
+                renderGame(g);
+                break;
         }
     }
 
@@ -122,8 +125,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         for (Bullet bullet : bullets) {
             bullet.move(g);
         }
-        g.drawImage(inventoryBackground, 500, MainFrame.screenHeight - inventoryBackground.getHeight() - 100, null);
-        g.drawImage(inventoryBackground, 600, MainFrame.screenHeight - inventoryBackground.getHeight() - 100, null);
     }
 
     @Override
@@ -150,11 +151,13 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
                     buttonState[i] = 0;
                 }
             }
+
             if (!insideButton) {
                 for (int i = 0; i < 3; i++) {
                     buttonState[i] = 0;
                 }
             }
+
             repaint();
         }
     }
@@ -216,9 +219,9 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     @Override
     public void actionPerformed(ActionEvent e) {
         if (state == LOADING) {
-            loadingAnimationAngle += 2;
+            loadingAnimationAngle += 1;
             repaint();
-            if (loadingAnimationAngle >= 360/2) {
+            if (loadingAnimationAngle >= 360) {
                 loadingAnimationAngle = 0;
                 state = GAME;
                 loadingTimer.stop();

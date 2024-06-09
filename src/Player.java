@@ -17,7 +17,7 @@ public class Player {
     private static final double STAMINA_REGEN_RATE = 0.07;
     private static final double STAMINA_DEPLETION_RATE = 0.2;
     private static final int MAX_HP = 100;
-
+    private static final double HEAL_RATE = 0.02; // Healing rate per update
 
     private boolean isLeft, jumping, falling, sprinting, doubleJumpAvailable, jumpKeyPressed;
     private double xCoord, yCoord, score, jumpVelocity;
@@ -25,7 +25,7 @@ public class Player {
     private int i;
     private double stamina;
     private BufferedImage[] animations;
-    private BufferedImage playerAnimations;
+    private BufferedImage playerAnimations, healthbar;
 
     public Player(String imagePath, int x, int y) {
         xCoord = x;
@@ -41,6 +41,7 @@ public class Player {
     private void loadImages(String imagePath) {
         try {
             playerAnimations = ImageIO.read(new File(imagePath));
+            healthbar = ImageIO.read(new File("src/assets/healthbar.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -93,6 +94,7 @@ public class Player {
 
         updatePosition();
         updateStamina(pressedKeys[16]);
+        heal(); // Heal the player gradually
 
         drawLines(g);
         drawStaminaBar(g);
@@ -123,19 +125,17 @@ public class Player {
     }
 
     private void drawHealthBar(Graphics g) {
-        int barWidth = 200;
+        int barWidth = 258;
         int barHeight = 20;
-        int x = 20;
-        int y = MainFrame.screenHeight - 100;
-
-        g.setColor(Color.BLACK);
-        g.fillRect(x - 2, y - 2, barWidth + 4, barHeight + 4);
+        int x = 51 + 40;
+        int y = 40 + 6;
 
         g.setColor(Color.RED);
         g.fillRect(x, y, barWidth, barHeight);
 
-        g.setColor(Color.GREEN);
+        g.setColor(new Color(100, 240, 100));
         g.fillRect(x, y, (int) ((hp / (double) MAX_HP) * barWidth), barHeight);
+        g.drawImage(healthbar, 40, 40, null);
     }
 
     public int getxCoord() {
@@ -260,19 +260,20 @@ public class Player {
         }
     }
 
-    public void takeDamage(double amount) {
-        hp -= amount;
+    public void takeDamage(int damage) {
+        hp -= damage;
         if (hp < 0) {
             hp = 0;
         }
     }
 
-    public void updateScore(double amount) {
-        score += amount;
-    }
-
-    public void setScore(double amount) {
-        score = amount;
+    private void heal() {
+        if (hp < MAX_HP) {
+            hp += HEAL_RATE;
+            if (hp > MAX_HP) {
+                hp = MAX_HP;
+            }
+        }
     }
 
     public Rectangle playerRect() {

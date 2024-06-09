@@ -6,10 +6,10 @@ import java.io.File;
 public class NightBorne {
     private static final int IMAGE_WIDTH = 480;
     private static final int IMAGE_HEIGHT = 480;
-    private static final double MOVE_AMT = 1.4;
+    private static final double MOVE_AMT = 2.2;
     private static final int FRAMES_PER_UPDATE = 25;
-    private static final int CHARGE_FRAMES = 30;
-    private static final int SLASH_FRAMES = 20;
+    private static final int CHARGE_FRAMES = 20;
+    private static final int SLASH_FRAMES = 12;
 
     private BufferedImage[][] enemyAnimationsLeft, enemyAnimationsRight;
 
@@ -19,10 +19,16 @@ public class NightBorne {
     private boolean isLeft;
     private int i;
 
+    private enum State {
+        DASHING, CHARGING, SLASHING, DYING
+    }
+
+    private State state;
+
     public NightBorne(String img, int x, int y) {
         xCoord = x;
         yCoord = y;
-
+        state = State.DASHING;
         i = 0;
         loadImages(img);
     }
@@ -47,28 +53,38 @@ public class NightBorne {
     }
 
     public void render(Graphics g, Player p) {
-
         int margin = -70;
         isLeft = getXCoord() + IMAGE_WIDTH / 2 > p.getxCoord() + 50;
 
-        if ((getXCoord() + 480) + margin < p.getxCoord()) {
-            isLeft = false;
-            dash(g);
-            xCoord += MOVE_AMT;
-        } else if ((getXCoord() - 100) - margin > p.getxCoord()) {
-            isLeft = true;
-            dash(g);
-            xCoord -= MOVE_AMT;
-        } else if ((getXCoord() - 100) - margin <= p.getxCoord() && (getXCoord() + 480) + margin >= p.getxCoord()) {
-            slash(g, p);
-        } else {
-            deathAnimation(g);
+        switch (state) {
+            case DASHING:
+                if ((getXCoord() + 480) + margin < p.getxCoord()) {
+                    isLeft = false;
+                    dash(g);
+                    xCoord += MOVE_AMT;
+                } else if ((getXCoord() - 100) - margin > p.getxCoord()) {
+                    isLeft = true;
+                    dash(g);
+                    xCoord -= MOVE_AMT;
+                } else if ((getXCoord() - 100) - margin <= p.getxCoord() && (getXCoord() + 480) + margin >= p.getxCoord()) {
+                    state = State.CHARGING;
+                    i = 0;
+                }
+                break;
+            case CHARGING:
+                charge(g);
+                break;
+            case SLASHING:
+                slash(g, p);
+                break;
+            case DYING:
+                deathAnimation(g);
+                break;
         }
-        drawLines(g, margin);
-
+        drawLines(g);
     }
 
-    private void drawLines(Graphics g, int margin) {
+    private void drawLines(Graphics g) {
         int middle = 240;
         g.setColor(Color.red);
         g.drawLine(getXCoord() + middle, 0, getXCoord() + middle, 1280);
@@ -78,12 +94,7 @@ public class NightBorne {
         int num2 = getXCoord() + 480;
         g.drawLine(num1, 0, num1, 1280);
         g.drawLine(num2, 0, num2, 1280);
-
-//        g.setColor(Color.cyan);
-//        g.drawLine(getXCoord() + 480 + margin, 0, getXCoord() + 480 + margin, 1280);
-//        g.drawLine(getXCoord() - margin, 0, getXCoord() - margin, 1280);
     }
-
 
     private void dash(Graphics g) {
         if (i >= 6 * NightBorne.FRAMES_PER_UPDATE) {
@@ -95,43 +106,51 @@ public class NightBorne {
             g.drawImage(enemyAnimationsLeft[1][i/ NightBorne.FRAMES_PER_UPDATE], getXCoord(), getYCoord(), null);
         }
         i++;
-
     }
 
-    private void slash(Graphics g, Player p) {
-        if (i >= 9 * CHARGE_FRAMES + 12 * SLASH_FRAMES) {
-            i = 9 * CHARGE_FRAMES;
+    private void charge(Graphics g) {
+        if (i >= 9 * CHARGE_FRAMES) {
+            state = State.SLASHING;
+            i = 0;
+            return;
         }
 
-        if (i < 9 * CHARGE_FRAMES) {
-            if (!isLeft) {
-                g.drawImage(enemyAnimationsRight[0][i/CHARGE_FRAMES], getXCoord(), (int) yCoord, 480, 480, null);
-            } else {
-                g.drawImage(enemyAnimationsLeft[0][i/CHARGE_FRAMES], getXCoord(), (int) yCoord, 480, 480, null);
-            }
+        if (!isLeft) {
+            g.drawImage(enemyAnimationsRight[0][i/CHARGE_FRAMES], getXCoord(), (int) yCoord, 480, 480, null);
         } else {
-            int frames = i - 9 * CHARGE_FRAMES;
-            if (frames > SLASH_FRAMES * 10) {
-                Rectangle slashRect;
-                if (isLeft) {
-                    slashRect = new Rectangle(getXCoord(), getYCoord(), 240, 480); // Adjust these dimensions as needed
-                } else {
-                    slashRect = new Rectangle(getXCoord() + 240, getYCoord(), 240, 480); // Adjust these dimensions as needed
-                }
-                if (slashRect.intersects(p.playerRect())) {
-                    p.takeDamage(1);
-                }
-            }
-            if (!isLeft) {
-                g.drawImage(enemyAnimationsRight[2][frames/SLASH_FRAMES], getXCoord(), (int) yCoord, null);
-            } else {
-                g.drawImage(enemyAnimationsLeft[2][frames/SLASH_FRAMES], getXCoord(), (int) yCoord, null);
-            }
+            g.drawImage(enemyAnimationsLeft[0][i/CHARGE_FRAMES], getXCoord(), (int) yCoord, 480, 480, null);
         }
 
         i++;
     }
 
+    private void slash(Graphics g, Player p) {
+        if (i >= 12 * SLASH_FRAMES) {
+            state = State.DASHING;
+            i = 0;
+            return;
+        }
+
+        if (i > SLASH_FRAMES * 9) {
+            Rectangle slashRect;
+            if (isLeft) {
+                slashRect = new Rectangle(getXCoord(), getYCoord(), 240, 480);
+            } else {
+                slashRect = new Rectangle(getXCoord() + 240, getYCoord(), 240, 480);
+            }
+            if (slashRect.intersects(p.playerRect())) {
+                p.takeDamage(1);
+            }
+        }
+
+        if (!isLeft) {
+            g.drawImage(enemyAnimationsRight[2][i/SLASH_FRAMES], getXCoord(), (int) yCoord, null);
+        } else {
+            g.drawImage(enemyAnimationsLeft[2][i/SLASH_FRAMES], getXCoord(), (int) yCoord, null);
+        }
+
+        i++;
+    }
 
     public void deathAnimation(Graphics g){
         g.drawImage(enemyAnimationsLeft[4][i / 20], getXCoord(), getYCoord(), null);
