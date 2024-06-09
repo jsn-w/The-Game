@@ -122,6 +122,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         g.drawImage(background, (int) backgroundPosition, 0, null);
         player.render(g, this);
         e.render(g, player);
+        bullets.add(new Bullet(1, 1, 1, 1));
         for (Bullet bullet : bullets) {
             bullet.move(g);
         }

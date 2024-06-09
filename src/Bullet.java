@@ -30,7 +30,7 @@ public class Bullet {
     private void loadImages() {
         try {
             img = ImageIO.read(new File("src/assets/bullet.png"));
-        }catch (Exception e){
+        } catch (Exception e){
             System.out.println(e.getMessage());
         }
     }
