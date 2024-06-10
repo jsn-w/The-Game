@@ -26,6 +26,9 @@ public class Bullet {
     public int getyCoord(){
         return (int) yCoord;
     }
+    public void changeY(){
+        yCoord += moveAmt;
+    }
 
     private void loadImages() {
         try {

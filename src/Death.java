@@ -12,6 +12,7 @@ public class Death {
     private final int SLASH_FRAMES = 20;
     private final int DEATH_FRAMES = 50;
     private final int MOVE_FRAMES = 30;
+    private final int ABILITY_FRAMES = 40;
 
     private BufferedImage enemyAnimations[][], enemyAnimationsLeft[][];
     private BufferedImage deathSpritesheet;
@@ -52,21 +53,24 @@ public class Death {
             if (ability == -1) {
                 move(g);
                 int rando = (int) (Math.random() * 10000);
-                if (rando < 8000){
+                if (rando < 9000){
                     ability = -1;
-                } else if (rando < 8500){
+                } else if (rando < 9333){
                     ability = 1;
-                } else if (rando < 9000) {
+                } else if (rando < 9666) {
                     ability = 2;
                 } else {
                     ability = 3;
                 }
+                if (ability != -1){
+                    i = 0;
+                }
             } else if (ability == 1) {
                 slash(g);
             } else if (ability == 2) {
-//                summon(g, GraphicsPanel.spirits);
+                summon(g, GraphicsPanel.spirits);
             } else {
-                move(g); // secondary ability
+                swordSlam(g, p, GraphicsPanel.bullets);
             }
         } else {
             deathAnimation(g);
@@ -113,15 +117,17 @@ public class Death {
         if (i < 13 * SLASH_FRAMES){
             if (isLeft){
                 g.drawImage(enemyAnimationsLeft[1][i / SLASH_FRAMES], getxCoord(), getyCoord(), null);
+                xCoord -= MOVE_AMT * 2;
             } else {
                 g.drawImage(enemyAnimations[1][i / SLASH_FRAMES], getxCoord(), getyCoord(), null);
+                xCoord += MOVE_AMT * 2;
             }
-            xCoord += MOVE_AMT * 2;
         } else {
             ability = -1;
             i = 0;
         }
     }
+
     private void summon(Graphics g, ArrayList<Spirit> s){
         i++;
         if (i < SUMMON_FRAMES * 5) {
@@ -137,8 +143,19 @@ public class Death {
         }
     }
 
-    private void swordSlam(){
-
+    private void swordSlam(Graphics g, Player p, ArrayList<Bullet> b){
+        i++;
+        if (i < ABILITY_FRAMES * 12){
+            if (isLeft){
+                g.drawImage(enemyAnimationsLeft[4][i / ABILITY_FRAMES], getxCoord(), getyCoord(), null);
+            } else{
+                g.drawImage(enemyAnimations[4][i / ABILITY_FRAMES], getxCoord(), getyCoord(), null);
+            }
+        } else {
+            b.add(new Bloodsword(p.getxCoord() - 60, -50, 0, 1));
+            i = 0;
+            ability = -1;
+        }
     }
 
     private void deathAnimation(Graphics g){
