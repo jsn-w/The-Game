@@ -53,20 +53,19 @@ public class NightBorne {
     }
 
     public void render(Graphics g, Player p) {
-        int margin = -70;
-        isLeft = getXCoord() + IMAGE_WIDTH / 2 > p.getxCoord() + 50;
+        int margin = -150;
+        isLeft = getXCoord() + IMAGE_WIDTH / 2 > p.getxCoord() + 128;
 
         switch (state) {
             case DASHING -> {
+
                 if ((getXCoord() + 480) + margin < p.getxCoord()) {
-                    isLeft = false;
                     dash(g);
                     xCoord += MOVE_AMT;
-                } else if ((getXCoord() - 100) - margin > p.getxCoord()) {
-                    isLeft = true;
+                } else if ((getXCoord() - 256) - margin > p.getxCoord()) {
                     dash(g);
                     xCoord -= MOVE_AMT;
-                } else if ((getXCoord() - 100) - margin <= p.getxCoord() && (getXCoord() + 480) + margin >= p.getxCoord()) {
+                } else if ((getXCoord() - 256) - margin <= p.getxCoord() && (getXCoord() + 480) + margin >= p.getxCoord()) {
                     state = State.CHARGING;
                     i = 0;
                 }

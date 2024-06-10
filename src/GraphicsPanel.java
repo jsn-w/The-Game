@@ -19,6 +19,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private BufferedImage buttonBackground;
     private BufferedImage background;
     private Player player;
+    private NightBorne nightBorne;
     private Spirit e;
 
     private ArrayList<NightBorne> enemies;
@@ -28,9 +29,9 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     private BufferedImage buttons;
     private BufferedImage[][] buttonAnimations;
-    private int[] buttonState;
-    private int menuStartYPos = 330;
-    private int menuButtonGap = 40;
+    private final int[] buttonState;
+    private final int menuStartYPos = 330;
+    private final int menuButtonGap = 40;
 
     private Timer loadingTimer;
     private int loadingAnimationAngle;
@@ -75,7 +76,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         }
 
         player = new Player("src/assets/playerAnimations.png", 640, 135);
-        // e = new NightBorne("src/assets/NightBorne.png", 100, 220);
+        nightBorne = new NightBorne("src/assets/NightBorne.png", 100, 220);
         e = new Spirit(500, 200);
         b = new Boss();
     }
@@ -85,15 +86,9 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         super.paintComponent(g);
 
         switch (state) {
-            case MENU:
-                renderMenu(g);
-                break;
-            case LOADING:
-                renderLoading(g);
-                break;
-            case GAME:
-                renderGame(g);
-                break;
+            case MENU -> renderMenu(g);
+            case LOADING -> renderLoading(g);
+            case GAME -> renderGame(g);
         }
     }
 
@@ -124,7 +119,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private void renderGame(Graphics g) {
         g.drawImage(background, (int) backgroundPosition, 0, null);
         player.render(g, this);
-        e.render(g, player, bullets);
+//        e.render(g, player, bullets);
 
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).move(g);
@@ -137,7 +132,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
             }
         }
-        b.render(g,player);
+//        b.render(g,player);
+        nightBorne.render(g, player);
     }
 
     @Override

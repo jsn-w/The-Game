@@ -110,6 +110,8 @@ public class Player {
         drawLines(g);
         drawStaminaBar(g);
         drawHealthBar(g);
+
+        g.drawLine(getxCoord() + 128, 0, getxCoord() + 128, 500);
     }
 
     private void idle(Graphics g) {
