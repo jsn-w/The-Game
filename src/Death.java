@@ -6,13 +6,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Death {
-    private final double MOVE_AMT = 0.3;
+    private final double MOVE_AMT = 0.2;
 
-    private final int SUMMON_FRAMES = 40;
-    private final int SLASH_FRAMES = 20;
-    private final int DEATH_FRAMES = 50;
-    private final int MOVE_FRAMES = 30;
-    private final int ABILITY_FRAMES = 40;
+    private final int SUMMON_FRAMES = 80;
+    private final int SLASH_FRAMES = 40;
+    private final int DEATH_FRAMES = 160;
+    private final int MOVE_FRAMES = 60;
+    private final int ABILITY_FRAMES = 80;
 
     private BufferedImage enemyAnimations[][], enemyAnimationsLeft[][];
     private BufferedImage deathSpritesheet;
@@ -52,15 +52,15 @@ public class Death {
         if (health > 0) {
             if (ability == -1) {
                 move(g);
-                int rando = (int) (Math.random() * 10000);
-                if (rando < 9000){
-                    ability = -1;
-                } else if (rando < 9333){
+                int rando = (int) (Math.random() * 1000);
+                if (rando == 1){
                     ability = 1;
-                } else if (rando < 9666) {
+                } else if (rando == 2){
                     ability = 2;
-                } else {
+                } else if (rando == 3) {
                     ability = 3;
+                } else {
+                    ability = -1;
                 }
                 if (ability != -1){
                     i = 0;
@@ -71,6 +71,10 @@ public class Death {
                 summon(g, GraphicsPanel.spirits);
             } else {
                 swordSlam(g, p, GraphicsPanel.bullets);
+            }
+
+            if (enemyRect().intersects(p.playerRect())){
+                p.takeDamage(1);
             }
         } else {
             deathAnimation(g);
@@ -116,11 +120,11 @@ public class Death {
         i++;
         if (i < 13 * SLASH_FRAMES){
             if (isLeft){
-                g.drawImage(enemyAnimationsLeft[1][i / SLASH_FRAMES], getxCoord(), getyCoord(), null);
-                xCoord -= MOVE_AMT * 2;
+                g.drawImage(enemyAnimationsLeft[0][i / SLASH_FRAMES], getxCoord(), getyCoord(), null);
+                xCoord -= MOVE_AMT * 5;
             } else {
-                g.drawImage(enemyAnimations[1][i / SLASH_FRAMES], getxCoord(), getyCoord(), null);
-                xCoord += MOVE_AMT * 2;
+                g.drawImage(enemyAnimations[0][i / SLASH_FRAMES], getxCoord(), getyCoord(), null);
+                xCoord += MOVE_AMT * 5;
             }
         } else {
             ability = -1;
@@ -137,7 +141,7 @@ public class Death {
                 g.drawImage(enemyAnimations[3][i / SUMMON_FRAMES], getxCoord(), getyCoord(), null);
             }
         } else {
-            s.add(new Spirit((int) xCoord, (int)(yCoord + 300)));
+            s.add(new Spirit((int) xCoord, (int)(yCoord - 300)));
             i = 0;
             ability = -1;
         }
