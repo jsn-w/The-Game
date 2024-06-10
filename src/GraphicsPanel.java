@@ -154,6 +154,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             } else if (quitRect().contains(e.getPoint())) {
                 System.exit(0);
             }
+        } else if (state == GAME) {
+            player.setState();
         }
     }
 

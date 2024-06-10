@@ -89,7 +89,7 @@ public class Player {
         }
         sprinting = pKeys[16] && stamina > 0;
         
-        if (!pKeys[65] && !pKeys[37] &&!pKeys[68] && !pKeys[39] &&!pKeys[87] && !pKeys[38] && !jumping && !falling) {
+        if (!pKeys[65] && !pKeys[37] &&!pKeys[68] && !pKeys[39] &&!pKeys[87] && !pKeys[38] && !jumping && !falling && state != State.ATTACK) {
             state = State.IDLE;
         }
 
@@ -165,6 +165,7 @@ public class Player {
     private void attack (Graphics g) {
         if (i >= 6 * FRAMES_PER_UPDATE) {
             i = 0;
+            state = State.IDLE;
         }
         if (!isLeft) {
             g.drawImage(playerAnimationsRight[4][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
@@ -362,6 +363,12 @@ public class Player {
             }
         }
     }
+
+    public void setState() {
+        state = State.ATTACK;
+        i = 0;
+    }
+
 
     public Rectangle playerRect() {
         int margin = 50;
