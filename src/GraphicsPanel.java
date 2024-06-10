@@ -82,7 +82,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         e = new Spirit(500, 200);
 
         b = new Boss();
-        f = new Death(500, 400);
+        f = new Death(500, 200);
     }
 
     @Override
@@ -129,7 +129,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private void renderGame(Graphics g) {
         g.drawImage(background, (int) backgroundPosition, 0, null);
         player.render(g, this);
-        e.render(g, player, bullets);
+        e.render(g, player, bullets, spirits);
         f.render(g, player);
 
         for (int i = 0; i < bullets.size(); i++) {
@@ -141,6 +141,9 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
                 bullets.remove(i);
                 i--;
             }
+        }
+        for (int i = 0; i < spirits.size(); i++){
+            spirits.get(i).render(g, player,bullets, spirits);
         }
         b.render(g,player);
     }

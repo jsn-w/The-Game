@@ -6,10 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Spirit {
-    private final double MOVE_AMT = 0.4;
-    private final int DEATH_FRAMES = 30;
-    private final int SPAWN_FRAMES = 30;
-    private final int IDLE_FRAMES = 50;
+    private final int DEATH_FRAMES = 60;
+    private final int SPAWN_FRAMES = 120;
+    private final int IDLE_FRAMES = 100;
 
     private BufferedImage spiritAnimations[][], spiritAnimationsLeft[][];
     private BufferedImage spiritSpritesheet;
@@ -40,7 +39,7 @@ public class Spirit {
         return (int) yCoord;
     }
 
-    public void render(Graphics g, Player p, ArrayList<Bullet> b){
+    public void render(Graphics g, Player p, ArrayList<Bullet> b, ArrayList<Spirit> s){
         if (p.getxCoord() < getxCoord()){
             isLeft = true;
         } else{
@@ -50,14 +49,19 @@ public class Spirit {
         if (!spawnDone){
             spawnAnimation(g);
         }
-        if (health > 0) {
+        if (health > 0 && spawnDone) {
             int rando = (int)(Math.random() * 400);
             if (rando == 1){
                 shoot(p,b);
             }
             idleAnimation(g);
-        } else {
+        } else if (health <= 0){
             deathAnimation(g);
+            s.remove(this);
+        }
+
+        if (enemyRect().intersects(p.playerRect())){
+            p.takeDamage(1);
         }
     }
 
@@ -76,7 +80,7 @@ public class Spirit {
 
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 6; j++){
-                spiritAnimations[i][j] = spiritSpritesheet.getSubimage(spiritSpritesheet.getWidth() / 6 * j, spiritSpritesheet.getHeight() / 3 * i, 53, 53);
+                spiritAnimations[i][j] = spiritSpritesheet.getSubimage(spiritSpritesheet.getWidth() / 6 * j, spiritSpritesheet.getHeight() / 3 * i, 200, 206);
             }
         }
         spiritAnimationsLeft = Utility.flipEvery(spiritAnimations);
@@ -89,7 +93,7 @@ public class Spirit {
 
     private void spawnAnimation(Graphics g){
         i++;
-        if (i < SPAWN_FRAMES * 6){
+        if (i <= SPAWN_FRAMES * 6){
             if (isLeft) {
                 g.drawImage(spiritAnimationsLeft[0][i / SPAWN_FRAMES], getxCoord(), getyCoord(), null);
             } else {
@@ -123,5 +127,12 @@ public class Spirit {
                 g.drawImage(spiritAnimations[1][i / DEATH_FRAMES], getxCoord(), getyCoord(), null);
             }
         }
+    }
+
+    public Rectangle enemyRect(){
+        int imageHeight = 206;
+        int imageWidth = 200;
+        Rectangle rect = new Rectangle((int) xCoord, (int)yCoord, imageWidth, imageHeight);
+        return rect;
     }
 }
