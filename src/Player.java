@@ -8,8 +8,8 @@ public class Player {
 
     private static final double MOVE_AMT = 2;
     private static final double SPRINT_AMT = 4;
-    private static final int IMAGE_WIDTH = 100;
-    private static final int IMAGE_HEIGHT = 100;
+    private static final int IMAGE_WIDTH = 256;
+    private static final int IMAGE_HEIGHT = 256;
     private static final int FRAMES_PER_UPDATE = 30;
     private static final int FLOOR_Y = 600;
     private static final double GRAVITY = 0.04;
@@ -24,8 +24,13 @@ public class Player {
     private double hp;
     private int i;
     private double stamina;
-    private BufferedImage[] animations;
-    private BufferedImage playerAnimations, healthbar;
+    private BufferedImage[][] playerAnimationsLeft, playerAnimationsRight;
+    private BufferedImage playerSpritesheet, healthbar;
+
+    private enum State {
+        IDLE, RUN, JUMP, FALL, ATTACK, TAKING_DAMAGE, DEAD, SHIELD_BLOCKING
+    }
+    private State state;
 
     public Player(String imagePath, int x, int y) {
         xCoord = x;
@@ -36,11 +41,12 @@ public class Player {
         doubleJumpAvailable = false;
         jumpKeyPressed = false;
         loadImages(imagePath);
+        state = State.IDLE;
     }
 
     private void loadImages(String imagePath) {
         try {
-            playerAnimations = ImageIO.read(new File(imagePath));
+            playerSpritesheet = ImageIO.read(new File(imagePath));
             healthbar = ImageIO.read(new File("src/assets/healthbar.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -49,33 +55,28 @@ public class Player {
     }
 
     private void loadAnimations() {
-        animations = new BufferedImage[15];
-        for (int i = 0; i < animations.length; i++) {
-            animations[i] = playerAnimations.getSubimage(i * IMAGE_WIDTH, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
+        playerAnimationsRight = new BufferedImage[8][8];
+        for (int r = 0; r < 8; r++){
+            for (int j = 0; j < 8; j++){
+                playerAnimationsRight[r][j] = playerSpritesheet.getSubimage(IMAGE_WIDTH * j, IMAGE_HEIGHT * r, IMAGE_WIDTH, IMAGE_HEIGHT);
+            }
         }
+        playerAnimationsLeft = Utility.flipEvery(playerAnimationsRight);
     }
 
     public void render(Graphics g, GraphicsPanel panel) {
-        int framesPerUpdate = 30;
-        if (!isLeft) {
-            g.drawImage(animations[i / framesPerUpdate], getxCoord(), getyCoord(), null);
-        } else {
-            g.drawImage(Utility.flipImageHorizontally(animations[i / framesPerUpdate]), getxCoord(), getyCoord(), null);
-        }
-        i++;
-        if (i == animations.length * framesPerUpdate) {
-            i = 0;
-        }
 
-        boolean[] pressedKeys = panel.getPressedKeys();
+        boolean[] pKeys = panel.getPressedKeys();
 
-        if (pressedKeys[65] || pressedKeys[37]) {
+        if (pKeys[65] || pKeys[37]) {
             moveLeft();
+            state = State.RUN;
         }
-        if (pressedKeys[68] || pressedKeys[39]) {
+        if (pKeys[68] || pKeys[39]) {
             moveRight();
+            state = State.RUN;
         }
-        if (pressedKeys[87] || pressedKeys[38]) {
+        if (pKeys[87] || pKeys[38]) {
             if (!jumpKeyPressed) {
                 jumpKeyPressed = true;
                 jump();
@@ -83,22 +84,104 @@ public class Player {
         } else {
             jumpKeyPressed = false;
         }
-        if (pressedKeys[83] || pressedKeys[40]) {
+        if (pKeys[83] || pKeys[40]) {
             moveDown();
         }
-        if (pressedKeys[16] && stamina > 0) {
-            sprinting = true;
-        } else {
-            sprinting = false;
+        sprinting = pKeys[16] && stamina > 0;
+        
+        if (!pKeys[65] && !pKeys[37] &&!pKeys[68] && !pKeys[39] &&!pKeys[87] && !pKeys[38] && !jumping && !falling) {
+            state = State.IDLE;
+        }
+
+        switch (state) {
+            case IDLE -> idle(g);
+            case RUN -> run(g);
+            case JUMP -> jump(g);
+            case FALL -> fall(g);
+            case ATTACK -> attack(g);
+            case DEAD -> dead(g);
+//            case SHIELD_BLOCKING ->
         }
 
         updatePosition();
-        updateStamina(pressedKeys[16]);
+        updateStamina(pKeys[16]);
         heal(); // Heal the player gradually
 
         drawLines(g);
         drawStaminaBar(g);
         drawHealthBar(g);
+    }
+
+    private void idle(Graphics g) {
+        if (i >= 5 * FRAMES_PER_UPDATE) {
+            i = 0;
+        }
+        if (!isLeft) {
+            g.drawImage(playerAnimationsRight[0][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
+        } else {
+            g.drawImage(playerAnimationsLeft[0][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
+        }
+        i++;
+    }
+
+    private void run(Graphics g) {
+        if (i >= 8 * FRAMES_PER_UPDATE) {
+            i = 0;
+        }
+        if (!isLeft) {
+            g.drawImage(playerAnimationsRight[1][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
+        } else {
+            g.drawImage(playerAnimationsLeft[1][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
+        }
+        i++;
+    }
+
+    private void jump(Graphics g) {
+        if (i >= 3 * FRAMES_PER_UPDATE) {
+            i = 0;
+        }
+        if (!isLeft) {
+            g.drawImage(playerAnimationsRight[2][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
+        } else {
+            g.drawImage(playerAnimationsLeft[2][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
+        }
+        i++;
+    }
+
+    private void fall(Graphics g) {
+        if (i >= 2 * FRAMES_PER_UPDATE) {
+            i = 0;
+        }
+        if (!isLeft) {
+            g.drawImage(playerAnimationsRight[3][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
+        } else {
+            g.drawImage(playerAnimationsLeft[3][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
+        }
+        i++;
+    }
+
+    private void attack (Graphics g) {
+        if (i >= 6 * FRAMES_PER_UPDATE) {
+            i = 0;
+        }
+        if (!isLeft) {
+            g.drawImage(playerAnimationsRight[4][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
+        } else {
+            g.drawImage(playerAnimationsLeft[4][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
+        }
+        i++;
+    }
+
+    private void dead (Graphics g) {
+        if (i >= 7 * FRAMES_PER_UPDATE) {
+            i = 0;
+        }
+        if (!isLeft) {
+            g.drawImage(playerAnimationsRight[6][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
+        } else {
+            g.drawImage(playerAnimationsLeft[6][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
+        }
+        i++;
     }
 
     private void drawLines(Graphics g) {
@@ -226,6 +309,7 @@ public class Player {
 
     public void updatePosition() {
         if (jumping) {
+            state = State.JUMP;
             yCoord -= jumpVelocity;
             jumpVelocity -= GRAVITY;
             if (jumpVelocity <= 0) {
@@ -233,10 +317,11 @@ public class Player {
                 falling = true;
             }
         } else if (falling) {
+            state = State.FALL;
             yCoord += jumpVelocity;
             jumpVelocity += GRAVITY;
-            if (yCoord >= FLOOR_Y - IMAGE_HEIGHT) {
-                yCoord = FLOOR_Y - IMAGE_HEIGHT;
+            if (yCoord >= FLOOR_Y - IMAGE_HEIGHT + 50) {
+                yCoord = FLOOR_Y - IMAGE_HEIGHT + 50;
                 falling = false;
                 doubleJumpAvailable = false;
             }
@@ -277,6 +362,7 @@ public class Player {
     }
 
     public Rectangle playerRect() {
-        return new Rectangle((int) xCoord, (int) yCoord, IMAGE_WIDTH, IMAGE_HEIGHT);
+        int margin = 50;
+        return new Rectangle((int) xCoord + margin, (int) yCoord + margin, IMAGE_WIDTH - 2*margin, IMAGE_HEIGHT - 2*margin);
     }
 }
