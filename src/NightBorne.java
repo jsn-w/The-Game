@@ -57,7 +57,7 @@ public class NightBorne {
         isLeft = getXCoord() + IMAGE_WIDTH / 2 > p.getxCoord() + 50;
 
         switch (state) {
-            case DASHING:
+            case DASHING -> {
                 if ((getXCoord() + 480) + margin < p.getxCoord()) {
                     isLeft = false;
                     dash(g);
@@ -70,16 +70,10 @@ public class NightBorne {
                     state = State.CHARGING;
                     i = 0;
                 }
-                break;
-            case CHARGING:
-                charge(g);
-                break;
-            case SLASHING:
-                slash(g, p);
-                break;
-            case DYING:
-                deathAnimation(g);
-                break;
+            }
+            case CHARGING -> charge(g);
+            case SLASHING -> slash(g, p);
+            case DYING -> deathAnimation(g);
         }
         drawLines(g);
     }

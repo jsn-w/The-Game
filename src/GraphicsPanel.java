@@ -232,7 +232,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     @Override
     public void actionPerformed(ActionEvent e) {
         if (state == LOADING) {
-            loadingAnimationAngle += 1;
+            loadingAnimationAngle += 5;
             repaint();
             if (loadingAnimationAngle >= 360) {
                 loadingAnimationAngle = 0;
