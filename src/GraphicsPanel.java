@@ -19,7 +19,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private BufferedImage buttonBackground;
     private BufferedImage background;
     private Player player;
-    //private NightBorne e;
     private Spirit e;
 
     private ArrayList<NightBorne> enemies;
@@ -35,6 +34,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     private Timer loadingTimer;
     private int loadingAnimationAngle;
+    private Boss b;
 
     public GraphicsPanel() {
         pressedKeys = new boolean[128];
@@ -77,6 +77,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         player = new Player("src/assets/playerAnimations.png", 640, 135);
         // e = new NightBorne("src/assets/NightBorne.png", 100, 220);
         e = new Spirit(500, 200);
+        b = new Boss();
     }
 
     @Override
@@ -136,6 +137,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
             }
         }
+        b.render(g,player);
     }
 
     @Override

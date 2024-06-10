@@ -16,7 +16,7 @@ public class Player {
     private static final int MAX_STAMINA = 100;
     private static final double STAMINA_REGEN_RATE = 0.07;
     private static final double STAMINA_DEPLETION_RATE = 0.2;
-    private static final int MAX_HP = 100;
+    private static final double MAX_HP = 100;
     private static final double HEAL_RATE = 0.02; // Healing rate per update
 
     private boolean isLeft, jumping, falling, sprinting, doubleJumpAvailable, jumpKeyPressed;
@@ -260,7 +260,7 @@ public class Player {
         }
     }
 
-    public void takeDamage(int damage) {
+    public void takeDamage(double damage) {
         hp -= damage;
         if (hp < 0) {
             hp = 0;

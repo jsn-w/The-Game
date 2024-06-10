@@ -10,14 +10,11 @@ public class Boss{
     private boolean win;
     private int hp;
     private boolean hitAvailability;
-    private ArrayList<NightBorne> enemies;
     private int maxHp;
     private BufferedImage[][] bossAnimationsLeft,bossAnimationsRight;
     private BufferedImage spritesheet;
     private int i;
     private boolean isLeft;
-    private static final int IMAGE_WIDTH = 400;
-    private static final int IMAGE_HEIGHT = 233;
     private static final double MOVE_AMT = 1.8;
     private static final int FRAMES_PER_UPDATE = 25;
     private double xCoord;
@@ -26,10 +23,11 @@ public class Boss{
     private boolean heavyAttack;
     private boolean attack;
     private boolean attackDone;
-    private final int ATTACK_FRAMES = 35;
+    private int width;
+    private int height;
 
     public Boss(){
-        hp = 1000;
+        hp = 500;
         maxHp = 1000;
         phaseOneBeat = false;
         phaseTwoBeat = false;
@@ -43,14 +41,16 @@ public class Boss{
         heavyAttack = false;
         attack = false;
         attackDone = true;
-        loadImages();
+        loadImages("src/assets/cthulu.png");
     }
-    private void loadImages() {
+    private void loadImages(String file) {
         try {
-            spritesheet = ImageIO.read(new File("src/assets/cthulu.png"));
+            spritesheet = ImageIO.read(new File(file));
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
+        width = spritesheet.getWidth() / 15;
+        height = spritesheet.getHeight() / 7;
         loadAnimations();
     }
 
@@ -59,7 +59,7 @@ public class Boss{
         bossAnimationsRight = new BufferedImage[7][15];
         for (int i = 0; i < 7; i++){
             for (int j = 0; j < 15; j++){
-                 bossAnimationsRight[i][j] = spritesheet.getSubimage(spritesheet.getWidth() / 15 * j, spritesheet.getHeight() / 7 * i, 400, 233);
+                 bossAnimationsRight[i][j] = spritesheet.getSubimage(width * j, height * i, width, height);
             }
         }
         bossAnimationsLeft = Utility.flipEvery(bossAnimationsRight);
@@ -67,8 +67,7 @@ public class Boss{
     public void render(Graphics g, Player p) {
         drawHealthBar(g);
         int margin = -70;
-        isLeft = getXCoord() + IMAGE_WIDTH / 2 > p.getxCoord() + 50;
-
+        isLeft = getXCoord() + width / 2 > p.getxCoord() + 50;
         if ((getXCoord() + 480) + margin < p.getxCoord()) {
             isLeft = false;
             walk(g, FRAMES_PER_UPDATE);
@@ -90,44 +89,70 @@ public class Boss{
                 }
             }
             if (heavyAttack) {
-                heavyAttack(g, ATTACK_FRAMES);
-            }else{
-                punch(g, ATTACK_FRAMES);
+                heavyAttack(g, p);
+            } else {
+                punch(g, p);
             }
         } else {
             deathAnimation(g);
         }
     }
     private void deathAnimation(Graphics g){
-        g.drawImage(bossAnimationsLeft[7][i / 20], getXCoord(), getYCoord(), null);
-        i++;
         if (i == 11 * 20) {
             i = 0;
         }
+        if (!isLeft) {
+            g.drawImage(bossAnimationsRight[7][i/20], getXCoord(), getYCoord(), null);
+        } else {
+            g.drawImage(bossAnimationsLeft[7][i/20], getXCoord(), getYCoord(), null);
+        }
+        i++;
     }
-    private void punch(Graphics g, int frames){
-        if (i >= 7 * frames) {
+    private void punch(Graphics g, Player p){
+        if (i >= 7 * 35) {
             i = 0;
             attackDone = true;
         }
         if (!isLeft) {
-            g.drawImage(bossAnimationsRight[3][i/frames], getXCoord(), getYCoord(), null);
+            g.drawImage(bossAnimationsRight[3][i/35], getXCoord(), getYCoord(), null);
         } else {
-            g.drawImage(bossAnimationsLeft[3][i/frames], getXCoord(), getYCoord(), null);
+            g.drawImage(bossAnimationsLeft[3][i/35], getXCoord(), getYCoord(), null);
         }
         i++;
+        Rectangle atkRect;
+        if (isLeft){
+            atkRect = new Rectangle(getXCoord(),getYCoord(),width/2,height);
+        }else{
+            atkRect = new Rectangle(getXCoord()+width/2,getYCoord(),width/2,height);
+        }
+        if (atkRect.intersects(p.playerRect())){
+            p.takeDamage(.3);
+        }else if (atkRect.intersects(p.playerRect())){
+            p.takeDamage(.3);
+        }
     }
-    private void heavyAttack(Graphics g, int frames){
-        if (i >= 9 * frames) {
+    private void heavyAttack(Graphics g, Player p){
+        if (i >= 9 * 35) {
             i = 0;
             attackDone = true;
         }
         if (!isLeft) {
-            g.drawImage(bossAnimationsRight[4][i/frames], getXCoord(), getYCoord(), null);
+            g.drawImage(bossAnimationsRight[4][i/35], getXCoord(), getYCoord(), null);
         } else {
-            g.drawImage(bossAnimationsLeft[4][i/frames], getXCoord(), getYCoord(), null);
+            g.drawImage(bossAnimationsLeft[4][i/35], getXCoord(), getYCoord(), null);
         }
         i++;
+        Rectangle atkRect;
+        if (isLeft){
+            atkRect = new Rectangle(getXCoord(),getYCoord(),width/2,height);
+        }else{
+            atkRect = new Rectangle(getXCoord()+width/2,getYCoord(),width/2,height);
+        }
+        if (atkRect.intersects(p.playerRect())){
+            p.takeDamage(1);
+        }else if (atkRect.intersects(p.playerRect())){
+            p.takeDamage(1);
+        }
     }
     private void walk(Graphics g, int frames){
         if (i >= 6 * frames) {
@@ -154,13 +179,9 @@ public class Boss{
         g.setColor(Color.black);
         g.fillRoundRect(320, 100, 500, 40, 40, 40);
         g.setColor(Color.RED);
-        g.fillRoundRect(325, 105, 490, 30, 40, 40);
-
-//        g.fillRect(320,100,640 * (hp/maxHp), 50);
-//        g.setColor(Color.WHITE);
-//        g.fillRect(320+640 * (hp/maxHp),100,640 * ((maxHp-hp)/maxHp),50);
+        g.fillRoundRect(325, 105, (int)(490 * ((double)hp/maxHp)), 30, 40, 40);
         g.setFont(new Font("Courier New", Font.BOLD, 24));
-        g.setColor(Color.WHITE);
+        g.setColor(Color.YELLOW);
         g.drawString("boss health: " + hp + "/" + maxHp,335,125);
     }
     public void phaseOne(){
@@ -172,10 +193,18 @@ public class Boss{
             }
         }
     }
-    public void phaseTwo(ArrayList<NightBorne> e){
+    public void phaseTwo(ArrayList<NightBorne> e,Graphics g){
         if (!phaseTwoBeat) {
             hitAvailability = false;
             if (e.isEmpty()){
+                for(int j = 0; j <= 1000; j++){
+                    grow(g);
+                }
+                loadImages("src/assets/biggercthulu.png");
+                yCoord -= height/2-35;
+                for(int j = 0; j <= 500; j++){
+                    grow(g);
+                }
                 phaseTwoBeat = true;
                 hitAvailability = true;
             }
@@ -191,5 +220,19 @@ public class Boss{
     }
     public int getYCoord() {
         return (int) (yCoord);
+    }
+    private void grow(Graphics g){
+        if (i >= 5 * 100) {
+            i = 0;
+        }
+        if (!isLeft) {
+            g.drawImage(bossAnimationsRight[5][i / 100], getXCoord(), getYCoord(), null);
+        } else {
+            g.drawImage(bossAnimationsLeft[5][i / 100], getXCoord(), getYCoord(), null);
+        }
+        i++;
+    }
+    private Rectangle bossRect(){
+        return new Rectangle(getXCoord(), getYCoord(), width, height);
     }
 }
