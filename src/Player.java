@@ -25,7 +25,7 @@ public class Player {
     private int i;
     private double stamina;
     private BufferedImage[][] playerAnimationsLeft, playerAnimationsRight;
-    private BufferedImage playerSpritesheet, healthbar;
+    private BufferedImage playerSpritesheet, healthbar, staminabar;
 
     private enum State {
         IDLE, RUN, JUMP, FALL, ATTACK, TAKING_DAMAGE, DEAD, SHIELD_BLOCKING
@@ -48,6 +48,7 @@ public class Player {
         try {
             playerSpritesheet = ImageIO.read(new File(imagePath));
             healthbar = ImageIO.read(new File("src/assets/healthbar.png"));
+            staminabar = ImageIO.read(new File("src/assets/staminabar.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -195,19 +196,17 @@ public class Player {
     }
 
     private void drawStaminaBar(Graphics g) {
-        int barWidth = 200;
+        int barWidth = 258;
         int barHeight = 20;
-        int x = 20;
-        int y = MainFrame.screenHeight - 70;
+        int x = 51 + 40;
+        int y = 40 + 6 + 60;
 
-        g.setColor(Color.BLACK);
-        g.fillRect(x - 2, y - 2, barWidth + 4, barHeight + 4);
-
-        g.setColor(Color.DARK_GRAY);
+        g.setColor(Color.darkGray);
         g.fillRect(x, y, barWidth, barHeight);
 
-        g.setColor(Color.GRAY);
+        g.setColor(Color.gray);
         g.fillRect(x, y, (int) ((stamina / (double) MAX_STAMINA) * barWidth), barHeight);
+        g.drawImage(staminabar, 40, 100, null);
     }
 
     private void drawHealthBar(Graphics g) {
@@ -216,7 +215,7 @@ public class Player {
         int x = 51 + 40;
         int y = 40 + 6;
 
-        g.setColor(Color.RED);
+        g.setColor(Color.red);
         g.fillRect(x, y, barWidth, barHeight);
 
         g.setColor(new Color(100, 240, 100));
