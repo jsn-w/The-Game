@@ -1,10 +1,13 @@
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 
-public class Boss{
+public class Boss implements ActionListener{
     private boolean phaseOneBeat;
     private boolean phaseTwoBeat;
     private boolean win;
@@ -19,12 +22,15 @@ public class Boss{
     private static final int FRAMES_PER_UPDATE = 25;
     private double xCoord;
     private double yCoord;
-    private boolean fly;
+    private int fly;
     private boolean heavyAttack;
     private boolean attack;
     private boolean attackDone;
     private int width;
     private int height;
+    private Timer flyTimer;
+    private Timer bulletTimer;
+    private ArrayList<Bullet> bullets;
 
     public Boss(){
         hp = 500;
@@ -37,10 +43,14 @@ public class Boss{
         isLeft = true;
         xCoord = 300;
         yCoord = 400;
-        fly = false;
+        fly = 0;
+        bullets = new ArrayList<>();
         heavyAttack = false;
         attack = false;
         attackDone = true;
+        flyTimer = new Timer(10000, this);
+        flyTimer.start();
+        bulletTimer = new Timer(2000,null);
         loadImages("src/assets/cthulu.png");
     }
     private void loadImages(String file) {
@@ -70,11 +80,19 @@ public class Boss{
         isLeft = getXCoord() + width / 2 > p.getxCoord() + 50;
         if ((getXCoord() + 480) + margin < p.getxCoord()) {
             isLeft = false;
-            walk(g, FRAMES_PER_UPDATE);
+            if (fly % 2 == 1){
+                fly(g);
+            }else {
+                walk(g, FRAMES_PER_UPDATE);
+            }
             xCoord += MOVE_AMT;
         } else if ((getXCoord() - 100) - margin > p.getxCoord()) {
             isLeft = true;
-            walk(g, FRAMES_PER_UPDATE);
+            if (fly % 2 == 1){
+                fly(g);
+            }else {
+                walk(g, FRAMES_PER_UPDATE);
+            }
             xCoord -= MOVE_AMT;
         } else if ((getXCoord() - 100) - margin <= p.getxCoord() && (getXCoord() + 480) + margin >= p.getxCoord()) {
             if (attackDone) {
@@ -165,6 +183,17 @@ public class Boss{
         }
         i++;
     }
+    private void fly(Graphics g){
+        if (i >= 6 * 20) {
+            i = 0;
+        }
+        if (!isLeft) {
+            g.drawImage(bossAnimationsRight[2][i/20], getXCoord(), getYCoord(), null);
+        } else {
+            g.drawImage(bossAnimationsLeft[2][i/20], getXCoord(), getYCoord(), null);
+        }
+        i++;
+    }
     public boolean isPhaseOneBeat(){
         return phaseOneBeat;
     }
@@ -234,5 +263,34 @@ public class Boss{
     }
     private Rectangle bossRect(){
         return new Rectangle(getXCoord(), getYCoord(), width, height);
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() instanceof Timer) {
+            if (e.getSource() == flyTimer) {
+                if (fly % 2 == 0) {
+                    bulletTimer.start();
+                    while (yCoord > 300) {
+                        fly(this.spritesheet.getGraphics());
+                        yCoord -= 1.4;
+                    }
+                    if (yCoord < 300) {
+                        yCoord = 300;
+                    }
+                } else {
+                    while (yCoord < 400) {
+                        fly(this.spritesheet.getGraphics());
+                        yCoord += 1.4;
+                    }
+                    if (yCoord > 400) {
+                        yCoord = 400;
+                    }
+                    bulletTimer.stop();
+                }
+                fly++;
+            }else if(e.getSource() == bulletTimer){
+                bullets.add(new Bullet((int)xCoord,(int)yCoord,0,1.4));
+            }
+        }
     }
 }
