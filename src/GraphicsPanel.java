@@ -20,9 +20,11 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private BufferedImage background;
     private Player player;
     private Spirit e;
+    private Death f;
 
     private ArrayList<NightBorne> enemies;
-    private ArrayList<Bullet> bullets;
+    public static ArrayList<Bullet> bullets;
+    public static ArrayList<Spirit> spirits;
 
     private boolean[] pressedKeys;
 
@@ -40,6 +42,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         pressedKeys = new boolean[128];
         enemies = new ArrayList<>();
         bullets = new ArrayList<>();
+        spirits = new ArrayList<>();
         backgroundPosition = (double) -MainFrame.screenWidth / 2;
         buttonState = new int[3];
 
@@ -77,7 +80,9 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         player = new Player("src/assets/playerAnimations.png", 640, 135);
         // e = new NightBorne("src/assets/NightBorne.png", 100, 220);
         e = new Spirit(500, 200);
+
         b = new Boss();
+        f = new Death(500, 400);
     }
 
     @Override
@@ -125,16 +130,16 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         g.drawImage(background, (int) backgroundPosition, 0, null);
         player.render(g, this);
         e.render(g, player, bullets);
+        f.render(g, player);
 
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).move(g);
-            if ((bullets.get(i).getyCoord() > 550 || bullets.get(i).getyCoord() < -50) || bullets.get(i).enemyRect().intersects(player.playerRect())){
+            if ((bullets.get(i).getyCoord() > 550 || bullets.get(i).getyCoord() < -200) || bullets.get(i).enemyRect().intersects(player.playerRect())){
                 if (bullets.get(i).enemyRect().intersects(player.playerRect())){
                     player.takeDamage(1);
                 }
                 bullets.remove(i);
                 i--;
-
             }
         }
         b.render(g,player);
