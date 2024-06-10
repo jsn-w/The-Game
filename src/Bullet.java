@@ -51,6 +51,6 @@ public class Bullet {
     public Rectangle enemyRect(){
         int imageHeight = img.getHeight();
         int imageWidth = img.getWidth();
-        return new Rectangle((int) xCoord, (int)yCoord, imageWidth, imageHeight);
+        return new Rectangle((int) (xCoord + GraphicsPanel.backgroundPosition), (int)yCoord, imageWidth, imageHeight);
     }
 }
