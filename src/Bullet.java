@@ -30,6 +30,10 @@ public class Bullet {
         yCoord += moveAmt;
     }
 
+    public void setImg(BufferedImage img) {
+        this.img = img;
+    }
+
     private void loadImages() {
         try {
             img = ImageIO.read(new File("src/assets/bullet.png"));
