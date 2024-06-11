@@ -7,43 +7,27 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 
-public class Boss implements ActionListener{
-    private boolean phaseOneBeat;
-    private boolean phaseTwoBeat;
-    private boolean onPhaseThree;
-    private boolean win;
-    private int hp;
-    private boolean hitAvailability;
-    private int maxHp;
-    private BufferedImage[][] bossAnimationsLeft,bossAnimationsRight;
-    private BufferedImage spritesheet;
-    private int i;
-    private boolean isLeft;
+public class Boss implements ActionListener {
+
     private static final double MOVE_AMT = 1.8;
     private static final int FRAMES_PER_UPDATE = 25;
-    private double xCoord;
-    private double yCoord;
-    private int fly;
-    private boolean heavyAttack;
-    private boolean attack;
-    private boolean attackDone;
-    private int width;
-    private int height;
-    private Timer flyTimer;
-    private Timer bulletTimer;
+
+    private boolean phaseOneBeat, phaseTwoBeat, onPhaseThree, win, hitAvailability;
+    private int hp, maxHp, i, fly, width, height;
+    private double xCoord, yCoord;
+    private boolean heavyAttack, attack, attackDone, falling, isLeft;
+    private Timer flyTimer, bulletTimer;
     private ArrayList<BossBullet> bullets;
     private Player p;
-    private boolean falling;
     private ArrayList<Object> mobs;
+
+    private BufferedImage[][] bossAnimationsLeft,bossAnimationsRight;
+    private BufferedImage spritesheet;
 
     public Boss(Player p, Graphics g){
         this.p = p;
         hp = 500;
         maxHp = 1000;
-        phaseOneBeat = false;
-        phaseTwoBeat = false;
-        onPhaseThree = false;
-        win = false;
         hitAvailability = true;
         i = 0;
         isLeft = true;
@@ -51,8 +35,6 @@ public class Boss implements ActionListener{
         yCoord = 400;
         fly = 0;
         bullets = new ArrayList<>();
-        heavyAttack = false;
-        attack = false;
         attackDone = true;
         flyTimer = new Timer(5000, this);
         flyTimer.start();
@@ -60,7 +42,6 @@ public class Boss implements ActionListener{
         bulletTimer.start();
         bullets = new ArrayList<>();
         mobs = new ArrayList<>();
-        falling = false;
         loadImages("src/assets/bossSpritesheet.png");
     }
 
@@ -92,12 +73,12 @@ public class Boss implements ActionListener{
         isLeft = getXCoord() + width / 2 > p.getxCoord() + 50;
         if(!hitAvailability){
             idle(g);
-            if (mobs.get(0) instanceof NightBorne) {
-                ((NightBorne) mobs.get(0)).render(g,p,mobs);
-            }else if(mobs.get(0) instanceof Death) {
-                ((Death) mobs.get(0)).render(g,p,mobs);
+            if (mobs.getFirst() instanceof NightBorne) {
+                ((NightBorne) mobs.getFirst()).render(g,p,mobs);
+            }else if(mobs.getFirst() instanceof Death) {
+                ((Death) mobs.getFirst()).render(g,p,mobs);
             }
-        }else {
+        } else {
             if (attackDone) {
                 if ((getXCoord() + width -100) + margin < p.getxCoord()) {
                     isLeft = false;
@@ -142,7 +123,7 @@ public class Boss implements ActionListener{
                             }
                         }
                     } else {
-                        walk(g, FRAMES_PER_UPDATE);
+                        walk(g);
                     }
                     xCoord += MOVE_AMT;
                 } else if ((getXCoord() - 100) - margin > p.getxCoord()) {
@@ -188,11 +169,11 @@ public class Boss implements ActionListener{
                             }
                         }
                     } else {
-                        walk(g, FRAMES_PER_UPDATE);
+                        walk(g);
                     }
                     xCoord -= MOVE_AMT;
                 } else if ((getXCoord() - 100) - margin <= p.getxCoord() && (getXCoord() + width) + margin >= p.getxCoord()) {
-                    if (fly % 2 == 0 && falling == false) {
+                    if (fly % 2 == 0 && !falling) {
                         if (attackDone) {
                             if (Math.random() < .25) {
                                 heavyAttack = true;
@@ -343,14 +324,14 @@ public class Boss implements ActionListener{
             p.takeDamage(1);
         }
     }
-    private void walk(Graphics g, int frames){
-        if (i >= 6 * frames) {
+    private void walk(Graphics g){
+        if (i >= 6 * Boss.FRAMES_PER_UPDATE) {
             i = 0;
         }
         if (!isLeft) {
-            g.drawImage(bossAnimationsRight[1][i/frames], getXCoord(), getYCoord(), null);
+            g.drawImage(bossAnimationsRight[1][i/ Boss.FRAMES_PER_UPDATE], getXCoord(), getYCoord(), null);
         } else {
-            g.drawImage(bossAnimationsLeft[1][i/frames], getXCoord(), getYCoord(), null);
+            g.drawImage(bossAnimationsLeft[1][i/ Boss.FRAMES_PER_UPDATE], getXCoord(), getYCoord(), null);
         }
         i++;
     }
@@ -436,16 +417,17 @@ public class Boss implements ActionListener{
         i++;
     }
     private void shoot(Player p, ArrayList<BossBullet> b){
-        double angle = Math.atan2( (p.getyCoord() - (int)yCoord + 50) , (p.getxCoord() - getXCoord() + 50)); // adjust these values accordingly to player size
+        double angle = Math.atan2(p.getyCoord() - (int) yCoord + 128, p.getxCoord() - getXCoord() + 128);
         if (isLeft) {
             b.add(new BossBullet(getXCoord()+width/4, (int) yCoord + height / 2, angle, 1));
-        }else{
+        } else {
             b.add(new BossBullet(getXCoord() + 3 * width/4, (int) yCoord + height / 2, angle, 1));
         }
     }
     private Rectangle bossRect(){
         return new Rectangle(getXCoord(), getYCoord(), width, height);
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() instanceof Timer) {
