@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Spirit {
@@ -56,8 +57,7 @@ public class Spirit {
             }
             idleAnimation(g);
         } else if (health <= 0){
-            deathAnimation(g);
-            s.remove(this);
+            deathAnimation(g, s);
         }
 
         if (enemyRect().intersects(p.playerRect())){
@@ -119,7 +119,7 @@ public class Spirit {
         }
     }
 
-    private void deathAnimation(Graphics g){
+    private void deathAnimation(Graphics g, ArrayList<Spirit> s){
         i++;
         if (i < DEATH_FRAMES * 5){
             if (isLeft){
@@ -127,6 +127,9 @@ public class Spirit {
             } else {
                 g.drawImage(spiritAnimations[1][i / DEATH_FRAMES], getxCoord(), getyCoord(), null);
             }
+        } else {
+            i = 0;
+            s.remove(this);
         }
     }
 
