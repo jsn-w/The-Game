@@ -67,7 +67,6 @@ public class Boss implements ActionListener {
         bossAnimationsLeft = Utility.flipEvery(bossAnimationsRight);
     }
     private void render(Graphics g, Player p) {
-        takeDamage(p);
         drawHealthBar(g);
         int margin = -70;
         isLeft = getXCoord() + width / 2 > p.getxCoord() + 50;
@@ -79,6 +78,7 @@ public class Boss implements ActionListener {
                 ((Death) mobs.getFirst()).render(g,p,mobs);
             }
         } else {
+            takeDamage(p);
             if (attackDone) {
                 if ((getXCoord() + width -100) + margin < p.getxCoord()) {
                     isLeft = false;
@@ -319,9 +319,9 @@ public class Boss implements ActionListener {
             atkRect = new Rectangle(getXCoord()+width/2,getYCoord(),width/2,height);
         }
         if (atkRect.intersects(p.playerRect())){
-            p.takeDamage(1);
+            p.takeDamage(.5);
         }else if (atkRect.intersects(p.playerRect())){
-            p.takeDamage(1);
+            p.takeDamage(.5);
         }
     }
     private void walk(Graphics g){
@@ -376,10 +376,10 @@ public class Boss implements ActionListener {
             mobs.add(new Death(500, 200));
         }
     }
-    public void phaseTwo(ArrayList<Object> e,Graphics g, Player p){
-        render(g,p);
+    public void phaseTwo(Graphics g, Player p){
         hitAvailability = false;
-        if (e.isEmpty()) {
+        render(g,p);
+        if (mobs.isEmpty()) {
             for (int j = 0; j <= 1000; j++) {
                 grow(g);
             }
@@ -439,7 +439,6 @@ public class Boss implements ActionListener {
             }
             if(e.getSource() == bulletTimer && fly % 2 == 1){
                 shoot(p,bullets);
-                System.out.println("SHOOT"); // not printing
             }
         }
     }
