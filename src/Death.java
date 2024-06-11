@@ -44,7 +44,7 @@ public class Death {
         return (int) yCoord;
     }
 
-    public void render(Graphics g, Player p){
+    public void render(Graphics g, Player p,ArrayList<Object> mobs){
         if (p.getxCoord() < getxCoord()){
             isLeft = true;
         } else{
@@ -80,7 +80,7 @@ public class Death {
             }
             drawHealthBar(g);
         } else {
-            deathAnimation(g);
+            deathAnimation(g,mobs);
         }
     }
 
@@ -180,7 +180,7 @@ public class Death {
         }
     }
 
-    private void deathAnimation(Graphics g){
+    private void deathAnimation(Graphics g,ArrayList<Object> mobs){
         i++;
         if (i < DEATH_FRAMES * 18){
             if (isLeft){
@@ -189,6 +189,7 @@ public class Death {
                 g.drawImage(enemyAnimations[1][i / DEATH_FRAMES], getxCoord(), getyCoord(), null);
             }
         }
+        mobs.remove(this);
     }
 
     public Rectangle enemyRect() {

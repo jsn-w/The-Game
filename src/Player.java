@@ -19,7 +19,7 @@ public class Player {
     private static final double MAX_HP = 100;
     private static final double HEAL_RATE = 0.02; // Healing rate per update
 
-    private boolean isLeft, jumping, falling, sprinting, doubleJumpAvailable, jumpKeyPressed;
+    private boolean isLeft, jumping, falling, sprinting, doubleJumpAvailable, jumpKeyPressed, dead;
     private double xCoord, yCoord, score, jumpVelocity;
     private double hp;
     private int i;
@@ -71,11 +71,15 @@ public class Player {
 
         if (pKeys[65] || pKeys[37]) {
             moveLeft();
-            state = State.RUN;
+            if (state != State.ATTACK) {
+                state = State.RUN;
+            }
         }
         if (pKeys[68] || pKeys[39]) {
             moveRight();
-            state = State.RUN;
+            if (state != State.ATTACK) {
+                state = State.RUN;
+            }
         }
         if (pKeys[87] || pKeys[38]) {
             if (!jumpKeyPressed) {
@@ -196,14 +200,14 @@ public class Player {
         int barWidth = 258;
         int barHeight = 20;
         int x = 51 + 40;
-        int y = 40 + 6 + 60;
+        int y = 40 + 6 + 40;
 
         g.setColor(Color.darkGray);
         g.fillRect(x, y, barWidth, barHeight);
 
         g.setColor(Color.gray);
         g.fillRect(x, y, (int) ((stamina / (double) MAX_STAMINA) * barWidth), barHeight);
-        g.drawImage(staminabar, 40, 100, null);
+        g.drawImage(staminabar, 40, 80, null);
     }
 
     private void drawHealthBar(Graphics g) {
@@ -308,7 +312,9 @@ public class Player {
 
     public void updatePosition() {
         if (jumping) {
-            state = State.JUMP;
+            if (state != State.ATTACK) {
+                state = State.JUMP;
+            }
             yCoord -= jumpVelocity;
             jumpVelocity -= GRAVITY;
             if (jumpVelocity <= 0) {
@@ -316,7 +322,9 @@ public class Player {
                 falling = true;
             }
         } else if (falling) {
-            state = State.FALL;
+            if (state != State.ATTACK) {
+                state = State.FALL;
+            }
             yCoord += jumpVelocity;
             jumpVelocity += GRAVITY;
             if (yCoord >= FLOOR_Y - IMAGE_HEIGHT + 50) {
@@ -326,7 +334,6 @@ public class Player {
             }
         }
     }
-
 
     private void updateStamina(boolean shiftPressed) {
         if (!sprinting && stamina < MAX_STAMINA && !shiftPressed) {
@@ -341,11 +348,12 @@ public class Player {
         hp -= damage;
         if (hp < 0) {
             hp = 0;
+            dead = true;
         }
     }
 
     private void heal() {
-        if (hp < MAX_HP) {
+        if (hp < MAX_HP && !dead) {
             hp += HEAL_RATE;
             if (hp > MAX_HP) {
                 hp = MAX_HP;
@@ -363,4 +371,5 @@ public class Player {
         int margin = 100;
         return new Rectangle((int) xCoord + margin, (int) yCoord + margin, IMAGE_WIDTH - 2*margin, IMAGE_HEIGHT - 2*margin);
     }
+
 }
