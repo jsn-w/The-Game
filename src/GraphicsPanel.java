@@ -208,6 +208,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         g.setColor(new Color(240, 240, 240));
         g.drawString("You have LOST!", 490, 300);
         g.drawString("Thanks for playing!!!", 450, 350);
+        player.render(g, this);
 
     }
 

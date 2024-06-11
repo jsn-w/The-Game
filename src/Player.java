@@ -17,7 +17,7 @@ public class Player {
     private static final double STAMINA_REGEN_RATE = 0.07;
     private static final double STAMINA_DEPLETION_RATE = 0.2;
     private static final double MAX_HP = 100;
-    private static final double HEAL_RATE = 0.02; // Healing rate per update
+    private static double HEAL_RATE = 0.02; // Healing rate per update
 
     public static final double PLAYER_DAMAGE = 0.25;
 
@@ -69,54 +69,55 @@ public class Player {
     }
 
     public void render(Graphics g, GraphicsPanel panel) {
+        if (!dead) {
 
-        boolean[] pKeys = panel.getPressedKeys();
+            heal();
+            boolean[] pKeys = panel.getPressedKeys();
 
-        if (pKeys[65] || pKeys[37]) {
-            moveLeft();
-            if (state != State.ATTACK) {
-                state = State.RUN;
+            if (pKeys[65] || pKeys[37]) {
+                moveLeft();
+                if (state != State.ATTACK) {
+                    state = State.RUN;
+                }
             }
-        }
-        if (pKeys[68] || pKeys[39]) {
-            moveRight();
-            if (state != State.ATTACK) {
-                state = State.RUN;
+            if (pKeys[68] || pKeys[39]) {
+                moveRight();
+                if (state != State.ATTACK) {
+                    state = State.RUN;
+                }
             }
-        }
-        if (pKeys[87] || pKeys[38]) {
-            if (!jumpKeyPressed) {
-                jumpKeyPressed = true;
-                jump();
+            if (pKeys[87] || pKeys[38]) {
+                if (!jumpKeyPressed) {
+                    jumpKeyPressed = true;
+                    jump();
+                }
+            } else {
+                jumpKeyPressed = false;
             }
+            sprinting = pKeys[16] && stamina > 0;
+
+            if (!pKeys[65] && !pKeys[37] &&!pKeys[68] && !pKeys[39] &&!pKeys[87] && !pKeys[38] && !jumping && !falling && state != State.ATTACK) {
+                state = State.IDLE;
+            }
+
+            switch (state) {
+                case IDLE -> idle(g);
+                case RUN -> run(g);
+                case JUMP -> jump(g);
+                case FALL -> fall(g);
+                case ATTACK -> attack(g);
+                case DEAD -> dead(g);
+            }
+
+            updatePosition();
+            updateStamina(pKeys[16]);
+            drawStaminaBar(g);
+            drawHealthBar(g);
         } else {
-            jumpKeyPressed = false;
-        }
-        sprinting = pKeys[16] && stamina > 0;
-        
-        if (!pKeys[65] && !pKeys[37] &&!pKeys[68] && !pKeys[39] &&!pKeys[87] && !pKeys[38] && !jumping && !falling && state != State.ATTACK) {
-            state = State.IDLE;
+            dead(g);
+            System.out.println("dead");
         }
 
-        switch (state) {
-            case IDLE -> idle(g);
-            case RUN -> run(g);
-            case JUMP -> jump(g);
-            case FALL -> fall(g);
-            case ATTACK -> attack(g);
-            case DEAD -> dead(g);
-//            case SHIELD_BLOCKING ->
-        }
-
-        updatePosition();
-        updateStamina(pKeys[16]);
-        heal(); // Heal the player gradually
-
-        drawLines(g);
-        drawStaminaBar(g);
-        drawHealthBar(g);
-
-        g.drawLine(getxCoord() + 128, 0, getxCoord() + 128, 500);
     }
 
     private void idle(Graphics g) {
@@ -182,7 +183,7 @@ public class Player {
 
     private void dead (Graphics g) {
         if (i >= 7 * FRAMES_PER_UPDATE) {
-            i = 0;
+            i = 7*FRAMES_PER_UPDATE;
         }
         if (!isLeft) {
             g.drawImage(playerAnimationsRight[6][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
@@ -352,6 +353,8 @@ public class Player {
         if (hp < 0) {
             hp = 0;
             dead = true;
+            HEAL_RATE = 0;
+            i = 0;
         }
     }
 

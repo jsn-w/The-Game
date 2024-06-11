@@ -84,7 +84,7 @@ public class NightBorne {
                 case SLASHING -> slash(g, p);
                 case DYING -> deathAnimation(g,mobs);
             }
-            drawLines(g);
+//            drawLines(g);
             takeDamage(p);
             if (health <= 0) {
                 state = State.DYING;
