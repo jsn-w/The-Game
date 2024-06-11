@@ -57,7 +57,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
         loadingAnimationAngle = 0;
         loadingTimer = new Timer(1, this);
-
         state = State.MENU;
     }
 
@@ -94,15 +93,10 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         super.paintComponent(g);
 
         switch (state) {
-            case MENU:
-                renderMenu(g);
-                break;
-            case LOADING:
-                renderLoading(g);
-                break;
-            case GAME:
-                renderGame(g);
-                break;
+            case MENU -> renderMenu(g);
+            case LOADING -> renderLoading(g);
+            case GAME -> renderGame(g);
+            case DEAD -> renderDead(g);
         }
     }
 
@@ -132,9 +126,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     private void renderGame(Graphics g) {
         g.drawImage(background, (int) backgroundPosition, 0, null);
-        player.render(g, this);
         e.render(g, player, bullets, spirits);
-        f.render(g, player);
+//        f.render(g, player);
 
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).move(g);
@@ -149,7 +142,12 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         for (int i = 0; i < spirits.size(); i++){
             spirits.get(i).render(g, player,bullets, spirits);
         }
-        b.render(g,player);
+//        b.render(g,player);
+        player.render(g, this);
+    }
+
+    private void renderDead(Graphics g) {
+        g.drawImage(background, (int) backgroundPosition, 0, null);
     }
 
     @Override

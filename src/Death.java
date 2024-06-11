@@ -49,10 +49,14 @@ public class Death {
             isLeft = false;
         }
 
+        if (enemyRect().intersects(p.playerRect())){
+            p.takeDamage(0.1);
+        }
+
         if (health > 0) {
             if (ability == -1) {
                 move(g);
-                int rando = (int) (Math.random() * 10);
+                int rando = (int) (Math.random() * 1000);
                 if (rando == 1){
                     ability = 1;
                 } else if (rando == 2){
@@ -71,10 +75,6 @@ public class Death {
                 summon(g, GraphicsPanel.spirits);
             } else {
                 swordSlam(g, p, GraphicsPanel.bullets);
-            }
-
-            if (enemyRect().intersects(p.playerRect())){
-                p.takeDamage(1);
             }
         } else {
             deathAnimation(g);
@@ -141,7 +141,7 @@ public class Death {
                 g.drawImage(enemyAnimations[3][i / SUMMON_FRAMES], getxCoord(), getyCoord(), null);
             }
         } else {
-            s.add(new Spirit((int) xCoord, (int)(yCoord - 300)));
+            s.add(new Spirit((int) xCoord, (int)(yCoord - 100)));
             i = 0;
             ability = -1;
         }
@@ -174,9 +174,9 @@ public class Death {
     }
 
     public Rectangle enemyRect() {
-        int imageHeight = 492;
-        int imageWidth = 480;
-        Rectangle rect = new Rectangle((int) xCoord, (int) yCoord, imageWidth, imageHeight);
+        int imageHeight = deathSpritesheet.getHeight() / 5;
+        int imageWidth = deathSpritesheet.getWidth() / 18;
+        Rectangle rect = new Rectangle(getxCoord(), getyCoord(), imageWidth, imageHeight);
         return rect;
     }
 }

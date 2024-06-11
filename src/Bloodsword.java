@@ -29,6 +29,6 @@ public class Bloodsword extends Bullet{
     public Rectangle enemyRect(){
         int imageHeight = img.getHeight();
         int imageWidth = img.getWidth();
-        return new Rectangle((int)(super.getxCoord() + GraphicsPanel.backgroundPosition), super.getyCoord(), imageWidth, imageHeight);
+        return new Rectangle((super.getxCoord()), super.getyCoord(), imageWidth, imageHeight);
     }
 }
