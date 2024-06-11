@@ -101,7 +101,7 @@ public class Boss implements ActionListener{
             }
         }else {
             if (attackDone) {
-                if ((getXCoord() + 480) + margin < p.getxCoord()) {
+                if ((getXCoord() + width -100) + margin < p.getxCoord()) {
                     isLeft = false;
                     if (fly % 2 == 1) {
                         bulletTimer.start();
@@ -114,12 +114,12 @@ public class Boss implements ActionListener{
                                 yCoord = -100;
                             }
                         }else {
-                            if (yCoord >= 300) {
+                            if (yCoord >= 200) {
                                 fly(g);
                                 yCoord -= MOVE_AMT / 2;
                             }
-                            if (yCoord < 300) {
-                                yCoord = 300;
+                            if (yCoord < 200) {
+                                yCoord = 200;
                             }
                         }
                         fly(g);
@@ -160,12 +160,12 @@ public class Boss implements ActionListener{
                                 yCoord = -100;
                             }
                         }else {
-                            if (yCoord >= 300) {
+                            if (yCoord >= 200) {
                                 fly(g);
                                 yCoord -= MOVE_AMT / 2;
                             }
-                            if (yCoord < 300) {
-                                yCoord = 300;
+                            if (yCoord < 200) {
+                                yCoord = 200;
                             }
                         }
                         fly(g);
@@ -193,7 +193,7 @@ public class Boss implements ActionListener{
                         walk(g, FRAMES_PER_UPDATE);
                     }
                     xCoord -= MOVE_AMT;
-                } else if ((getXCoord() - 100) - margin <= p.getxCoord() && (getXCoord() + 480) + margin >= p.getxCoord()) {
+                } else if ((getXCoord() - 100) - margin <= p.getxCoord() && (getXCoord() + width) + margin >= p.getxCoord()) {
                     if (fly % 2 == 0 && falling == false) {
                         if (attackDone) {
                             if (Math.random() < .25) {
@@ -222,12 +222,12 @@ public class Boss implements ActionListener{
                                     yCoord = -100;
                                 }
                             }else {
-                                if (yCoord >= 300) {
+                                if (yCoord >= 200) {
                                     fly(g);
                                     yCoord -= MOVE_AMT / 2;
                                 }
-                                if (yCoord < 300) {
-                                    yCoord = 300;
+                                if (yCoord < 200) {
+                                    yCoord = 200;
                                 }
                             }
                             fly(g);
@@ -268,7 +268,7 @@ public class Boss implements ActionListener{
                 if (!removed) {
                     if ((bullets.get(i).getyCoord() > 550 || bullets.get(i).getyCoord() < -200) || bullets.get(i).enemyRect().intersects(p.playerRect())) {
                         if (bullets.get(i).enemyRect().intersects(p.playerRect())) {
-                            p.takeDamage(1);
+                            p.takeDamage(10);
                         }
                         bullets.remove(i);
                         i--;
@@ -437,9 +437,9 @@ public class Boss implements ActionListener{
     private void shoot(Player p, ArrayList<BossBullet> b){
         double angle = Math.atan2( (p.getyCoord() - (int)yCoord + 50) , (p.getxCoord() - getXCoord() + 50)); // adjust these values accordingly to player size
         if (isLeft) {
-            b.add(new BossBullet(getXCoord()+width/4, (int) yCoord + height / 2, angle, 0.5));
+            b.add(new BossBullet(getXCoord()+width/4, (int) yCoord + height / 2, angle, 1));
         }else{
-            b.add(new BossBullet(getXCoord() + 3 * width/4, (int) yCoord + height / 2, angle, 0.5));
+            b.add(new BossBullet(getXCoord() + 3 * width/4, (int) yCoord + height / 2, angle, 1));
         }
     }
     private Rectangle bossRect(){
