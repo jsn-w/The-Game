@@ -200,4 +200,8 @@ public class Death {
         Rectangle rect = new Rectangle(getxCoord(), getyCoord(), imageWidth, imageHeight);
         return rect;
     }
+
+    public double getHealth() {
+        return health;
+    }
 }

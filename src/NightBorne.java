@@ -206,4 +206,8 @@ public class NightBorne {
     public int getYCoord() {
         return (int) yCoord;
     }
+
+    public double getHealth() {
+        return health;
+    }
 }

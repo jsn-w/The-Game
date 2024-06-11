@@ -145,4 +145,8 @@ public class Spirit {
         Rectangle rect = new Rectangle((getxCoord() + 70), (int)yCoord + 70, imageWidth, imageHeight);
         return rect;
     }
+
+    public int getHealth() {
+        return health;
+    }
 }

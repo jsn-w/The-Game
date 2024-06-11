@@ -16,8 +16,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     private BufferedImage menuBackground, buttonBackground, background, deathBackground;
     private Player player;
-    private NightBorne e;
-    private Death f;
+    private NightBorne nightBorne;
+    private Death death;
 
     private ArrayList<NightBorne> enemies;
     public static ArrayList<Bullet> bullets;
@@ -89,10 +89,10 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         }
 
         player = new Player("src/assets/playerAnimations.png", 640, 135);
-        e = new NightBorne("src/assets/NightBorne.png", 100, 220);
+        nightBorne = new NightBorne("src/assets/NightBorne.png", 100, 220);
         // e = new Spirit(500, 200);
 
-        f = new Death(500, 200);
+        death = new Death(500, 200);
     }
 
     @Override
@@ -151,8 +151,23 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             bossSpawned = true;
         }
         g.drawImage(background, (int) backgroundPosition, 0, null);
-        e.render(g, player, mobs);
-        f.render(g, player, mobs);
+        nightBorne.render(g, player, mobs);
+        death.render(g, player, mobs);
+        boolean win = true;
+        if (nightBorne.getHealth() > 0 && death.getHealth() > 0) {
+            win = false;
+        }
+
+        for (Spirit spirit : spirits) {
+            if (spirit.getHealth() > 0) {
+                win = false;
+                break;
+            }
+        }
+
+        if (win) {
+            state = State.WIN;
+        }
 
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).move(g);
@@ -188,11 +203,21 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     private void renderDead(Graphics g) {
         g.drawImage(background, (int) backgroundPosition, 0, null);
-        g.drawImage(deathBackground, 0, 0, null);
+//        g.drawImage(deathBackground, 0, 0, null);
+        g.setFont(new Font("Source Code Pro", Font.BOLD, 40));
+        g.setColor(new Color(240, 240, 240));
+        g.drawString("You have LOST!", 490, 300);
+        g.drawString("Thanks for playing!!!", 450, 350);
+
     }
 
     private void renderWin(Graphics g) {
-        //eeeeeeeeee
+        g.drawImage(background, (int) backgroundPosition, 0, null);
+        g.setFont(new Font("Source Code Pro", Font.BOLD, 40));
+        g.setColor(new Color(240, 240, 240));
+        g.drawString("You have WON!", 490, 300);
+        g.drawString("Thanks for playing!!!", 450, 350);
+
     }
 
     private void playMenu() {
