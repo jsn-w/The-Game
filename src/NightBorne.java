@@ -17,7 +17,7 @@ public class NightBorne {
     private BufferedImage spritesheet;
     private double xCoord;
     private final double yCoord;
-    private boolean isLeft;
+    private boolean isLeft, isDead;
     private int i;
     private int health;
 
@@ -31,7 +31,7 @@ public class NightBorne {
         xCoord = x;
         yCoord = y;
         state = State.DASHING;
-        health = 101;
+        health = 100;
         i = 0;
         loadImages(img);
     }
@@ -56,33 +56,40 @@ public class NightBorne {
     }
 
     public void render(Graphics g, Player p,ArrayList<Object> mobs) {
-        if (health <= 0){
-            state = State.DYING;
-        }
-
-        int margin = -150;
-        isLeft = getXCoord() + IMAGE_WIDTH / 2 > p.getxCoord() + 128;
-
-        switch (state) {
-            case DASHING -> {
-
-                if ((getXCoord() + 480) + margin < p.getxCoord()) {
-                    dash(g);
-                    xCoord += MOVE_AMT;
-                } else if ((getXCoord() - 256) - margin > p.getxCoord()) {
-                    dash(g);
-                    xCoord -= MOVE_AMT;
-                } else if ((getXCoord() - 256) - margin <= p.getxCoord() && (getXCoord() + 480) + margin >= p.getxCoord()) {
-                    state = State.CHARGING;
-                    i = 0;
-                }
+        if (!isDead) {
+            if (health <= 0){
+                state = State.DYING;
             }
-            case CHARGING -> charge(g);
-            case SLASHING -> slash(g, p);
-            case DYING -> deathAnimation(g,mobs);
+
+            int margin = -150;
+            isLeft = getXCoord() + IMAGE_WIDTH / 2 > p.getxCoord() + 128;
+
+            switch (state) {
+                case DASHING -> {
+
+                    if ((getXCoord() + 480) + margin < p.getxCoord()) {
+                        dash(g);
+                        xCoord += MOVE_AMT;
+                    } else if ((getXCoord() - 256) - margin > p.getxCoord()) {
+                        dash(g);
+                        xCoord -= MOVE_AMT;
+                    } else if ((getXCoord() - 256) - margin <= p.getxCoord() && (getXCoord() + 480) + margin >= p.getxCoord()) {
+                        state = State.CHARGING;
+                        i = 0;
+                    }
+                }
+                case CHARGING -> charge(g);
+                case SLASHING -> slash(g, p);
+                case DYING -> deathAnimation(g,mobs);
+            }
+            drawLines(g);
+            takeDamage(p);
+            if (health <= 0) {
+//            i = 0;
+                state = State.DYING;
+            }
         }
-        drawLines(g);
-        takeDamage(p);
+
     }
 
     private void drawLines(Graphics g) {
@@ -154,12 +161,17 @@ public class NightBorne {
     }
 
     public void deathAnimation(Graphics g, ArrayList<Object> mobs){
-        g.drawImage(enemyAnimationsLeft[4][i / 20], getXCoord(), getYCoord(), null);
-        i++;
-        if (i == 23 * 20) {
-            i = 0;
+        if (i >= 22 * 20) {
+            System.out.println("KILLED");
+            isDead = true;
         }
-        mobs.remove(this);
+
+        if (!isLeft) {
+            g.drawImage(enemyAnimationsRight[4][i/20], getXCoord(), (int) yCoord, null);
+        } else {
+            g.drawImage(enemyAnimationsLeft[4][i/20], getXCoord(), (int) yCoord, null);
+        }
+        i++;
     }
 
     private void takeDamage(Player p){
