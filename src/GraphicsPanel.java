@@ -32,6 +32,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private int loadingAnimationAngle;
     private Boss b;
     private boolean bossSpawned;
+    private ArrayList<Object> mobs;
 
     private enum State {
         MENU, LOADING, GAME, DEAD
@@ -40,7 +41,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     public GraphicsPanel() {
         pressedKeys = new boolean[128];
-        enemies = new ArrayList<>();
+        mobs = new ArrayList<>();
         bullets = new ArrayList<>();
         spirits = new ArrayList<>();
         backgroundPosition = (double) -MainFrame.screenWidth / 2;
@@ -81,7 +82,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         }
 
         player = new Player("src/assets/playerAnimations.png", 640, 135);
-        // e = new NightBorne("src/assets/NightBorne.png", 100, 220);
         e = new Spirit(500, 200);
 
         f = new Death(500, 200);
@@ -129,9 +129,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             bossSpawned = true;
         }
         g.drawImage(background, (int) backgroundPosition, 0, null);
-//        e.render(g, player, bullets, spirits);
-        b.render(g,player);
-//        f.render(g, player);
 
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).move(g);
@@ -146,11 +143,17 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         for (int i = 0; i < spirits.size(); i++){
             spirits.get(i).render(g, player,bullets, spirits);
         }
-//        b.render(g,player);
         player.render(g, this);
 
         if (player.getHp() <= 0) {
             state = State.DEAD;
+        }
+        if (!b.isPhaseOneBeat()){
+            b.phaseOne(g,player);
+        }else if(!b.isPhaseTwoBeat()){
+            b.phaseTwo(mobs,g,player);
+        }else{
+            b.phaseThree(g,player);
         }
     }
 

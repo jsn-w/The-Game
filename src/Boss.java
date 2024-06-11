@@ -84,9 +84,6 @@ public class Boss implements ActionListener{
             }
         }
         bossAnimationsLeft = Utility.flipEvery(bossAnimationsRight);
-        mobs.add(new NightBorne("src/assets/NightBorne.png", 100, 220));
-        mobs.add(new Spirit(500, 200));
-        mobs.add(new Death(500, 200));
     }
     private void render(Graphics g, Player p) {
         drawHealthBar(g);
@@ -392,6 +389,9 @@ public class Boss implements ActionListener{
             phaseOneBeat = true;
             hp = 5000;
             maxHp = 5000;
+            mobs.add(new NightBorne("src/assets/NightBorne.png", 100, 220));
+            mobs.add(new Spirit(500, 200));
+            mobs.add(new Death(500, 200));
         }
     }
     public void phaseTwo(ArrayList<Object> e,Graphics g, Player p){
