@@ -52,7 +52,7 @@ public class Death {
         if (health > 0) {
             if (ability == -1) {
                 move(g);
-                int rando = (int) (Math.random() * 1000);
+                int rando = (int) (Math.random() * 10);
                 if (rando == 1){
                     ability = 1;
                 } else if (rando == 2){

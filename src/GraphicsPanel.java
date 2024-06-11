@@ -8,10 +8,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class GraphicsPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener, ActionListener {
-    private static final int MENU = 0;
-    private static final int LOADING = 1;
-    private static final int GAME = 2;
-    private int state = MENU;
+
+
+    private enum State {
+        MENU, LOADING, GAME, DEAD
+    }
+    private State state;
+
 
     public static double backgroundPosition;
 
@@ -55,6 +58,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
         loadingAnimationAngle = 0;
         loadingTimer = new Timer(1, this);
+        state = State.MENU;
     }
 
     private void loadAssets() {
@@ -90,15 +94,10 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         super.paintComponent(g);
 
         switch (state) {
-            case MENU:
-                renderMenu(g);
-                break;
-            case LOADING:
-                renderLoading(g);
-                break;
-            case GAME:
-                renderGame(g);
-                break;
+            case MENU -> renderMenu(g);
+            case LOADING -> renderLoading(g);
+            case GAME -> renderGame(g);
+            case DEAD -> renderDead(g);
         }
     }
 
@@ -128,9 +127,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     private void renderGame(Graphics g) {
         g.drawImage(background, (int) backgroundPosition, 0, null);
-        player.render(g, this);
         e.render(g, player, bullets, spirits);
-        f.render(g, player);
+//        f.render(g, player);
 
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).move(g);
@@ -145,26 +143,31 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         for (int i = 0; i < spirits.size(); i++){
             spirits.get(i).render(g, player,bullets, spirits);
         }
-        b.render(g,player);
+//        b.render(g,player);
+        player.render(g, this);
+    }
+
+    private void renderDead(Graphics g) {
+        g.drawImage(background, (int) backgroundPosition, 0, null);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (state == MENU) {
+        if (state == State.MENU) {
             if (playRect().contains(e.getPoint())) {
-                state = LOADING;
+                state = State.LOADING;
                 loadingTimer.start();
             } else if (quitRect().contains(e.getPoint())) {
                 System.exit(0);
             }
-        } else if (state == GAME) {
+        } else if (state == State.GAME) {
             player.setState();
         }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (state == MENU) {
+        if (state == State.MENU) {
             boolean insideButton = false;
             for (int i = 0; i < 3; i++) {
                 if (getButtonRect(i).contains(e.getPoint())) {
@@ -241,14 +244,18 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     // ActionListener method for the loading animation
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (state == LOADING) {
+        if (state == State.LOADING) {
             loadingAnimationAngle += 5;
             repaint();
             if (loadingAnimationAngle >= 360) {
                 loadingAnimationAngle = 0;
-                state = GAME;
+                state = State.GAME;
                 loadingTimer.stop();
             }
         }
+    }
+
+    public void playerDied() {
+        state = State.DEAD;
     }
 }

@@ -85,9 +85,6 @@ public class Player {
         } else {
             jumpKeyPressed = false;
         }
-        if (pKeys[83] || pKeys[40]) {
-            moveDown();
-        }
         sprinting = pKeys[16] && stamina > 0;
         
         if (!pKeys[65] && !pKeys[37] &&!pKeys[68] && !pKeys[39] &&!pKeys[87] && !pKeys[38] && !jumping && !falling && state != State.ATTACK) {
@@ -330,13 +327,6 @@ public class Player {
         }
     }
 
-    public void moveDown() {
-        yCoord += MOVE_AMT;
-        int playerBottomY = FLOOR_Y - IMAGE_HEIGHT;
-        if (yCoord > playerBottomY) {
-            yCoord = playerBottomY;
-        }
-    }
 
     private void updateStamina(boolean shiftPressed) {
         if (!sprinting && stamina < MAX_STAMINA && !shiftPressed) {
@@ -370,7 +360,7 @@ public class Player {
 
 
     public Rectangle playerRect() {
-        int margin = 50;
+        int margin = 100;
         return new Rectangle((int) xCoord + margin, (int) yCoord + margin, IMAGE_WIDTH - 2*margin, IMAGE_HEIGHT - 2*margin);
     }
 }
