@@ -68,7 +68,6 @@ public class NightBorne {
 
             switch (state) {
                 case DASHING -> {
-
                     if ((getXCoord() + 480) + margin < p.getxCoord()) {
                         dash(g);
                         xCoord += MOVE_AMT;
@@ -84,14 +83,12 @@ public class NightBorne {
                 case SLASHING -> slash(g, p);
                 case DYING -> deathAnimation(g,mobs);
             }
-//            drawLines(g);
             takeDamage(p);
             if (health <= 0) {
                 state = State.DYING;
             }
             drawHealthBar(g);
         }
-
     }
 
     private void drawHealthBar(Graphics g) {

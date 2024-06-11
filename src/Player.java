@@ -114,7 +114,6 @@ public class Player {
             drawHealthBar(g);
         } else {
             dead(g);
-            System.out.println("dead");
         }
 
     }
