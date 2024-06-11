@@ -57,7 +57,7 @@ public class Boss implements ActionListener{
     private void loadImages(String file) {
         try {
             spritesheet = ImageIO.read(new File(file));
-        }catch (Exception e){
+        } catch (Exception e){
             System.out.println(e.getMessage());
         }
         width = spritesheet.getWidth() / 15;

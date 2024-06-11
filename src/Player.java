@@ -16,7 +16,7 @@ public class Player {
     private static final int MAX_STAMINA = 100;
     private static final double STAMINA_REGEN_RATE = 0.07;
     private static final double STAMINA_DEPLETION_RATE = 0.2;
-    private static final double MAX_HP = 1000000000;
+    private static final double MAX_HP = 1000;
     private static final double HEAL_RATE = 0.02; // Healing rate per update
 
     private boolean isLeft, jumping, falling, sprinting, doubleJumpAvailable, jumpKeyPressed;
@@ -71,11 +71,15 @@ public class Player {
 
         if (pKeys[65] || pKeys[37]) {
             moveLeft();
-            state = State.RUN;
+            if (state != State.ATTACK) {
+                state = State.RUN;
+            }
         }
         if (pKeys[68] || pKeys[39]) {
             moveRight();
-            state = State.RUN;
+            if (state != State.ATTACK) {
+                state = State.RUN;
+            }
         }
         if (pKeys[87] || pKeys[38]) {
             if (!jumpKeyPressed) {
@@ -308,7 +312,9 @@ public class Player {
 
     public void updatePosition() {
         if (jumping) {
-            state = State.JUMP;
+            if (state != State.ATTACK) {
+                state = State.JUMP;
+            }
             yCoord -= jumpVelocity;
             jumpVelocity -= GRAVITY;
             if (jumpVelocity <= 0) {
@@ -316,7 +322,9 @@ public class Player {
                 falling = true;
             }
         } else if (falling) {
-            state = State.FALL;
+            if (state != State.ATTACK) {
+                state = State.FALL;
+            }
             yCoord += jumpVelocity;
             jumpVelocity += GRAVITY;
             if (yCoord >= FLOOR_Y - IMAGE_HEIGHT + 50) {
