@@ -16,10 +16,10 @@ public class Player {
     private static final int MAX_STAMINA = 100;
     private static final double STAMINA_REGEN_RATE = 0.07;
     private static final double STAMINA_DEPLETION_RATE = 0.2;
-    private static final double MAX_HP = 1000;
+    private static final double MAX_HP = 100;
     private static final double HEAL_RATE = 0.02; // Healing rate per update
 
-    private boolean isLeft, jumping, falling, sprinting, doubleJumpAvailable, jumpKeyPressed;
+    private boolean isLeft, jumping, falling, sprinting, doubleJumpAvailable, jumpKeyPressed, dead;
     private double xCoord, yCoord, score, jumpVelocity;
     private double hp;
     private int i;
@@ -200,14 +200,14 @@ public class Player {
         int barWidth = 258;
         int barHeight = 20;
         int x = 51 + 40;
-        int y = 40 + 6 + 60;
+        int y = 40 + 6 + 40;
 
         g.setColor(Color.darkGray);
         g.fillRect(x, y, barWidth, barHeight);
 
         g.setColor(Color.gray);
         g.fillRect(x, y, (int) ((stamina / (double) MAX_STAMINA) * barWidth), barHeight);
-        g.drawImage(staminabar, 40, 100, null);
+        g.drawImage(staminabar, 40, 80, null);
     }
 
     private void drawHealthBar(Graphics g) {
@@ -335,7 +335,6 @@ public class Player {
         }
     }
 
-
     private void updateStamina(boolean shiftPressed) {
         if (!sprinting && stamina < MAX_STAMINA && !shiftPressed) {
             stamina += STAMINA_REGEN_RATE;
@@ -349,11 +348,12 @@ public class Player {
         hp -= damage;
         if (hp < 0) {
             hp = 0;
+            dead = true;
         }
     }
 
     private void heal() {
-        if (hp < MAX_HP) {
+        if (hp < MAX_HP && !dead) {
             hp += HEAL_RATE;
             if (hp > MAX_HP) {
                 hp = MAX_HP;
@@ -371,4 +371,5 @@ public class Player {
         int margin = 100;
         return new Rectangle((int) xCoord + margin, (int) yCoord + margin, IMAGE_WIDTH - 2*margin, IMAGE_HEIGHT - 2*margin);
     }
+
 }

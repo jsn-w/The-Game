@@ -9,17 +9,9 @@ import java.util.ArrayList;
 
 public class GraphicsPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
-
-    private enum State {
-        MENU, LOADING, GAME, DEAD
-    }
-    private State state;
-
     public static double backgroundPosition;
 
-    private BufferedImage menuBackground;
-    private BufferedImage buttonBackground;
-    private BufferedImage background;
+    private BufferedImage menuBackground, buttonBackground, background, deathBackground;
     private Player player;
     private Spirit e;
     private Death f;
@@ -40,6 +32,11 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private int loadingAnimationAngle;
     private Boss b;
     private boolean bossSpawned;
+
+    private enum State {
+        MENU, LOADING, GAME, DEAD
+    }
+    private State state;
 
     public GraphicsPanel() {
         pressedKeys = new boolean[128];
@@ -67,6 +64,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             background = ImageIO.read(new File("src/assets/background.png"));
             menuBackground = ImageIO.read(new File("src/assets/menuBackground.png"));
             buttonBackground = ImageIO.read(new File("src/assets/buttonBackground.png"));
+            deathBackground = ImageIO.read(new File("src/assets/deathscreen.jpg"));
             buttons = ImageIO.read(new File("src/assets/buttons.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -131,7 +129,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             bossSpawned = true;
         }
         g.drawImage(background, (int) backgroundPosition, 0, null);
-        e.render(g, player, bullets, spirits);
+//        e.render(g, player, bullets, spirits);
         b.render(g,player);
 //        f.render(g, player);
 
@@ -150,10 +148,15 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         }
 //        b.render(g,player);
         player.render(g, this);
+
+        if (player.getHp() <= 0) {
+            state = State.DEAD;
+        }
     }
 
     private void renderDead(Graphics g) {
         g.drawImage(background, (int) backgroundPosition, 0, null);
+        g.drawImage(deathBackground, 0, 0, null);
     }
 
     @Override
