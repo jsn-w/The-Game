@@ -51,8 +51,9 @@ public class Boss implements ActionListener{
         flyTimer = new Timer(10000, this);
         flyTimer.start();
         bulletTimer = new Timer(2000,null);
-        loadImages("src/assets/cthulu.png");
+        loadImages("src/assets/bossSpritesheet.png");
     }
+
     private void loadImages(String file) {
         try {
             spritesheet = ImageIO.read(new File(file));
