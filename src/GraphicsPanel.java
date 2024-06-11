@@ -14,8 +14,12 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     public static double backgroundPosition;
 
-    private BufferedImage menuBackground, buttonBackground, background, deathBackground,winScreen;
+    private BufferedImage menuBackground, buttonBackground, background, deathBackground;
     private Player player;
+    private NightBorne e;
+    private Death f;
+
+    private ArrayList<NightBorne> enemies;
     public static ArrayList<Bullet> bullets;
     public static ArrayList<Spirit> spirits;
 
@@ -70,7 +74,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             buttonBackground = ImageIO.read(new File("src/assets/buttonBackground.png"));
             deathBackground = ImageIO.read(new File("src/assets/deathscreen.jpg"));
             buttons = ImageIO.read(new File("src/assets/buttons.png"));
-            winScreen = ImageIO.read(new File("src/assets/credits.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -86,6 +89,10 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         }
 
         player = new Player("src/assets/playerAnimations.png", 640, 135);
+        e = new NightBorne("src/assets/NightBorne.png", 100, 220);
+        // e = new Spirit(500, 200);
+
+        f = new Death(500, 200);
     }
 
     @Override
@@ -144,6 +151,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             bossSpawned = true;
         }
         g.drawImage(background, (int) backgroundPosition, 0, null);
+        e.render(g, player, mobs);
+        f.render(g, player, mobs);
 
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).move(g);
@@ -162,18 +171,19 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         for (int i = 0; i < spirits.size(); i++){
             spirits.get(i).render(g, player,bullets, spirits);
         }
+//        b.render(g,player);
         player.render(g, this);
 
         if (player.getHp() <= 0) {
             state = State.DEAD;
         }
-        if (!b.isPhaseOneBeat()){
-            b.phaseOne(g,player);
-        }else if(!b.isPhaseTwoBeat()){
-            b.phaseTwo(g,player);
-        }else{
-            b.phaseThree(g,player);
-        }
+//        if (!b.isPhaseOneBeat()){
+//            b.phaseOne(g,player);
+//        }else if(!b.isPhaseTwoBeat()){
+//            b.phaseTwo(mobs,g,player);
+//        }else{
+//            b.phaseThree(g,player);
+//        }
     }
 
     private void renderDead(Graphics g) {
@@ -182,7 +192,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     }
 
     private void renderWin(Graphics g) {
-        g.drawImage(winScreen,0,0,null);
+        //eeeeeeeeee
     }
 
     private void playMenu() {
@@ -295,6 +305,10 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     public boolean[] getPressedKeys() {
         return pressedKeys;
+    }
+
+    public ArrayList<NightBorne> getEnemies() {
+        return enemies;
     }
 
     // ActionListener method for the loading animation
