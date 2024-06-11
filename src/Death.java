@@ -1,3 +1,5 @@
+import assets.Sound;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -21,7 +23,7 @@ public class Death {
     private int health;
     private double xCoord;
     private double yCoord;
-    private boolean isLeft;
+    private boolean isLeft, isHit;
     private int i;
     private int ability;
 
@@ -31,6 +33,7 @@ public class Death {
         i = 0;
         ability = -1;
         health = MAX_HP;
+        isHit = false;
 
         loadImages();
     }
@@ -77,6 +80,7 @@ public class Death {
             takeDamage(p);
         } else {
             deathAnimation(g,mobs);
+            yCoord = -1000;
         }
     }
 
@@ -191,6 +195,12 @@ public class Death {
     private void takeDamage(Player p){
         if (p.attackRect() != null && enemyRect().intersects(p.attackRect())){
             health -= Player.PLAYER_DAMAGE;
+            if (!isHit) {
+                Sound.enemyHit();
+                isHit = true;
+            }
+        } else {
+            isHit = false;
         }
     }
 

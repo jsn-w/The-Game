@@ -1,3 +1,5 @@
+import assets.Sound;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -16,7 +18,7 @@ public class Spirit {
 
     private double xCoord;
     private double yCoord;
-    private boolean isLeft;
+    private boolean isLeft, isHit;
     private int i;
     private int health;
 
@@ -28,6 +30,7 @@ public class Spirit {
         i = 0;
         health = 1;
         spawnDone = false;
+        isHit = false;
 
         loadImages();
     }
@@ -121,6 +124,9 @@ public class Spirit {
 
     private void deathAnimation(Graphics g, ArrayList<Spirit> s){
         i++;
+        if (i == 0){
+            Sound.spiritDeath();
+        }
         if (i < DEATH_FRAMES * 5){
             if (isLeft){
                 g.drawImage(spiritAnimationsLeft[1][i / DEATH_FRAMES], getxCoord(), getyCoord(), null);
@@ -136,6 +142,12 @@ public class Spirit {
     private void takeDamage(Player p){
         if (p.attackRect() != null && enemyRect().intersects(p.attackRect())){
             health -= Player.PLAYER_DAMAGE;
+            if (!isHit) {
+                Sound.enemyHit();
+                isHit = true;
+            }
+        } else {
+            isHit = false;
         }
     }
 

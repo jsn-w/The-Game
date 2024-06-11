@@ -1,3 +1,5 @@
+import assets.Sound;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -17,7 +19,7 @@ public class NightBorne {
 
     private double xCoord;
     private final double yCoord;
-    private boolean isLeft, isDead;
+    private boolean isLeft, isDead, isHit;
     private int i;
     private int health;
     private final int MAX_HP = 500;
@@ -34,6 +36,7 @@ public class NightBorne {
         state = State.DASHING;
         health = MAX_HP;
         i = 0;
+        isHit = false;
         loadImages(img);
     }
 
@@ -178,6 +181,9 @@ public class NightBorne {
             System.out.println("KILLED");
             isDead = true;
         }
+        if (i == 13 * 20){
+            Sound.explosion();
+        }
 
         if (!isLeft) {
             g.drawImage(enemyAnimationsRight[4][i/20], getXCoord(), (int) yCoord, null);
@@ -190,6 +196,12 @@ public class NightBorne {
     private void takeDamage(Player p){
         if (p.attackRect() != null && enemyRect().intersects(p.attackRect())){
             health -= Player.PLAYER_DAMAGE;
+            if (!isHit) {
+                Sound.enemyHit();
+                isHit = true;
+            }
+        } else {
+            isHit = false;
         }
     }
 

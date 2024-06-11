@@ -381,9 +381,9 @@ public class Player {
         Rectangle slashRect = new Rectangle();
         if (state == State.ATTACK) {
             if (!isLeft) {
-                slashRect = new Rectangle((int)(getxCoord() + IMAGE_WIDTH  ), getyCoord(), IMAGE_WIDTH, IMAGE_HEIGHT / 2);
+                slashRect = new Rectangle((getxCoord() + IMAGE_WIDTH), getyCoord(), IMAGE_WIDTH, IMAGE_HEIGHT / 2);
             } else {
-                slashRect = new Rectangle((int)(getxCoord()), getyCoord(), IMAGE_WIDTH, IMAGE_HEIGHT / 2);
+                slashRect = new Rectangle((getxCoord()), getyCoord(), IMAGE_WIDTH, IMAGE_HEIGHT / 2);
             }
         }
         return slashRect;
