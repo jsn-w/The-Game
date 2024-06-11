@@ -85,7 +85,6 @@ public class NightBorne {
             drawLines(g);
             takeDamage(p);
             if (health <= 0) {
-//            i = 0;
                 state = State.DYING;
             }
         }

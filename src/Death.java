@@ -45,11 +45,7 @@ public class Death {
     }
 
     public void render(Graphics g, Player p,ArrayList<Object> mobs){
-        if (p.getxCoord() < getxCoord()){
-            isLeft = true;
-        } else{
-            isLeft = false;
-        }
+        isLeft = p.getxCoord() < getxCoord();
 
         if (enemyRect().intersects(p.playerRect())){
             p.takeDamage(0.1);
@@ -110,13 +106,13 @@ public class Death {
     private void drawHealthBar(Graphics g) {
         int barWidth = 258;
         int barHeight = 20;
-        int x = 400;
-        int y = 680;
+        int x = (int) (xCoord + GraphicsPanel.backgroundPosition) + 90;
+        int y = (int) yCoord;
 
         g.setColor(Color.white);
         g.fillRect(x, y, barWidth, barHeight);
 
-        g.setColor(new Color(255, 0, 0));
+        g.setColor(new Color(255, 50, 50));
         g.fillRect(x, y, (int) ((health / (double) MAX_HP) * barWidth), barHeight);
         g.drawImage(healthbar, 40, 40, null);
     }
