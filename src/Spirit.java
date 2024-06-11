@@ -25,7 +25,7 @@ public class Spirit {
         xCoord = x;
         yCoord = y;
         i = 0;
-        health = 300;
+        health = 1;
         spawnDone = false;
 
         loadImages();

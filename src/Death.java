@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class Death {
     private final double MOVE_AMT = 0.2;
+    private final int MAX_HP = 6666;
 
     private final int SUMMON_FRAMES = 80;
     private final int SLASH_FRAMES = 40;
@@ -16,6 +17,7 @@ public class Death {
 
     private BufferedImage enemyAnimations[][], enemyAnimationsLeft[][];
     private BufferedImage deathSpritesheet;
+    private BufferedImage healthbar;
 
     int health;
     private double xCoord;
@@ -29,7 +31,7 @@ public class Death {
         yCoord = y;
         i = 0;
         ability = -1;
-        health = 6666;
+        health = MAX_HP;
 
         loadImages();
     }
@@ -76,6 +78,7 @@ public class Death {
             } else {
                 swordSlam(g, p, GraphicsPanel.bullets);
             }
+            drawHealthBar(g);
         } else {
             deathAnimation(g,mobs);
         }
@@ -84,6 +87,7 @@ public class Death {
     public void loadImages(){
         try {
             deathSpritesheet = ImageIO.read(new File("src/assets/Death/death.png"));
+            healthbar = ImageIO.read(new File("src/assets/Death/death_healthbar.png"));
         } catch (IOException e){
             System.out.println(e);
         }
@@ -100,6 +104,20 @@ public class Death {
             }
         }
         enemyAnimationsLeft = Utility.flipEvery(enemyAnimations);
+    }
+
+    private void drawHealthBar(Graphics g) {
+        int barWidth = 258;
+        int barHeight = 20;
+        int x = 400;
+        int y = 680;
+
+        g.setColor(Color.white);
+        g.fillRect(x, y, barWidth, barHeight);
+
+        g.setColor(new Color(255, 0, 0));
+        g.fillRect(x, y, (int) ((health / (double) MAX_HP) * barWidth), barHeight);
+        g.drawImage(healthbar, 40, 40, null);
     }
 
     private void move(Graphics g){
