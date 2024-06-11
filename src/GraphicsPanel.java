@@ -9,22 +9,14 @@ import java.util.ArrayList;
 
 public class GraphicsPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
-
-    private enum State {
-        MENU, LOADING, GAME, DEAD
-    }
-    private State state;
-
     public static double backgroundPosition;
 
-    private BufferedImage menuBackground;
-    private BufferedImage buttonBackground;
-    private BufferedImage background;
+    private BufferedImage menuBackground, buttonBackground, background, deathBackground;
     private Player player;
     private Spirit e;
     private Death f;
 
-    private ArrayList<Object> enemies;
+    private ArrayList<NightBorne> enemies;
     public static ArrayList<Bullet> bullets;
     public static ArrayList<Spirit> spirits;
 
@@ -40,6 +32,11 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private int loadingAnimationAngle;
     private Boss b;
     private boolean bossSpawned;
+
+    private enum State {
+        MENU, LOADING, GAME, DEAD
+    }
+    private State state;
 
     public GraphicsPanel() {
         pressedKeys = new boolean[128];
@@ -67,6 +64,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             background = ImageIO.read(new File("src/assets/background.png"));
             menuBackground = ImageIO.read(new File("src/assets/menuBackground.png"));
             buttonBackground = ImageIO.read(new File("src/assets/buttonBackground.png"));
+            deathBackground = ImageIO.read(new File("src/assets/deathscreen.jpg"));
             buttons = ImageIO.read(new File("src/assets/buttons.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -87,8 +85,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         e = new Spirit(500, 200);
 
         f = new Death(500, 200);
-        enemies.add(e);
-        enemies.add(f);
     }
 
     @Override
@@ -133,7 +129,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             bossSpawned = true;
         }
         g.drawImage(background, (int) backgroundPosition, 0, null);
-        e.render(g, player, bullets, spirits);
+//        e.render(g, player, bullets, spirits);
+        b.render(g,player);
 //        f.render(g, player);
 
         for (int i = 0; i < bullets.size(); i++) {
@@ -149,18 +146,17 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         for (int i = 0; i < spirits.size(); i++){
             spirits.get(i).render(g, player,bullets, spirits);
         }
+//        b.render(g,player);
         player.render(g, this);
-        if(!b.isPhaseOneBeat()){
-            b.phaseOne(g,player);
-        } else if (!b.isPhaseTwoBeat()) {
-            b.phaseTwo(enemies,g,player);
-        }else{
-            b.phaseThree(g,player);
+
+        if (player.getHp() <= 0) {
+            state = State.DEAD;
         }
     }
 
     private void renderDead(Graphics g) {
         g.drawImage(background, (int) backgroundPosition, 0, null);
+        g.drawImage(deathBackground, 0, 0, null);
     }
 
     @Override
@@ -249,7 +245,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         return pressedKeys;
     }
 
-    public ArrayList<Object> getEnemies() {
+    public ArrayList<NightBorne> getEnemies() {
         return enemies;
     }
 
