@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class Boss implements ActionListener{
     private boolean phaseOneBeat;
     private boolean phaseTwoBeat;
+    private boolean onPhaseThree;
     private boolean win;
     private int hp;
     private boolean hitAvailability;
@@ -33,6 +34,7 @@ public class Boss implements ActionListener{
     private ArrayList<BossBullet> bullets;
     private Player p;
     private boolean falling;
+    private ArrayList<Object> mobs;
 
     public Boss(Player p, Graphics g){
         this.p = p;
@@ -40,6 +42,7 @@ public class Boss implements ActionListener{
         maxHp = 1000;
         phaseOneBeat = false;
         phaseTwoBeat = false;
+        onPhaseThree = false;
         win = false;
         hitAvailability = true;
         i = 0;
@@ -53,9 +56,10 @@ public class Boss implements ActionListener{
         attackDone = true;
         flyTimer = new Timer(5000, this);
         flyTimer.start();
-        bulletTimer = new Timer(2000,this);
+        bulletTimer = new Timer(1000,this);
         bulletTimer.start();
         bullets = new ArrayList<>();
+        mobs = new ArrayList<>();
         falling = false;
         loadImages("src/assets/bossSpritesheet.png");
     }
@@ -80,113 +84,186 @@ public class Boss implements ActionListener{
             }
         }
         bossAnimationsLeft = Utility.flipEvery(bossAnimationsRight);
+        mobs.add(new NightBorne("src/assets/NightBorne.png", 100, 220));
+        mobs.add(new Spirit(500, 200));
+        mobs.add(new Death(500, 200));
     }
-    public void render(Graphics g, Player p) {
+    private void render(Graphics g, Player p) {
         drawHealthBar(g);
         int margin = -70;
         isLeft = getXCoord() + width / 2 > p.getxCoord() + 50;
-        if (attackDone) {
-            if ((getXCoord() + 480) + margin < p.getxCoord()) {
-                isLeft = false;
-                if (fly % 2 == 1) {
-                    bulletTimer.start();
-                    if (yCoord >= 300) {
-                        fly(g);
-                        yCoord -= MOVE_AMT / 2;
-                    }
-                    if (yCoord < 300) {
-                        yCoord = 300;
-                    }
-                    fly(g);
-                } else if (falling && fly % 2 == 0) {
-                    if (yCoord <= 400) {
-                        fly(g);
-                        yCoord += MOVE_AMT / 2;
-                    }
-                    if (yCoord > 400) {
-                        yCoord = 400;
-                        falling = false;
-                    }
-                } else {
-                    walk(g, FRAMES_PER_UPDATE);
-                }
-                xCoord += MOVE_AMT;
-            } else if ((getXCoord() - 100) - margin > p.getxCoord()) {
-                isLeft = true;
-                if (fly % 2 == 1) {
-                    bulletTimer.start();
-                    if (yCoord >= 300) {
-                        fly(g);
-                        yCoord -= MOVE_AMT / 2;
-                    }
-                    if (yCoord < 300) {
-                        yCoord = 300;
-                    }
-                    fly(g);
-                } else if (falling && fly % 2 == 0) {
-                    if (yCoord <= 400) {
-                        fly(g);
-                        yCoord += MOVE_AMT / 2;
-                    }
-                    if (yCoord > 400) {
-                        yCoord = 400;
-                        falling = false;
-                    }
-                } else {
-                    walk(g, FRAMES_PER_UPDATE);
-                }
-                xCoord -= MOVE_AMT;
-            } else if ((getXCoord() - 100) - margin <= p.getxCoord() && (getXCoord() + 480) + margin >= p.getxCoord()) {
-                if (fly % 2 == 0 && falling == false) {
-                    if (attackDone) {
-                        if (Math.random() < .25) {
-                            heavyAttack = true;
-                            attackDone = false;
-                            attack = false;
-                        } else {
-                            attack = true;
-                            attackDone = false;
-                            heavyAttack = false;
-                        }
-                    }
-                    if (heavyAttack) {
-                        heavyAttack(g, p);
-                    } else {
-                        punch(g, p);
-                    }
-                } else {
+        if(!hitAvailability){
+            idle(g);
+            if (mobs.get(0) instanceof NightBorne) {
+                ((NightBorne) mobs.get(0)).render(g,p,mobs);
+            }else if(mobs.get(0) instanceof Death) {
+                ((Death) mobs.get(0)).render(g,p,mobs);
+            }
+        }else {
+            if (attackDone) {
+                if ((getXCoord() + 480) + margin < p.getxCoord()) {
+                    isLeft = false;
                     if (fly % 2 == 1) {
                         bulletTimer.start();
-                        if (yCoord >= 300) {
-                            fly(g);
-                            yCoord -= MOVE_AMT / 2;
-                        }
-                        if (yCoord < 300) {
-                            yCoord = 300;
+                        if (onPhaseThree){
+                            if (yCoord >= -100) {
+                                fly(g);
+                                yCoord -= MOVE_AMT / 2;
+                            }
+                            if (yCoord < -100) {
+                                yCoord = -100;
+                            }
+                        }else {
+                            if (yCoord >= 300) {
+                                fly(g);
+                                yCoord -= MOVE_AMT / 2;
+                            }
+                            if (yCoord < 300) {
+                                yCoord = 300;
+                            }
                         }
                         fly(g);
                     } else if (falling && fly % 2 == 0) {
-                        if (yCoord <= 400) {
-                            fly(g);
-                            yCoord += MOVE_AMT / 2;
+                        if (onPhaseThree){
+                            if (yCoord <= 200) {
+                                fly(g);
+                                yCoord += MOVE_AMT / 2;
+                            }
+                            if (yCoord > 200) {
+                                yCoord = 200;
+                                falling = false;
+                            }
+                        }else {
+                            if (yCoord <= 400) {
+                                fly(g);
+                                yCoord += MOVE_AMT / 2;
+                            }
+                            if (yCoord > 400) {
+                                yCoord = 400;
+                                falling = false;
+                            }
                         }
-                        if (yCoord > 400) {
-                            yCoord = 400;
-                            falling = false;
+                    } else {
+                        walk(g, FRAMES_PER_UPDATE);
+                    }
+                    xCoord += MOVE_AMT;
+                } else if ((getXCoord() - 100) - margin > p.getxCoord()) {
+                    isLeft = true;
+                    if (fly % 2 == 1) {
+                        bulletTimer.start();
+                        if (onPhaseThree){
+                            if (yCoord >= -100) {
+                                fly(g);
+                                yCoord -= MOVE_AMT / 2;
+                            }
+                            if (yCoord < -100) {
+                                yCoord = -100;
+                            }
+                        }else {
+                            if (yCoord >= 300) {
+                                fly(g);
+                                yCoord -= MOVE_AMT / 2;
+                            }
+                            if (yCoord < 300) {
+                                yCoord = 300;
+                            }
+                        }
+                        fly(g);
+                    } else if (falling && fly % 2 == 0) {
+                        if (onPhaseThree){
+                            if (yCoord <= 200) {
+                                fly(g);
+                                yCoord += MOVE_AMT / 2;
+                            }
+                            if (yCoord > 200) {
+                                yCoord = 200;
+                                falling = false;
+                            }
+                        }else {
+                            if (yCoord <= 400) {
+                                fly(g);
+                                yCoord += MOVE_AMT / 2;
+                            }
+                            if (yCoord > 400) {
+                                yCoord = 400;
+                                falling = false;
+                            }
+                        }
+                    } else {
+                        walk(g, FRAMES_PER_UPDATE);
+                    }
+                    xCoord -= MOVE_AMT;
+                } else if ((getXCoord() - 100) - margin <= p.getxCoord() && (getXCoord() + 480) + margin >= p.getxCoord()) {
+                    if (fly % 2 == 0 && falling == false) {
+                        if (attackDone) {
+                            if (Math.random() < .25) {
+                                heavyAttack = true;
+                                attackDone = false;
+                                attack = false;
+                            } else {
+                                attack = true;
+                                attackDone = false;
+                                heavyAttack = false;
+                            }
+                        }
+                        if (heavyAttack) {
+                            heavyAttack(g, p);
+                        } else {
+                            punch(g, p);
+                        }
+                    } else {
+                        if (fly % 2 == 1) {
+                            if (onPhaseThree){
+                                if (yCoord >= -100) {
+                                    fly(g);
+                                    yCoord -= MOVE_AMT / 2;
+                                }
+                                if (yCoord < -100) {
+                                    yCoord = -100;
+                                }
+                            }else {
+                                if (yCoord >= 300) {
+                                    fly(g);
+                                    yCoord -= MOVE_AMT / 2;
+                                }
+                                if (yCoord < 300) {
+                                    yCoord = 300;
+                                }
+                            }
+                            fly(g);
+                        } else if (falling && fly % 2 == 0) {
+                            if (onPhaseThree){
+                                if (yCoord <= 200) {
+                                    fly(g);
+                                    yCoord += MOVE_AMT / 2;
+                                }
+                                if (yCoord > 200) {
+                                    yCoord = 200;
+                                    falling = false;
+                                }
+                            }else {
+                                if (yCoord <= 400) {
+                                    fly(g);
+                                    yCoord += MOVE_AMT / 2;
+                                }
+                                if (yCoord > 400) {
+                                    yCoord = 400;
+                                    falling = false;
+                                }
+                            }
                         }
                     }
+                } else {
+                    deathAnimation(g);
                 }
             } else {
-                deathAnimation(g);
+                if (attack) {
+                    punch(g, p);
+                } else {
+                    heavyAttack(g, p);
+                }
             }
-        }else{
-            if (attack){
-                punch(g,p);
-            }else{
-                heavyAttack(g,p);
-            }
-        }
-        for (int i = 0; i < bullets.size(); i++) {
+            for (int i = 0; i < bullets.size(); i++) {
                 boolean removed = bullets.get(i).move(g, bullets);
                 if (!removed) {
                     if ((bullets.get(i).getyCoord() > 550 || bullets.get(i).getyCoord() < -200) || bullets.get(i).enemyRect().intersects(p.playerRect())) {
@@ -197,16 +274,28 @@ public class Boss implements ActionListener{
                         i--;
                     }
                 }
+            }
         }
     }
     private void deathAnimation(Graphics g){
-        if (i == 11 * 20) {
+        if (i == 11 * 40) {
             i = 0;
         }
         if (!isLeft) {
-            g.drawImage(bossAnimationsRight[7][i/20], getXCoord(), getYCoord(), null);
+            g.drawImage(bossAnimationsRight[7][i/40], getXCoord(), getYCoord(), null);
         } else {
-            g.drawImage(bossAnimationsLeft[7][i/20], getXCoord(), getYCoord(), null);
+            g.drawImage(bossAnimationsLeft[7][i/40], getXCoord(), getYCoord(), null);
+        }
+        i++;
+    }
+    private void idle(Graphics g){
+        if (i == 15 * 40) {
+            i = 0;
+        }
+        if (!isLeft) {
+            g.drawImage(bossAnimationsRight[0][i/40], getXCoord(), getYCoord(), null);
+        } else {
+            g.drawImage(bossAnimationsLeft[0][i/40], getXCoord(), getYCoord(), null);
         }
         i++;
     }
@@ -297,33 +386,33 @@ public class Boss implements ActionListener{
         g.setColor(Color.YELLOW);
         g.drawString("boss health: " + hp + "/" + maxHp,335,125);
     }
-    public void phaseOne(){
-        if (!phaseOneBeat) {
-            if (hp <= 0) {
-                phaseOneBeat = true;
-                hp = 5000;
-                maxHp = 5000;
-            }
+    public void phaseOne(Graphics g, Player p){
+        render(g,p);
+        if (hp <= 0) {
+            phaseOneBeat = true;
+            hp = 5000;
+            maxHp = 5000;
         }
     }
-    public void phaseTwo(ArrayList<NightBorne> e,Graphics g){
-        if (!phaseTwoBeat) {
-            hitAvailability = false;
-            if (e.isEmpty()){
-                for(int j = 0; j <= 1000; j++){
-                    grow(g);
-                }
-                loadImages("src/assets/biggercthulu.png");
-                yCoord -= height/2-35;
-                for(int j = 0; j <= 500; j++){
-                    grow(g);
-                }
-                phaseTwoBeat = true;
-                hitAvailability = true;
+    public void phaseTwo(ArrayList<Object> e,Graphics g, Player p){
+        render(g,p);
+        hitAvailability = false;
+        if (e.isEmpty()) {
+            for (int j = 0; j <= 1000; j++) {
+                grow(g);
             }
+            loadImages("src/assets/biggercthulu.png");
+            yCoord -= height / 2 - 35;
+            for (int j = 0; j <= 500; j++) {
+                grow(g);
+            }
+            phaseTwoBeat = true;
+            hitAvailability = true;
+            onPhaseThree = true;
         }
     }
-    public void phaseThree(){
+    public void phaseThree(Graphics g, Player p){
+        render(g,p);
         if (hp <= 0) {
             win = true;
         }
@@ -369,6 +458,12 @@ public class Boss implements ActionListener{
                 shoot(p,bullets);
                 System.out.println("SHOOT"); // not printing
             }
+        }
+    }
+    public void takeDamage(double damage) {
+        hp -= damage;
+        if (hp < 0) {
+            hp = 0;
         }
     }
 }

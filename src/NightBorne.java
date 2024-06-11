@@ -2,6 +2,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 
 public class NightBorne {
     private static final int IMAGE_WIDTH = 480;
@@ -52,7 +53,7 @@ public class NightBorne {
         enemyAnimationsLeft = Utility.flipEvery(enemyAnimationsRight);
     }
 
-    public void render(Graphics g, Player p) {
+    public void render(Graphics g, Player p,ArrayList<Object> mobs) {
         int margin = -150;
         isLeft = getXCoord() + IMAGE_WIDTH / 2 > p.getxCoord() + 128;
 
@@ -72,7 +73,7 @@ public class NightBorne {
             }
             case CHARGING -> charge(g);
             case SLASHING -> slash(g, p);
-            case DYING -> deathAnimation(g);
+            case DYING -> deathAnimation(g,mobs);
         }
         drawLines(g);
     }
@@ -145,12 +146,13 @@ public class NightBorne {
         i++;
     }
 
-    public void deathAnimation(Graphics g){
+    public void deathAnimation(Graphics g, ArrayList<Object> mobs){
         g.drawImage(enemyAnimationsLeft[4][i / 20], getXCoord(), getYCoord(), null);
         i++;
         if (i == 23 * 20) {
             i = 0;
         }
+        mobs.remove(this);
     }
 
     public Rectangle enemyRect() {

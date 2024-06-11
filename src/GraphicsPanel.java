@@ -24,7 +24,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private Spirit e;
     private Death f;
 
-    private ArrayList<NightBorne> enemies;
+    private ArrayList<Object> enemies;
     public static ArrayList<Bullet> bullets;
     public static ArrayList<Spirit> spirits;
 
@@ -87,6 +87,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         e = new Spirit(500, 200);
 
         f = new Death(500, 200);
+        enemies.add(e);
+        enemies.add(f);
     }
 
     @Override
@@ -132,7 +134,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         }
         g.drawImage(background, (int) backgroundPosition, 0, null);
         e.render(g, player, bullets, spirits);
-        b.render(g,player);
 //        f.render(g, player);
 
         for (int i = 0; i < bullets.size(); i++) {
@@ -148,8 +149,14 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         for (int i = 0; i < spirits.size(); i++){
             spirits.get(i).render(g, player,bullets, spirits);
         }
-//        b.render(g,player);
         player.render(g, this);
+        if(!b.isPhaseOneBeat()){
+            b.phaseOne(g,player);
+        } else if (!b.isPhaseTwoBeat()) {
+            b.phaseTwo(enemies,g,player);
+        }else{
+            b.phaseThree(g,player);
+        }
     }
 
     private void renderDead(Graphics g) {
@@ -242,7 +249,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         return pressedKeys;
     }
 
-    public ArrayList<NightBorne> getEnemies() {
+    public ArrayList<Object> getEnemies() {
         return enemies;
     }
 
