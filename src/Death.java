@@ -106,15 +106,15 @@ public class Death {
     private void drawHealthBar(Graphics g) {
         int barWidth = 258;
         int barHeight = 20;
-        int x = (int) (xCoord + GraphicsPanel.backgroundPosition) + 90;
-        int y = (int) yCoord;
+        int x = 470;
+        int y = 62;
 
-        g.setColor(Color.white);
+        g.setColor(Color.red);
         g.fillRect(x, y, barWidth, barHeight);
 
-        g.setColor(new Color(255, 50, 50));
+        g.setColor(new Color(100, 240, 100));
         g.fillRect(x, y, (int) ((health / (double) MAX_HP) * barWidth), barHeight);
-        g.drawImage(healthbar, 40, 40, null);
+        g.drawImage(healthbar, 400, 40, null);
     }
 
     private void move(Graphics g){
