@@ -1,4 +1,7 @@
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -41,6 +44,9 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private int loadingAnimationAngle;
     private Boss b;
 
+    private Clip songClip;
+    private boolean songPlayed;
+
     public GraphicsPanel() {
         pressedKeys = new boolean[128];
         enemies = new ArrayList<>();
@@ -59,6 +65,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         loadingAnimationAngle = 0;
         loadingTimer = new Timer(1, this);
         state = State.MENU;
+        songPlayed = false;
     }
 
     private void loadAssets() {
@@ -94,9 +101,21 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         super.paintComponent(g);
 
         switch (state) {
-            case MENU -> renderMenu(g);
+            case MENU -> {
+                renderMenu(g);
+                if (!songPlayed) {
+                    playMenu();
+                    songPlayed = true;
+                }
+            }
             case LOADING -> renderLoading(g);
-            case GAME -> renderGame(g);
+            case GAME -> {
+                renderGame(g);
+                if (!songPlayed){
+                    playBattle();
+                    songPlayed = true;
+                }
+            }
             case DEAD -> renderDead(g);
         }
     }
@@ -110,6 +129,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         for (int i = 0; i < 3; i++) {
             g.drawImage(buttonAnimations[i][buttonState[i]], buttonX, menuStartYPos + i * menuButtonGap, null);
         }
+
     }
 
     private void renderLoading(Graphics g) {
@@ -155,10 +175,36 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         g.drawImage(background, (int) backgroundPosition, 0, null);
     }
 
+    private void playMenu() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/assets/audios/menu.wav").getAbsoluteFile());
+            songClip = AudioSystem.getClip();
+            songClip.open(audioInputStream);
+            songClip.loop(Clip.LOOP_CONTINUOUSLY);  // song repeats when finished
+            songClip.start();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void playBattle() {
+        try{
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/assets/audios/battle.wav").getAbsoluteFile());
+            songClip.open(audioInputStream);
+            songClip.loop(Clip.LOOP_CONTINUOUSLY);
+            songClip.start();
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
     @Override
     public void mousePressed(MouseEvent e) {
         if (state == State.MENU) {
             if (playRect().contains(e.getPoint())) {
+                songClip.stop();
+                songClip.close();
+                songPlayed = false;
                 state = State.LOADING;
                 loadingTimer.start();
             } else if (quitRect().contains(e.getPoint())) {
