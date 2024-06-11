@@ -153,10 +153,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         g.drawImage(background, (int) backgroundPosition, 0, null);
         nightBorne.render(g, player, mobs);
         death.render(g, player, mobs);
-        boolean win = true;
-        if (nightBorne.getHealth() > 0 && death.getHealth() > 0) {
-            win = false;
-        }
+        boolean win = !(nightBorne.getHealth() > 0) && !(death.getHealth() > 0);
 
         for (Spirit spirit : spirits) {
             if (spirit.getHealth() > 0) {

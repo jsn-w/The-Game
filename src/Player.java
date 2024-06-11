@@ -69,8 +69,7 @@ public class Player {
     }
 
     public void render(Graphics g, GraphicsPanel panel) {
-        if (!dead) {
-
+        if (!dead && state != State.DEAD) {
             heal();
             boolean[] pKeys = panel.getPressedKeys();
 
@@ -182,13 +181,19 @@ public class Player {
     }
 
     private void dead (Graphics g) {
-        if (i >= 7 * FRAMES_PER_UPDATE) {
-            i = 7*FRAMES_PER_UPDATE;
-        }
-        if (!isLeft) {
-            g.drawImage(playerAnimationsRight[6][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
+        int frames = 70;
+        if (i >= 7 * frames) {
+            if (!isLeft) {
+                g.drawImage(playerAnimationsRight[6][6], getxCoord(), getyCoord(), null);
+            } else {
+                g.drawImage(playerAnimationsLeft[6][6], getxCoord(), getyCoord(), null);
+            }
         } else {
-            g.drawImage(playerAnimationsLeft[6][i/FRAMES_PER_UPDATE], getxCoord(), getyCoord(), null);
+            if (!isLeft) {
+                g.drawImage(playerAnimationsRight[6][i/frames], getxCoord(), getyCoord(), null);
+            } else {
+                g.drawImage(playerAnimationsLeft[6][i/frames], getxCoord(), getyCoord(), null);
+            }
         }
         i++;
     }
@@ -350,11 +355,12 @@ public class Player {
 
     public void takeDamage(double damage) {
         hp -= damage;
-        if (hp < 0) {
+        if (hp <= 10) {
             hp = 0;
             dead = true;
             HEAL_RATE = 0;
             i = 0;
+            state = State.DEAD;
         }
     }
 

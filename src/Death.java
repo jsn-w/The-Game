@@ -197,8 +197,7 @@ public class Death {
     public Rectangle enemyRect() {
         int imageHeight = deathSpritesheet.getHeight() / 5;
         int imageWidth = deathSpritesheet.getWidth() / 18;
-        Rectangle rect = new Rectangle(getxCoord(), getyCoord(), imageWidth, imageHeight);
-        return rect;
+        return new Rectangle(getxCoord(), getyCoord(), imageWidth, imageHeight);
     }
 
     public double getHealth() {
