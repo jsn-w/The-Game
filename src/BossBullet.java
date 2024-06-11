@@ -22,15 +22,17 @@ public class BossBullet extends Bullet{
         images = new BufferedImage[7];
         for(int i = 0; i < 7; i++){
             assert img != null;
-            images[i] = img.getSubimage(img.getWidth() / 11 * i, img.getHeight() / 9 * 2,img.getWidth() / 11,img.getHeight() / 9);
+            images[i] = img.getSubimage(img.getWidth() / 11 * i, img.getHeight() / 9,img.getWidth() / 11,img.getHeight() / 9);
         }
     }
-    public void move(Graphics g, ArrayList<BossBullet> bullets){
-        setImg(images[i/30]);
+    public boolean move(Graphics g, ArrayList<BossBullet> bullets){
+        setImg(images[i/120]);
         super.move(g);
         i++;
-        if(i >= 7 * 30){
+        if(i >= 7 * 120){
             bullets.remove(this);
+            return true;
         }
+        return false;
     }
 }

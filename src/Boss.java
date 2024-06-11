@@ -187,13 +187,15 @@ public class Boss implements ActionListener{
             }
         }
         for (int i = 0; i < bullets.size(); i++) {
-                bullets.get(i).move(g, bullets);
-                if ((bullets.get(i).getyCoord() > 550 || bullets.get(i).getyCoord() < -200) || bullets.get(i).enemyRect().intersects(p.playerRect())) {
-                    if (bullets.get(i).enemyRect().intersects(p.playerRect())) {
-                        p.takeDamage(1);
+                boolean removed = bullets.get(i).move(g, bullets);
+                if (!removed) {
+                    if ((bullets.get(i).getyCoord() > 550 || bullets.get(i).getyCoord() < -200) || bullets.get(i).enemyRect().intersects(p.playerRect())) {
+                        if (bullets.get(i).enemyRect().intersects(p.playerRect())) {
+                            p.takeDamage(1);
+                        }
+                        bullets.remove(i);
+                        i--;
                     }
-                    bullets.remove(i);
-                    i--;
                 }
         }
     }
@@ -344,8 +346,12 @@ public class Boss implements ActionListener{
         i++;
     }
     private void shoot(Player p, ArrayList<BossBullet> b){
-        double angle = Math.atan2( (p.getyCoord() - (int)yCoord + 50) , (p.getxCoord() - (int)xCoord + 50)); // adjust these values accordingly to player size
-        b.add(new BossBullet((int) xCoord, (int) yCoord, angle, 0.5));
+        double angle = Math.atan2( (p.getyCoord() - (int)yCoord + 50) , (p.getxCoord() - getXCoord() + 50)); // adjust these values accordingly to player size
+        if (isLeft) {
+            b.add(new BossBullet(getXCoord()+width/4, (int) yCoord + height / 2, angle, 0.5));
+        }else{
+            b.add(new BossBullet(getXCoord() + 3 * width/4, (int) yCoord + height / 2, angle, 0.5));
+        }
     }
     private Rectangle bossRect(){
         return new Rectangle(getXCoord(), getYCoord(), width, height);
@@ -360,7 +366,7 @@ public class Boss implements ActionListener{
                 }
             }
             if(e.getSource() == bulletTimer && fly % 2 == 1){
-                this.shoot(p,bullets);
+                shoot(p,bullets);
                 System.out.println("SHOOT"); // not printing
             }
         }
