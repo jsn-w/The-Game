@@ -61,7 +61,7 @@ public class Spirit {
         }
 
         if (enemyRect().intersects(p.playerRect())){
-            p.takeDamage(1);
+            p.takeDamage(0.1);
         }
     }
 
@@ -87,13 +87,13 @@ public class Spirit {
     }
 
     private void shoot(Player p, ArrayList<Bullet> b){
-        double angle = Math.atan2( (p.getyCoord() - getyCoord() + 50) , (p.getxCoord() - getxCoord() + 50)); // adjust these values accordingly to player size
-        b.add(new Bullet(getxCoord(), getyCoord(), angle, 0.5));
+        double angle = Math.atan2((p.getyCoord() - getyCoord() + 50) , (p.getxCoord() - getxCoord() + 50)); // adjust these values accordingly to player size
+        b.add(new Bullet(getxCoord() + 100, getyCoord() + 100, angle, 0.5));
     }
 
     private void spawnAnimation(Graphics g){
         i++;
-        if (i <= SPAWN_FRAMES * 6){
+        if (i < SPAWN_FRAMES * 6){
             if (isLeft) {
                 g.drawImage(spiritAnimationsLeft[0][i / SPAWN_FRAMES], getxCoord(), getyCoord(), null);
             } else {
@@ -130,9 +130,9 @@ public class Spirit {
     }
 
     public Rectangle enemyRect(){
-        int imageHeight = 206;
-        int imageWidth = 200;
-        Rectangle rect = new Rectangle((int) xCoord, (int)yCoord, imageWidth, imageHeight);
+        int imageHeight = 66;
+        int imageWidth = 60;
+        Rectangle rect = new Rectangle((int) (xCoord + 70 + GraphicsPanel.backgroundPosition), (int)yCoord + 70, imageWidth, imageHeight);
         return rect;
     }
 }

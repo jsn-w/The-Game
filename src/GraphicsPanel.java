@@ -127,14 +127,18 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     private void renderGame(Graphics g) {
         g.drawImage(background, (int) backgroundPosition, 0, null);
-        e.render(g, player, bullets, spirits);
-//        f.render(g, player);
+        // e.render(g, player, bullets, spirits);
+        f.render(g, player);
 
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).move(g);
             if ((bullets.get(i).getyCoord() > 550 || bullets.get(i).getyCoord() < -200) || bullets.get(i).enemyRect().intersects(player.playerRect())){
                 if (bullets.get(i).enemyRect().intersects(player.playerRect())){
-                    player.takeDamage(1);
+                    if (bullets.get(i) instanceof Bloodsword) {
+                        player.takeDamage(50);
+                    } else {
+                        player.takeDamage(1);
+                    }
                 }
                 bullets.remove(i);
                 i--;
