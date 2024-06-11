@@ -39,6 +39,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private Timer loadingTimer;
     private int loadingAnimationAngle;
     private Boss b;
+    private boolean bossSpawned;
 
     public GraphicsPanel() {
         pressedKeys = new boolean[128];
@@ -55,6 +56,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         requestFocusInWindow();
         loadAssets();
 
+        bossSpawned = false;
         loadingAnimationAngle = 0;
         loadingTimer = new Timer(1, this);
         state = State.MENU;
@@ -84,7 +86,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         // e = new NightBorne("src/assets/NightBorne.png", 100, 220);
         e = new Spirit(500, 200);
 
-        b = new Boss();
         f = new Death(500, 200);
     }
 
@@ -125,8 +126,13 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     }
 
     private void renderGame(Graphics g) {
+        if (!bossSpawned){
+            b = new Boss(player,g);
+            bossSpawned = true;
+        }
         g.drawImage(background, (int) backgroundPosition, 0, null);
         e.render(g, player, bullets, spirits);
+        b.render(g,player);
 //        f.render(g, player);
 
         for (int i = 0; i < bullets.size(); i++) {

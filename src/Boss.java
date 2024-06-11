@@ -30,9 +30,12 @@ public class Boss implements ActionListener{
     private int height;
     private Timer flyTimer;
     private Timer bulletTimer;
-    private ArrayList<Bullet> bullets;
+    private ArrayList<BossBullet> bullets;
+    private Player p;
+    private boolean falling;
 
-    public Boss(){
+    public Boss(Player p, Graphics g){
+        this.p = p;
         hp = 500;
         maxHp = 1000;
         phaseOneBeat = false;
@@ -48,9 +51,12 @@ public class Boss implements ActionListener{
         heavyAttack = false;
         attack = false;
         attackDone = true;
-        flyTimer = new Timer(10000, this);
+        flyTimer = new Timer(5000, this);
         flyTimer.start();
-        bulletTimer = new Timer(2000,null);
+        bulletTimer = new Timer(2000,this);
+        bulletTimer.start();
+        bullets = new ArrayList<>();
+        falling = false;
         loadImages("src/assets/bossSpritesheet.png");
     }
 
@@ -79,41 +85,116 @@ public class Boss implements ActionListener{
         drawHealthBar(g);
         int margin = -70;
         isLeft = getXCoord() + width / 2 > p.getxCoord() + 50;
-        if ((getXCoord() + 480) + margin < p.getxCoord()) {
-            isLeft = false;
-            if (fly % 2 == 1){
-                fly(g);
-            }else {
-                walk(g, FRAMES_PER_UPDATE);
-            }
-            xCoord += MOVE_AMT;
-        } else if ((getXCoord() - 100) - margin > p.getxCoord()) {
-            isLeft = true;
-            if (fly % 2 == 1){
-                fly(g);
-            }else {
-                walk(g, FRAMES_PER_UPDATE);
-            }
-            xCoord -= MOVE_AMT;
-        } else if ((getXCoord() - 100) - margin <= p.getxCoord() && (getXCoord() + 480) + margin >= p.getxCoord()) {
-            if (attackDone) {
-                if (Math.random() < .25) {
-                    heavyAttack = true;
-                    attackDone = false;
-                    attack = false;
+        if (attackDone) {
+            if ((getXCoord() + 480) + margin < p.getxCoord()) {
+                isLeft = false;
+                if (fly % 2 == 1) {
+                    bulletTimer.start();
+                    if (yCoord >= 300) {
+                        fly(g);
+                        yCoord -= MOVE_AMT / 2;
+                    }
+                    if (yCoord < 300) {
+                        yCoord = 300;
+                    }
+                    fly(g);
+                } else if (falling && fly % 2 == 0) {
+                    if (yCoord <= 400) {
+                        fly(g);
+                        yCoord += MOVE_AMT / 2;
+                    }
+                    if (yCoord > 400) {
+                        yCoord = 400;
+                        falling = false;
+                    }
                 } else {
-                    attack = true;
-                    attackDone = false;
-                    heavyAttack = false;
+                    walk(g, FRAMES_PER_UPDATE);
                 }
-            }
-            if (heavyAttack) {
-                heavyAttack(g, p);
+                xCoord += MOVE_AMT;
+            } else if ((getXCoord() - 100) - margin > p.getxCoord()) {
+                isLeft = true;
+                if (fly % 2 == 1) {
+                    bulletTimer.start();
+                    if (yCoord >= 300) {
+                        fly(g);
+                        yCoord -= MOVE_AMT / 2;
+                    }
+                    if (yCoord < 300) {
+                        yCoord = 300;
+                    }
+                    fly(g);
+                } else if (falling && fly % 2 == 0) {
+                    if (yCoord <= 400) {
+                        fly(g);
+                        yCoord += MOVE_AMT / 2;
+                    }
+                    if (yCoord > 400) {
+                        yCoord = 400;
+                        falling = false;
+                    }
+                } else {
+                    walk(g, FRAMES_PER_UPDATE);
+                }
+                xCoord -= MOVE_AMT;
+            } else if ((getXCoord() - 100) - margin <= p.getxCoord() && (getXCoord() + 480) + margin >= p.getxCoord()) {
+                if (fly % 2 == 0 && falling == false) {
+                    if (attackDone) {
+                        if (Math.random() < .25) {
+                            heavyAttack = true;
+                            attackDone = false;
+                            attack = false;
+                        } else {
+                            attack = true;
+                            attackDone = false;
+                            heavyAttack = false;
+                        }
+                    }
+                    if (heavyAttack) {
+                        heavyAttack(g, p);
+                    } else {
+                        punch(g, p);
+                    }
+                } else {
+                    if (fly % 2 == 1) {
+                        bulletTimer.start();
+                        if (yCoord >= 300) {
+                            fly(g);
+                            yCoord -= MOVE_AMT / 2;
+                        }
+                        if (yCoord < 300) {
+                            yCoord = 300;
+                        }
+                        fly(g);
+                    } else if (falling && fly % 2 == 0) {
+                        if (yCoord <= 400) {
+                            fly(g);
+                            yCoord += MOVE_AMT / 2;
+                        }
+                        if (yCoord > 400) {
+                            yCoord = 400;
+                            falling = false;
+                        }
+                    }
+                }
             } else {
-                punch(g, p);
+                deathAnimation(g);
             }
-        } else {
-            deathAnimation(g);
+        }else{
+            if (attack){
+                punch(g,p);
+            }else{
+                heavyAttack(g,p);
+            }
+        }
+        for (int i = 0; i < bullets.size(); i++) {
+                bullets.get(i).move(g, bullets);
+                if ((bullets.get(i).getyCoord() > 550 || bullets.get(i).getyCoord() < -200) || bullets.get(i).enemyRect().intersects(p.playerRect())) {
+                    if (bullets.get(i).enemyRect().intersects(p.playerRect())) {
+                        p.takeDamage(1);
+                    }
+                    bullets.remove(i);
+                    i--;
+                }
         }
     }
     private void deathAnimation(Graphics g){
@@ -185,13 +266,13 @@ public class Boss implements ActionListener{
         i++;
     }
     private void fly(Graphics g){
-        if (i >= 6 * 20) {
+        if (i >= 6 * 55) {
             i = 0;
         }
         if (!isLeft) {
-            g.drawImage(bossAnimationsRight[2][i/20], getXCoord(), getYCoord(), null);
+            g.drawImage(bossAnimationsRight[2][i/55], getXCoord(), getYCoord(), null);
         } else {
-            g.drawImage(bossAnimationsLeft[2][i/20], getXCoord(), getYCoord(), null);
+            g.drawImage(bossAnimationsLeft[2][i/55], getXCoord(), getYCoord(), null);
         }
         i++;
     }
@@ -262,6 +343,10 @@ public class Boss implements ActionListener{
         }
         i++;
     }
+    private void shoot(Player p, ArrayList<BossBullet> b){
+        double angle = Math.atan2( (p.getyCoord() - (int)yCoord + 50) , (p.getxCoord() - (int)xCoord + 50)); // adjust these values accordingly to player size
+        b.add(new BossBullet((int) xCoord, (int) yCoord, angle, 0.5));
+    }
     private Rectangle bossRect(){
         return new Rectangle(getXCoord(), getYCoord(), width, height);
     }
@@ -269,28 +354,14 @@ public class Boss implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() instanceof Timer) {
             if (e.getSource() == flyTimer) {
-                if (fly % 2 == 0) {
-                    bulletTimer.start();
-                    while (yCoord > 300) {
-                        fly(this.spritesheet.getGraphics());
-                        yCoord -= 1.4;
-                    }
-                    if (yCoord < 300) {
-                        yCoord = 300;
-                    }
-                } else {
-                    while (yCoord < 400) {
-                        fly(this.spritesheet.getGraphics());
-                        yCoord += 1.4;
-                    }
-                    if (yCoord > 400) {
-                        yCoord = 400;
-                    }
-                    bulletTimer.stop();
-                }
                 fly++;
-            }else if(e.getSource() == bulletTimer){
-                bullets.add(new Bullet((int)xCoord,(int)yCoord,0,1.4));
+                if (fly % 2 == 0) {
+                    falling = true;
+                }
+            }
+            if(e.getSource() == bulletTimer && fly % 2 == 1){
+                this.shoot(p,bullets);
+                System.out.println("SHOOT"); // not printing
             }
         }
     }
