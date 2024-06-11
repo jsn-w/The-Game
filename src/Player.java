@@ -19,6 +19,8 @@ public class Player {
     private static final double MAX_HP = 100;
     private static final double HEAL_RATE = 0.02; // Healing rate per update
 
+    public static final double PLAYER_DAMAGE = 0.25;
+
     private boolean isLeft, jumping, falling, sprinting, doubleJumpAvailable, jumpKeyPressed, dead;
     private double xCoord, yCoord, score, jumpVelocity;
     private double hp;
@@ -26,6 +28,7 @@ public class Player {
     private double stamina;
     private BufferedImage[][] playerAnimationsLeft, playerAnimationsRight;
     private BufferedImage playerSpritesheet, healthbar, staminabar;
+
 
     private enum State {
         IDLE, RUN, JUMP, FALL, ATTACK, TAKING_DAMAGE, DEAD, SHIELD_BLOCKING
@@ -366,6 +369,17 @@ public class Player {
         i = 0;
     }
 
+    public Rectangle attackRect() {
+        Rectangle slashRect = new Rectangle();
+        if (state == State.ATTACK) {
+            if (!isLeft) {
+                slashRect = new Rectangle((int)(getxCoord() + IMAGE_WIDTH  ), getyCoord(), IMAGE_WIDTH, IMAGE_HEIGHT / 2);
+            } else {
+                slashRect = new Rectangle((int)(getxCoord()), getyCoord(), IMAGE_WIDTH, IMAGE_HEIGHT / 2);
+            }
+        }
+        return slashRect;
+    }
 
     public Rectangle playerRect() {
         int margin = 100;

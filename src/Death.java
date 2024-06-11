@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Death {
     private final double MOVE_AMT = 0.2;
-    private final int MAX_HP = 6666;
+    private final int MAX_HP = 1000;
 
     private final int SUMMON_FRAMES = 80;
     private final int SLASH_FRAMES = 40;
@@ -79,6 +79,7 @@ public class Death {
                 swordSlam(g, p, GraphicsPanel.bullets);
             }
             drawHealthBar(g);
+            takeDamage(p);
         } else {
             deathAnimation(g,mobs);
         }
@@ -190,6 +191,12 @@ public class Death {
             }
         }
         mobs.remove(this);
+    }
+
+    private void takeDamage(Player p){
+        if (p.attackRect() != null && enemyRect().intersects(p.attackRect())){
+            health -= Player.PLAYER_DAMAGE;
+        }
     }
 
     public Rectangle enemyRect() {

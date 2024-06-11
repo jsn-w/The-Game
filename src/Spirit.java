@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Spirit {
-    private final int DEATH_FRAMES = 60;
+    private final int DEATH_FRAMES = 120;
     private final int SPAWN_FRAMES = 120;
     private final int IDLE_FRAMES = 40;
 
@@ -63,6 +63,7 @@ public class Spirit {
         if (enemyRect().intersects(p.playerRect())){
             p.takeDamage(0.1);
         }
+        takeDamage(p);
     }
 
     private void loadImages(){
@@ -129,10 +130,16 @@ public class Spirit {
         }
     }
 
+    private void takeDamage(Player p){
+        if (p.attackRect() != null && enemyRect().intersects(p.attackRect())){
+            health -= Player.PLAYER_DAMAGE;
+        }
+    }
+
     public Rectangle enemyRect(){
         int imageHeight = 66;
         int imageWidth = 60;
-        Rectangle rect = new Rectangle((int) (xCoord + 70 + GraphicsPanel.backgroundPosition), (int)yCoord + 70, imageWidth, imageHeight);
+        Rectangle rect = new Rectangle((getxCoord() + 70), (int)yCoord + 70, imageWidth, imageHeight);
         return rect;
     }
 }

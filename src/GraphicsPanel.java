@@ -16,7 +16,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
     private BufferedImage menuBackground, buttonBackground, background, deathBackground;
     private Player player;
-    private Spirit e;
+    private NightBorne e;
     private Death f;
 
     private ArrayList<NightBorne> enemies;
@@ -89,7 +89,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         }
 
         player = new Player("src/assets/playerAnimations.png", 640, 135);
-        e = new Spirit(500, 200);
+        e = new NightBorne("src/assets/NightBorne.png", 100, 220);
+        // e = new Spirit(500, 200);
 
         f = new Death(500, 200);
     }
@@ -149,12 +150,18 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             bossSpawned = true;
         }
         g.drawImage(background, (int) backgroundPosition, 0, null);
+        e.render(g, player, mobs);
+        f.render(g, player, mobs);
 
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).move(g);
             if ((bullets.get(i).getyCoord() > 550 || bullets.get(i).getyCoord() < -200) || bullets.get(i).enemyRect().intersects(player.playerRect())){
-                if (bullets.get(i).enemyRect().intersects(player.playerRect())){
-                    player.takeDamage(1);
+                if (bullets.get(i).enemyRect().intersects(player.playerRect())) {
+                    if (bullets.get(i) instanceof Bloodsword) {
+                        player.takeDamage(50);
+                    } else {
+                        player.takeDamage(1);
+                    }
                 }
                 bullets.remove(i);
                 i--;
@@ -163,18 +170,19 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         for (int i = 0; i < spirits.size(); i++){
             spirits.get(i).render(g, player,bullets, spirits);
         }
+//        b.render(g,player);
         player.render(g, this);
 
         if (player.getHp() <= 0) {
             state = State.DEAD;
         }
-        if (!b.isPhaseOneBeat()){
-            b.phaseOne(g,player);
-        }else if(!b.isPhaseTwoBeat()){
-            b.phaseTwo(mobs,g,player);
-        }else{
-            b.phaseThree(g,player);
-        }
+//        if (!b.isPhaseOneBeat()){
+//            b.phaseOne(g,player);
+//        }else if(!b.isPhaseTwoBeat()){
+//            b.phaseTwo(mobs,g,player);
+//        }else{
+//            b.phaseThree(g,player);
+//        }
     }
 
     private void renderDead(Graphics g) {

@@ -86,6 +86,7 @@ public class Boss implements ActionListener{
         bossAnimationsLeft = Utility.flipEvery(bossAnimationsRight);
     }
     private void render(Graphics g, Player p) {
+        takeDamage(p);
         drawHealthBar(g);
         int margin = -70;
         isLeft = getXCoord() + width / 2 > p.getxCoord() + 50;
@@ -460,10 +461,10 @@ public class Boss implements ActionListener{
             }
         }
     }
-    public void takeDamage(double damage) {
-        hp -= damage;
-        if (hp < 0) {
-            hp = 0;
+
+    private void takeDamage(Player p){
+        if (p.attackRect() != null && bossRect().intersects(p.attackRect())){
+            hp -= Player.PLAYER_DAMAGE;
         }
     }
 }

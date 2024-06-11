@@ -19,6 +19,7 @@ public class NightBorne {
     private final double yCoord;
     private boolean isLeft;
     private int i;
+    private int health;
 
     private enum State {
         DASHING, CHARGING, SLASHING, DYING
@@ -30,6 +31,7 @@ public class NightBorne {
         xCoord = x;
         yCoord = y;
         state = State.DASHING;
+        health = 101;
         i = 0;
         loadImages(img);
     }
@@ -54,6 +56,10 @@ public class NightBorne {
     }
 
     public void render(Graphics g, Player p,ArrayList<Object> mobs) {
+        if (health <= 0){
+            state = State.DYING;
+        }
+
         int margin = -150;
         isLeft = getXCoord() + IMAGE_WIDTH / 2 > p.getxCoord() + 128;
 
@@ -76,6 +82,7 @@ public class NightBorne {
             case DYING -> deathAnimation(g,mobs);
         }
         drawLines(g);
+        takeDamage(p);
     }
 
     private void drawLines(Graphics g) {
@@ -155,8 +162,14 @@ public class NightBorne {
         mobs.remove(this);
     }
 
+    private void takeDamage(Player p){
+        if (p.attackRect() != null && enemyRect().intersects(p.attackRect())){
+            health -= Player.PLAYER_DAMAGE;
+        }
+    }
+
     public Rectangle enemyRect() {
-        return new Rectangle((int) xCoord, (int) yCoord, IMAGE_WIDTH, IMAGE_HEIGHT);
+        return new Rectangle(getXCoord(), getYCoord(), IMAGE_WIDTH, IMAGE_HEIGHT);
     }
 
     public int getXCoord() {
