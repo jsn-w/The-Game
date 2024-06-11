@@ -9,17 +9,16 @@ public class Death {
     private final double MOVE_AMT = 0.2;
     private final int MAX_HP = 1000;
 
-    private final int SUMMON_FRAMES = 80;
+    private final int SUMMON_FRAMES = 50;
     private final int SLASH_FRAMES = 40;
-    private final int DEATH_FRAMES = 160;
-    private final int MOVE_FRAMES = 60;
-    private final int ABILITY_FRAMES = 80;
+    private final int DEATH_FRAMES = 20;
+    private final int MOVE_FRAMES = 30;
+    private final int ABILITY_FRAMES = 50;
 
     private BufferedImage enemyAnimations[][], enemyAnimationsLeft[][];
-    private BufferedImage deathSpritesheet;
-    private BufferedImage healthbar;
+    private BufferedImage deathSpritesheet, healthbar;
 
-    int health;
+    private int health;
     private double xCoord;
     private double yCoord;
     private boolean isLeft;

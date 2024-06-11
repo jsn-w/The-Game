@@ -38,7 +38,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private ArrayList<Object> mobs;
 
     private enum State {
-        MENU, LOADING, GAME, DEAD
+        MENU, LOADING, GAME, DEAD, WIN
     }
     private State state;
 
@@ -116,6 +116,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
                 }
             }
             case DEAD -> renderDead(g);
+            case WIN -> renderWin(g);
         }
     }
 
@@ -188,6 +189,10 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private void renderDead(Graphics g) {
         g.drawImage(background, (int) backgroundPosition, 0, null);
         g.drawImage(deathBackground, 0, 0, null);
+    }
+
+    private void renderWin(Graphics g) {
+        //eeeeeeeeee
     }
 
     private void playMenu() {

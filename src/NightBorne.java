@@ -13,13 +13,14 @@ public class NightBorne {
     private static final int SLASH_FRAMES = 12;
 
     private BufferedImage[][] enemyAnimationsLeft, enemyAnimationsRight;
+    private BufferedImage spritesheet, healthbar;
 
-    private BufferedImage spritesheet;
     private double xCoord;
     private final double yCoord;
     private boolean isLeft, isDead;
     private int i;
     private int health;
+    private final int MAX_HP = 500;
 
     private enum State {
         DASHING, CHARGING, SLASHING, DYING
@@ -31,7 +32,7 @@ public class NightBorne {
         xCoord = x;
         yCoord = y;
         state = State.DASHING;
-        health = 100;
+        health = MAX_HP;
         i = 0;
         loadImages(img);
     }
@@ -39,6 +40,7 @@ public class NightBorne {
     private void loadImages(String path) {
         try {
             spritesheet = ImageIO.read(new File(path));
+            healthbar = ImageIO.read(new File("src/assets/nightborne_healthbar.png"));
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -87,8 +89,23 @@ public class NightBorne {
             if (health <= 0) {
                 state = State.DYING;
             }
+            drawHealthBar(g);
         }
 
+    }
+
+    private void drawHealthBar(Graphics g) {
+        int barWidth = 258;
+        int barHeight = 20;
+        int x = 895;
+        int y = 62;
+
+        g.setColor(Color.red);
+        g.fillRect(x, y, barWidth, barHeight);
+
+        g.setColor(new Color(100, 240, 100));
+        g.fillRect(x, y, (int) ((health / (double) MAX_HP) * barWidth), barHeight);
+        g.drawImage(healthbar, 850, 54, null);
     }
 
     private void drawLines(Graphics g) {

@@ -7,9 +7,9 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Spirit {
-    private final int DEATH_FRAMES = 120;
-    private final int SPAWN_FRAMES = 120;
-    private final int IDLE_FRAMES = 40;
+    private final int DEATH_FRAMES = 30;
+    private final int SPAWN_FRAMES = 40;
+    private final int IDLE_FRAMES = 30;
 
     private BufferedImage spiritAnimations[][], spiritAnimationsLeft[][];
     private BufferedImage spiritSpritesheet;
