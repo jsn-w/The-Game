@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class Death {
     private final double MOVE_AMT = 0.2;
-    private final int MAX_HP = 1000;
+    private final int MAX_HP = 3000;
 
     private final int SUMMON_FRAMES = 50;
     private final int SLASH_FRAMES = 40;

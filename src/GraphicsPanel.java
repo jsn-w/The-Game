@@ -88,7 +88,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             }
         }
 
-        player = new Player("src/assets/playerAnimations.png", 640, 135);
+        player = new Player("src/assets/playerAnimations.png", 640, 350);
         nightBorne = new NightBorne("src/assets/NightBorne.png", 100, 220);
         // e = new Spirit(500, 200);
 
@@ -171,7 +171,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
                     if (bullets.get(i) instanceof Bloodsword) {
                         player.takeDamage(50);
                     } else {
-                        player.takeDamage(1);
+                        player.takeDamage(5);
                     }
                 }
                 bullets.remove(i);

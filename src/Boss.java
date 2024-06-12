@@ -77,15 +77,15 @@ public class Boss implements ActionListener {
         if(!hitAvailability){
             idle(g);
             if (!mobs.isEmpty()) {
-                if (mobs.getFirst() instanceof NightBorne) {
-                    ((NightBorne) mobs.getFirst()).render(g, p, mobs);
-                    if (((NightBorne) mobs.getFirst()).getIsdead()) {
+                if (mobs.get(0) instanceof NightBorne) {
+                    ((NightBorne) mobs.get(0)).render(g, p, mobs);
+                    if (((NightBorne) mobs.get(0)).getIsdead()) {
                         mobs = new ArrayList<>();
                         mobs.add(new Death(500, 200));
                     }
-                } else if (mobs.getFirst() instanceof Death) {
-                    ((Death) mobs.getFirst()).render(g, p, mobs);
-                    if (((Death) mobs.getFirst()).getIsDead()) {
+                } else if (mobs.get(0) instanceof Death) {
+                    ((Death) mobs.get(0)).render(g, p, mobs);
+                    if (((Death) mobs.get(0)).getIsDead()) {
                         mobs = new ArrayList<>();
                     }
                 }
@@ -260,7 +260,7 @@ public class Boss implements ActionListener {
                 if (!removed) {
                     if ((bullets.get(i).getyCoord() > 550 || bullets.get(i).getyCoord() < -200) || bullets.get(i).enemyRect().intersects(p.playerRect())) {
                         if (bullets.get(i).enemyRect().intersects(p.playerRect())) {
-                            p.takeDamage(10);
+                            p.takeDamage(30);
                         }
                         bullets.remove(i);
                         i--;
@@ -314,9 +314,9 @@ public class Boss implements ActionListener {
             atkRect = new Rectangle(getXCoord()+width/2,getYCoord(),width/2,height);
         }
         if (atkRect.intersects(p.playerRect())){
-            p.takeDamage(.3);
+            p.takeDamage(.2);
         }else if (atkRect.intersects(p.playerRect())){
-            p.takeDamage(.3);
+            p.takeDamage(.2);
         }
     }
     private void heavyAttack(Graphics g, Player p){
@@ -337,9 +337,9 @@ public class Boss implements ActionListener {
             atkRect = new Rectangle(getXCoord()+width/2,getYCoord(),width/2,height);
         }
         if (atkRect.intersects(p.playerRect())){
-            p.takeDamage(.5);
+            p.takeDamage(.3);
         }else if (atkRect.intersects(p.playerRect())){
-            p.takeDamage(.5);
+            p.takeDamage(.3);
         }
     }
     private void walk(Graphics g){
@@ -376,15 +376,15 @@ public class Boss implements ActionListener {
 
     public void drawHealthBar(Graphics g){
         g.setColor(Color.black);
-        g.fillRoundRect(320, 100, 500, 40, 40, 40);
+        g.fillRoundRect(320 + 40, 100, 500, 40, 40, 40);
         g.setColor(Color.RED);
-        g.fillRoundRect(325, 105, (int)(490 * ((double)hp/maxHp)), 30, 40, 40);
+        g.fillRoundRect(325 + 40, 105, (int)(490 * ((double)hp/maxHp)), 30, 40, 40);
         g.setFont(new Font("Courier New", Font.BOLD, 24));
         g.setColor(Color.YELLOW);
         if (hitAvailability) {
-            g.drawString("boss health: " + hp + "/" + maxHp, 335, 125);
+            g.drawString("Boss Health: " + hp + "/" + maxHp, 335 + 50, 127);
         } else {
-            g.drawString("boss health: INVULNERABLE", 335, 125);
+            g.drawString("Boss Health: INVULNERABLE", 335 + 50, 127);
         }
     }
     public void phaseOne(Graphics g, Player p){
