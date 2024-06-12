@@ -1,3 +1,5 @@
+import assets.Sound;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +17,7 @@ public class Boss implements ActionListener {
     private boolean phaseOneBeat, phaseTwoBeat, onPhaseThree, win, hitAvailability;
     private int hp, maxHp, i, fly, width, height,growNumber;
     private double xCoord, yCoord;
-    private boolean heavyAttack, attack, attackDone, falling, isLeft;
+    private boolean heavyAttack, attack, attackDone, falling, isLeft, isHit;
     private Timer flyTimer, bulletTimer;
     private ArrayList<BossBullet> bullets;
     private Player p;
@@ -32,6 +34,7 @@ public class Boss implements ActionListener {
         i = 0;
         growNumber = 0;
         isLeft = true;
+        isHit = false;
         xCoord = 300;
         yCoord = 400;
         fly = 0;
@@ -268,18 +271,21 @@ public class Boss implements ActionListener {
     }
 
     private void deathAnimation(Graphics g){
-        if (i == 11 * 40) {
+        if (i == 11 * 100) {
             i = 0;
         }
         if (!isLeft) {
-            g.drawImage(bossAnimationsRight[7][i/40], getXCoord(), getYCoord(), null);
+            g.drawImage(bossAnimationsRight[6][i/40], getXCoord(), getYCoord(), null);
         } else {
-            g.drawImage(bossAnimationsLeft[7][i/40], getXCoord(), getYCoord(), null);
+            g.drawImage(bossAnimationsLeft[6][i/40], getXCoord(), getYCoord(), null);
         }
         i++;
     }
 
     private void idle(Graphics g){
+        if (yCoord < 400){
+            yCoord += 0.4;
+        }
         if (i == 15 * 40) {
             i = 0;
         }
@@ -407,10 +413,14 @@ public class Boss implements ActionListener {
         }
     }
     public void phaseThree(Graphics g, Player p){
-        render(g,p);
         if (hp <= 0) {
             hp = 0;
-            win = true;
+            deathAnimation(g);
+            if (i == 11 * 39) {
+                win = true;
+            }
+        } else {
+            render(g,p);
         }
     }
     public int getXCoord() {
@@ -468,6 +478,12 @@ public class Boss implements ActionListener {
     private void takeDamage(Player p){
         if (p.attackRect() != null && bossRect().intersects(p.attackRect())){
             hp -= Player.PLAYER_DAMAGE;
+            if (!isHit) {
+                Sound.enemyHit();
+                isHit = true;
+            }
+        } else {
+            isHit = false;
         }
     }
 }

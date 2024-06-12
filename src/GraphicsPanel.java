@@ -200,6 +200,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
                 b.phaseThree(g, player);
             }
         }else{
+
             state = State.WIN;
         }
     }
