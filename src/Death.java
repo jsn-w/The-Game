@@ -23,7 +23,7 @@ public class Death {
     private int health;
     private double xCoord;
     private double yCoord;
-    private boolean isLeft, isHit;
+    private boolean isLeft, isHit, isdead;
     private int i;
     private int ability;
 
@@ -189,7 +189,7 @@ public class Death {
                 g.drawImage(enemyAnimations[1][i / DEATH_FRAMES], getxCoord(), getyCoord(), null);
             }
         }
-        mobs.remove(this);
+        isdead = true;
     }
 
     private void takeDamage(Player p){
@@ -212,5 +212,8 @@ public class Death {
 
     public double getHealth() {
         return health;
+    }
+    public boolean getIsDead(){
+        return isdead;
     }
 }

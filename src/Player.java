@@ -19,7 +19,7 @@ public class Player {
     private static final double MAX_HP = 100;
     private static double HEAL_RATE = 0.02; // Healing rate per update
 
-    public static final double PLAYER_DAMAGE = 0.25;
+    public static final double PLAYER_DAMAGE = 100.25;
 
     private boolean isLeft, jumping, falling, sprinting, doubleJumpAvailable, jumpKeyPressed, dead;
     private double xCoord, yCoord, score, jumpVelocity;

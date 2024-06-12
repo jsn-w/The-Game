@@ -184,7 +184,6 @@ public class NightBorne {
         if (i == 13 * 20){
             Sound.explosion();
         }
-
         if (!isLeft) {
             g.drawImage(enemyAnimationsRight[4][i/20], getXCoord(), (int) yCoord, null);
         } else {
@@ -218,5 +217,8 @@ public class NightBorne {
 
     public double getHealth() {
         return health;
+    }
+    public boolean getIsdead(){
+        return isDead;
     }
 }

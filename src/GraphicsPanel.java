@@ -151,8 +151,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             bossSpawned = true;
         }
         g.drawImage(background, (int) backgroundPosition, 0, null);
-        nightBorne.render(g, player, mobs);
-        death.render(g, player, mobs);
         boolean win = !(nightBorne.getHealth() > 0) && !(death.getHealth() > 0);
 
         for (Spirit spirit : spirits) {
@@ -183,19 +181,22 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
         for (int i = 0; i < spirits.size(); i++){
             spirits.get(i).render(g, player,bullets, spirits);
         }
-//        b.render(g,player);
         player.render(g, this);
 
         if (player.getHp() <= 0) {
             state = State.DEAD;
         }
-//        if (!b.isPhaseOneBeat()){
-//            b.phaseOne(g,player);
-//        }else if(!b.isPhaseTwoBeat()){
-//            b.phaseTwo(mobs,g,player);
-//        }else{
-//            b.phaseThree(g,player);
-//        }
+        if(!b.isWin()) {
+            if (!b.isPhaseOneBeat()) {
+                b.phaseOne(g, player);
+            } else if (!b.isPhaseTwoBeat()) {
+                b.phaseTwo(g, player);
+            } else {
+                b.phaseThree(g, player);
+            }
+        }else{
+            state = State.WIN;
+        }
     }
 
     private void renderDead(Graphics g) {

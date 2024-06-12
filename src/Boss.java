@@ -13,7 +13,7 @@ public class Boss implements ActionListener {
     private static final int FRAMES_PER_UPDATE = 25;
 
     private boolean phaseOneBeat, phaseTwoBeat, onPhaseThree, win, hitAvailability;
-    private int hp, maxHp, i, fly, width, height;
+    private int hp, maxHp, i, fly, width, height,growNumber;
     private double xCoord, yCoord;
     private boolean heavyAttack, attack, attackDone, falling, isLeft;
     private Timer flyTimer, bulletTimer;
@@ -26,10 +26,11 @@ public class Boss implements ActionListener {
 
     public Boss(Player p, Graphics g){
         this.p = p;
-        hp = 500;
+        hp = 1000;
         maxHp = 1000;
         hitAvailability = true;
         i = 0;
+        growNumber = 0;
         isLeft = true;
         xCoord = 300;
         yCoord = 400;
@@ -72,10 +73,19 @@ public class Boss implements ActionListener {
         isLeft = getXCoord() + width / 2 > p.getxCoord() + 50;
         if(!hitAvailability){
             idle(g);
-            if (mobs.getFirst() instanceof NightBorne) {
-                ((NightBorne) mobs.getFirst()).render(g,p,mobs);
-            }else if(mobs.getFirst() instanceof Death) {
-                ((Death) mobs.getFirst()).render(g,p,mobs);
+            if (!mobs.isEmpty()) {
+                if (mobs.getFirst() instanceof NightBorne) {
+                    ((NightBorne) mobs.getFirst()).render(g, p, mobs);
+                    if (((NightBorne) mobs.getFirst()).getIsdead()) {
+                        mobs = new ArrayList<>();
+                        mobs.add(new Death(500, 200));
+                    }
+                } else if (mobs.getFirst() instanceof Death) {
+                    ((Death) mobs.getFirst()).render(g, p, mobs);
+                    if (((Death) mobs.getFirst()).getIsDead()) {
+                        mobs = new ArrayList<>();
+                    }
+                }
             }
         } else {
             takeDamage(p);
@@ -372,30 +382,28 @@ public class Boss implements ActionListener {
             hp = 5000;
             maxHp = 5000;
             mobs.add(new NightBorne("src/assets/NightBorne.png", 100, 220));
-            mobs.add(new Spirit(500, 200));
-            mobs.add(new Death(500, 200));
         }
     }
     public void phaseTwo(Graphics g, Player p){
         hitAvailability = false;
-        render(g,p);
         if (mobs.isEmpty()) {
-            for (int j = 0; j <= 1000; j++) {
-                grow(g);
+            grow(g);
+            growNumber++;
+            if (growNumber > 1000) {
+                loadImages("src/assets/biggercthulu.png");
+                yCoord -= height / 2 - 35;
+                phaseTwoBeat = true;
+                hitAvailability = true;
+                onPhaseThree = true;
             }
-            loadImages("src/assets/biggercthulu.png");
-            yCoord -= height / 2 - 35;
-            for (int j = 0; j <= 500; j++) {
-                grow(g);
-            }
-            phaseTwoBeat = true;
-            hitAvailability = true;
-            onPhaseThree = true;
+        }else{
+            render(g,p);
         }
     }
     public void phaseThree(Graphics g, Player p){
         render(g,p);
         if (hp <= 0) {
+            hp = 0;
             win = true;
         }
     }
@@ -404,6 +412,9 @@ public class Boss implements ActionListener {
     }
     public int getYCoord() {
         return (int) (yCoord);
+    }
+    public boolean isWin(){
+        return win;
     }
     private void grow(Graphics g){
         if (i >= 5 * 100) {
