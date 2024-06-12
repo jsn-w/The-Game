@@ -110,7 +110,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
             case LOADING -> renderLoading(g);
             case GAME -> {
                 renderGame(g);
-                if (!songPlayed){
+                if (!songPlayed && !b.isPhaseTwoBeat()){
                     playBattle();
                     songPlayed = true;
                 }
@@ -191,6 +191,11 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
                 b.phaseOne(g, player);
             } else if (!b.isPhaseTwoBeat()) {
                 b.phaseTwo(g, player);
+                if (b.getGrowNumber() == 1){
+                    songClip.stop();
+                    songClip.close();
+                    playFinale();
+                }
             } else {
                 b.phaseThree(g, player);
             }
@@ -234,6 +239,19 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
     private void playBattle() {
         try{
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/assets/audios/battle.wav").getAbsoluteFile());
+            songClip = AudioSystem.getClip();
+            songClip.open(audioInputStream);
+            songClip.loop(Clip.LOOP_CONTINUOUSLY);
+            songClip.start();
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void playFinale(){
+        try{
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/assets/audios/phase3.wav").getAbsoluteFile());
+            songClip = AudioSystem.getClip();
             songClip.open(audioInputStream);
             songClip.loop(Clip.LOOP_CONTINUOUSLY);
             songClip.start();

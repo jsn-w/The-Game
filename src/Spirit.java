@@ -123,10 +123,10 @@ public class Spirit {
     }
 
     private void deathAnimation(Graphics g, ArrayList<Spirit> s){
-        i++;
         if (i == 0){
             Sound.spiritDeath();
         }
+        i++;
         if (i < DEATH_FRAMES * 5){
             if (isLeft){
                 g.drawImage(spiritAnimationsLeft[1][i / DEATH_FRAMES], getxCoord(), getyCoord(), null);

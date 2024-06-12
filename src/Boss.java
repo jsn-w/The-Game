@@ -266,6 +266,7 @@ public class Boss implements ActionListener {
             }
         }
     }
+
     private void deathAnimation(Graphics g){
         if (i == 11 * 40) {
             i = 0;
@@ -277,6 +278,7 @@ public class Boss implements ActionListener {
         }
         i++;
     }
+
     private void idle(Graphics g){
         if (i == 15 * 40) {
             i = 0;
@@ -373,7 +375,11 @@ public class Boss implements ActionListener {
         g.fillRoundRect(325, 105, (int)(490 * ((double)hp/maxHp)), 30, 40, 40);
         g.setFont(new Font("Courier New", Font.BOLD, 24));
         g.setColor(Color.YELLOW);
-        g.drawString("boss health: " + hp + "/" + maxHp,335,125);
+        if (hitAvailability) {
+            g.drawString("boss health: " + hp + "/" + maxHp, 335, 125);
+        } else {
+            g.drawString("boss health: INVULNERABLE", 335, 125);
+        }
     }
     public void phaseOne(Graphics g, Player p){
         render(g,p);
@@ -389,7 +395,7 @@ public class Boss implements ActionListener {
         if (mobs.isEmpty()) {
             grow(g);
             growNumber++;
-            if (growNumber > 1000) {
+            if (growNumber > 2800) {
                 loadImages("src/assets/biggercthulu.png");
                 yCoord -= height / 2 - 35;
                 phaseTwoBeat = true;
@@ -427,6 +433,11 @@ public class Boss implements ActionListener {
         }
         i++;
     }
+
+    public int getGrowNumber(){
+        return growNumber;
+    }
+
     private void shoot(Player p, ArrayList<BossBullet> b){
         double angle = Math.atan2(p.getyCoord() - (int) yCoord + 128, p.getxCoord() - getXCoord() + 128);
         if (isLeft) {

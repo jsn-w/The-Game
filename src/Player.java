@@ -17,9 +17,9 @@ public class Player {
     private static final double STAMINA_REGEN_RATE = 0.07;
     private static final double STAMINA_DEPLETION_RATE = 0.2;
     private static final double MAX_HP = 100;
-    private static double HEAL_RATE = 0.02; // Healing rate per update
+    private static double HEAL_RATE = 0.03; // Healing rate per update
 
-    public static final double PLAYER_DAMAGE = 100.25;
+    public static final double PLAYER_DAMAGE = 0.125;
 
     private boolean isLeft, jumping, falling, sprinting, doubleJumpAvailable, jumpKeyPressed, dead;
     private double xCoord, yCoord, score, jumpVelocity;
